@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Find doctors and hospitals in Bangladesh. Book appointments with top medical specialists near you.">
+    <title>MedFind | Digital Healthcare Platform</title>
+
+    <!-- ✅ CSS FILES -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Search Box */
+        .search-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .search-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .search-tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+        }
+        
+        .search-tab:hover {
+            color: #2563eb;
+        }
+        
+        .search-tab.active {
+            color: #2563eb;
+        }
+        
+        .search-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #2563eb;
+        }
+        
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .search-input {
+            padding: 0.875rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .search-button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        
+        .search-button:hover {
+            background: #1d4ed8;
+        }
+        
+        /* How It Works Section */
+        .how-it-works {
+            padding: 5rem 0;
+            background: #f9fafb;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: #6b7280;
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+        }
+        
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .step-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .step-icon {
+            width: 64px;
+            height: 64px;
+            background: #dbeafe;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .step-icon i {
+            font-size: 1.5rem;
+            color: #2563eb;
+        }
+        
+        .step-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+        
+        .step-description {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        /* Top Doctors Section */
+        .top-doctors {
+            padding: 5rem 0;
+            background: white;
+        }
+        
+        .doctors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .doctor-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+        }
+        
+        .doctor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .doctor-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .doctor-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+            opacity: 0.8;
+        }
+        
+        .doctor-info {
+            padding: 1.5rem;
+        }
+        
+        .doctor-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .doctor-qualification {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .doctor-specialty {
+            display: inline-block;
+            background: #dbeafe;
+            color: #2563eb;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .doctor-hospital {
+            color: #374151;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .doctor-location {
+            color: #6b7280;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .doctor-actions {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+        
+        /* Location Search */
+        .location-search {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+        
+        .location-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .location-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .location-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .location-icon {
+            width: 48px;
+            height: 48px;
+            background: #dbeafe;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+        
+        .location-icon i {
+            font-size: 1.25rem;
+            color: #2563eb;
+        }
+        
+        .location-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+        
+        .location-card p {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        /* Blog/Articles Section */
+        .blog-section {
+            padding: 5rem 0;
+            background: #f9fafb;
+        }
+        
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .blog-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .blog-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+        
+        .blog-content {
+            padding: 1.5rem;
+        }
+        
+        .blog-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+        
+        .blog-excerpt {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .blog-read-more {
+            color: #2563eb;
+            font-weight: 500;
+            font-size: 0.875rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: gap 0.2s;
+        }
+        
+        .blog-read-more:hover {
+            gap: 0.5rem;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-subtitle {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .cta-button.primary {
+            background: white;
+            color: #2563eb;
+        }
+        
+        .cta-button.primary:hover {
+            background: #f8fafc;
+            transform: translateY(-2px);
+        }
+        
+        .cta-button.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .cta-button.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .cta-title {
+                font-size: 2rem;
+            }
+            
+            .search-container {
+                padding: 1.5rem;
+                margin: 0 1rem;
+            }
+            
+            .steps-grid,
+            .doctors-grid,
+            .location-grid,
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-section {
+                padding: 3rem 0;
+            }
+            
+            .how-it-works,
+            .top-doctors,
+            .location-search,
+            .blog-section {
+                padding: 3rem 0;
+            }
+        }
+        
+        /* Utility classes */
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #2563eb;
+            border: 1px solid #2563eb;
+        }
+        
+        .btn-outline:hover {
+            background: #2563eb;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>MedFind</span>
+                </a>
+            </div>
+            
+            <div class="navbar-menu">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="../hospitals/hospital-list.html" class="nav-link">Hospitals</a>
+                <a href="../doctors/doctor-search.html" class="nav-link">Doctors</a>
+                <a href="../patients/appointment-booking.html" class="nav-link">Appointments</a>
+                <a href="../blog.html" class="nav-link">Health Tips</a>
+                <a href="../login.html" class="nav-link">Login</a>
+                <a href="../register.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            
+            <button class="navbar-toggler" aria-label="Toggle navigation menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" role="banner">
+        <div class="hero-content">
+            <h1 class="hero-title">Find Your Doctor & Hospital in Bangladesh</h1>
+            <p class="hero-subtitle">The wish for better health begins by communicating the problems to a professional</p>
+            
+            <div class="search-container">
+                <div class="search-tabs" role="tablist">
+                    <button class="search-tab active" role="tab" aria-selected="true" data-tab="doctor">Find Doctor</button>
+                    <button class="search-tab" role="tab" aria-selected="false" data-tab="hospital">Find Hospital</button>
+                </div>
+                
+                <form class="search-form" id="searchForm">
+                    <input type="text" 
+                           class="search-input" 
+                           id="searchInput" 
+                           placeholder="Search by doctor name, specialty, or condition"
+                           aria-label="Search for doctors"
+                           required>
+                    
+                    <select class="search-input" id="divisionSelect" aria-label="Select division">
+                        <option value="">Select Division</option>
+                        <!-- Options will be populated by location.js -->
+                    </select>
+                    
+                    <button type="submit" class="search-button" aria-label="Search">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                </form>
+                
+                <!-- District select will be hidden initially -->
+                <select class="search-input mt-1" id="districtSelect" style="display: none;" aria-label="Select district">
+                    <option value="">Select District</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" aria-labelledby="how-it-works-title">
+        <div class="container">
+            <h2 class="section-title" id="how-it-works-title">How MedFind Works</h2>
+            <p class="section-subtitle">An efficient way of finding the best doctors and hospitals in Bangladesh</p>
+            
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-icon" aria-hidden="true">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="step-title">Find a Local Doctor</h3>
+                    <p class="step-description">Search for specialized doctors in your area. All their information is available for you to make the most suitable decision.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-icon" aria-hidden="true">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <h3 class="step-title">Find Nearest Hospital</h3>
+                    <p class="step-description">Search for the closest hospital near you anytime for any possible emergencies that you may encounter.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-icon" aria-hidden="true">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3 class="step-title">Book Appointment</h3>
+                    <p class="step-description">Make an appointment with your chosen doctor. Get instant confirmation and reminders for your visit.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Doctors -->
+    <section class="top-doctors" aria-labelledby="top-doctors-title">
+        <div class="container">
+            <h2 class="section-title" id="top-doctors-title">Top Searched Doctors</h2>
+            <p class="section-subtitle">Connect with the best medical professionals in Bangladesh</p>
+            
+            <div class="doctors-grid">
+                <!-- Doctor 1 -->
+                <div class="doctor-card" data-doctor-id="1" role="article">
+                    <div class="doctor-image">
+                        <div class="doctor-image-placeholder">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                    </div>
+                    <div class="doctor-info">
+                        <h3 class="doctor-name">Prof. Dr. N. A. M. Momenuzzaman</h3>
+                        <p class="doctor-qualification">MBBS, MD (Cardiology)</p>
+                        <span class="doctor-specialty">Cardiologist</span>
+                        <p class="doctor-hospital">United Hospital Ltd.</p>
+                        <p class="doctor-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Working Area: Dhaka, Gulshan-2
+                        </p>
+                    </div>
+                    <div class="doctor-actions">
+                        <button class="btn btn-sm btn-outline view-profile-btn">View Profile</button>
+                        <button class="btn btn-sm btn-primary book-now-btn">Book Now</button>
+                    </div>
+                </div>
+                
+                <!-- Doctor 2 -->
+                <div class="doctor-card" data-doctor-id="2" role="article">
+                    <div class="doctor-image">
+                        <div class="doctor-image-placeholder">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                    </div>
+                    <div class="doctor-info">
+                        <h3 class="doctor-name">DR. S. M. ABUL KHAYER MIAH</h3>
+                        <p class="doctor-qualification">MBBS, Fellow FWHO (PHC)</p>
+                        <span class="doctor-specialty">Medicine</span>
+                        <p class="doctor-hospital">Rainbow Diagnostic Center</p>
+                        <p class="doctor-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Working Area: Dhaka, KachuKhet
+                        </p>
+                    </div>
+                    <div class="doctor-actions">
+                        <button class="btn btn-sm btn-outline view-profile-btn">View Profile</button>
+                        <button class="btn btn-sm btn-primary book-now-btn">Book Now</button>
+                    </div>
+                </div>
+                
+                <!-- Doctor 3 -->
+                <div class="doctor-card" data-doctor-id="3" role="article">
+                    <div class="doctor-image">
+                        <div class="doctor-image-placeholder">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                    </div>
+                    <div class="doctor-info">
+                        <h3 class="doctor-name">PROFESSOR DR. KOHINOOR AKHTER BANU</h3>
+                        <p class="doctor-qualification">MBBS, DGO</p>
+                        <span class="doctor-specialty">Gynecologist & Obstetrician</span>
+                        <p class="doctor-hospital">Lab Aid Diagnostic Center</p>
+                        <p class="doctor-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Working Area: Mymensingh, Charpara
+                        </p>
+                    </div>
+                    <div class="doctor-actions">
+                        <button class="btn btn-sm btn-outline view-profile-btn">View Profile</button>
+                        <button class="btn btn-sm btn-primary book-now-btn">Book Now</button>
+                    </div>
+                </div>
+                
+                <!-- Doctor 4 -->
+                <div class="doctor-card" data-doctor-id="4" role="article">
+                    <div class="doctor-image">
+                        <div class="doctor-image-placeholder">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                    </div>
+                    <div class="doctor-info">
+                        <h3 class="doctor-name">DR. MAHBOBA AKTHER</h3>
+                        <p class="doctor-qualification">MD, FCPS</p>
+                        <span class="doctor-specialty">Paediatrics & Neonatologist</span>
+                        <p class="doctor-hospital">Unity Aid Hospital</p>
+                        <p class="doctor-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Working Area: Dhaka, Dakhin Banasree
+                        </p>
+                    </div>
+                    <div class="doctor-actions">
+                        <button class="btn btn-sm btn-outline view-profile-btn">View Profile</button>
+                        <button class="btn btn-sm btn-primary book-now-btn">Book Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Search -->
+    <section class="location-search" aria-labelledby="location-search-title">
+        <div class="container">
+            <h2 class="section-title" id="location-search-title">Find Doctors by Area in Bangladesh</h2>
+            <p class="section-subtitle">Search for doctors by area, city, department, or name anywhere in Bangladesh</p>
+            
+            <div class="location-grid">
+                <div class="location-card" data-division="Dhaka">
+                    <div class="location-icon">
+                        <i class="fas fa-city"></i>
+                    </div>
+                    <h3>Dhaka Division</h3>
+                    <p>Find doctors in Dhaka, Gazipur, Narayanganj, Narsingdi</p>
+                </div>
+                
+                <div class="location-card" data-division="Chattogram">
+                    <div class="location-icon">
+                        <i class="fas fa-anchor"></i>
+                    </div>
+                    <h3>Chittagong Division</h3>
+                    <p>Find doctors in Chittagong, Cox's Bazar, Comilla, Brahmanbaria</p>
+                </div>
+                
+                <div class="location-card" data-division="Sylhet">
+                    <div class="location-icon">
+                        <i class="fas fa-mountains"></i>
+                    </div>
+                    <h3>Sylhet Division</h3>
+                    <p>Find doctors in Sylhet, Moulvibazar, Habiganj, Sunamganj</p>
+                </div>
+                
+                <div class="location-card" data-division="Khulna">
+                    <div class="location-icon">
+                        <i class="fas fa-water"></i>
+                    </div>
+                    <h3>Khulna Division</h3>
+                    <p>Find doctors in Khulna, Jessore, Satkhira, Bagerhat</p>
+                </div>
+                
+                <div class="location-card" data-division="Rajshahi">
+                    <div class="location-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <h3>Rajshahi Division</h3>
+                    <p>Find doctors in Rajshahi, Bogura, Pabna, Sirajganj</p>
+                </div>
+                
+                <div class="location-card" data-division="Barishal">
+                    <div class="location-icon">
+                        <i class="fas fa-ship"></i>
+                    </div>
+                    <h3>Barisal Division</h3>
+                    <p>Find doctors in Barisal, Patuakhali, Bhola, Jhalokati</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Health Tips -->
+    <section class="blog-section" aria-labelledby="blog-section-title">
+        <div class="container">
+            <h2 class="section-title" id="blog-section-title">Recent Health Articles</h2>
+            <p class="section-subtitle">Stay informed with the latest health tips and medical information</p>
+            
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <div class="blog-image" role="img" aria-label="Dengue Fever prevention"></div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Dengue Fever: Symptoms, Prevention & Treatment</h3>
+                        <p class="blog-excerpt">Learn about dengue symptoms, prevention methods, and when to seek medical help during outbreak seasons.</p>
+                        <a href="#" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                
+                <article class="blog-card">
+                    <div class="blog-image" role="img" aria-label="Mpox awareness"></div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Mpox (Monkeypox): What You Need to Know</h3>
+                        <p class="blog-excerpt">Understanding Mpox symptoms, transmission, and prevention strategies for better health awareness.</p>
+                        <a href="#" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                
+                <article class="blog-card">
+                    <div class="blog-image" role="img" aria-label="Regular health checkups"></div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">The Importance of Regular Health Check-ups</h3>
+                        <p class="blog-excerpt">Regular health screenings can detect problems early when they're easier to treat. Learn which tests you need.</p>
+                        <a href="#" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" aria-labelledby="cta-title">
+        <div class="container">
+            <h2 class="cta-title" id="cta-title">Ready to Find Your Doctor?</h2>
+            <p class="cta-subtitle">Join thousands of patients who found their perfect healthcare provider through MedFind</p>
+            
+            <div class="cta-buttons">
+                <a href="../register.html" class="cta-button primary">
+                    <i class="fas fa-user-plus"></i>
+                    Sign Up Free
+                </a>
+                <a href="../doctors/doctor-search.html" class="cta-button secondary">
+                    <i class="fas fa-search"></i>
+                    Search Doctors
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">MedFind</h3>
+                    <p>Your trusted partner in finding the best healthcare providers in Bangladesh.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="../hospitals/hospital-list.html">Find Hospitals</a>
+                    <a href="../doctors/doctor-search.html">Find Doctors</a>
+                    <a href="../patients/appointment-booking.html">Book Appointment</a>
+                    <a href="#">Health Tips</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-phone"></i> +880 1234 567890</p>
+                    <p><i class="fas fa-envelope"></i> info@medfind.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MedFind. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ✅ JS FILES -->
+    <script src="assets/js/location.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <!-- Inline JavaScript for page-specific functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search tabs functionality
+            const tabs = document.querySelectorAll('.search-tab');
+            const searchInput = document.getElementById('searchInput');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabType = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.setAttribute('aria-selected', 'false');
+                    });
+                    this.classList.add('active');
+                    this.setAttribute('aria-selected', 'true');
+                    
+                    // Update placeholder based on selected tab
+                    if (tabType === 'doctor') {
+                        searchInput.placeholder = 'Search by doctor name, specialty, or condition';
+                        searchInput.setAttribute('aria-label', 'Search for doctors');
+                    } else {
+                        searchInput.placeholder = 'Search by hospital name or specialty';
+                        searchInput.setAttribute('aria-label', 'Search for hospitals');
+                    }
+                });
+            });
+            
+            // Search form submission
+            const searchForm = document.getElementById('searchForm');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const searchTerm = searchInput.value.trim();
+                    const division = document.getElementById('divisionSelect').value;
+                    const district = document.getElementById('districtSelect').value;
+                    const activeTab = document.querySelector('.search-tab.active').getAttribute('data-tab');
+                    
+                    if (!searchTerm && !division) {
+                        alert('Please enter search terms or select a location');
+                        return;
+                    }
+                    
+                    // Build search URL
+                    let searchUrl = activeTab === 'doctor' 
+                        ? '../doctors/doctor-search.html' 
+                        : '../hospitals/hospital-search.html';
+                    
+                    const params = new URLSearchParams();
+                    if (searchTerm) params.append('q', searchTerm);
+                    if (division) params.append('division', division);
+                    if (district) params.append('district', district);
+                    
+                    if (params.toString()) {
+                        searchUrl += '?' + params.toString();
+                    }
+                    
+                    // Redirect to search results page
+                    window.location.href = searchUrl;
+                });
+            }
+            
+            // Location card click handlers
+            const locationCards = document.querySelectorAll('.location-card');
+            locationCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const division = this.getAttribute('data-division');
+                    if (division) {
+                        // Redirect to doctor search with division filter
+                        window.location.href = `../doctors/doctor-search.html?division=${encodeURIComponent(division)}`;
+                    }
+                });
+            });
+            
+            // Doctor card button handlers
+            document.querySelectorAll('.view-profile-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const doctorCard = this.closest('.doctor-card');
+                    const doctorId = doctorCard.getAttribute('data-doctor-id');
+                    window.location.href = `../doctors/doctor-profile.html?id=${doctorId}`;
+                });
+            });
+            
+            document.querySelectorAll('.book-now-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const doctorCard = this.closest('.doctor-card');
+                    const doctorId = doctorCard.getAttribute('data-doctor-id');
+                    window.location.href = `../patients/appointment-booking.html?doctor=${doctorId}`;
+                });
+            });
+            
+            // Doctor card click (excluding buttons)
+            document.querySelectorAll('.doctor-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on buttons
+                    if (e.target.closest('button')) return;
+                    
+                    const doctorId = this.getAttribute('data-doctor-id');
+                    window.location.href = `../doctors/doctor-profile.html?id=${doctorId}`;
+                });
+            });
+            
+            // Mobile navbar toggler
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarMenu = document.querySelector('.navbar-menu');
+            
+            if (navbarToggler && navbarMenu) {
+                navbarToggler.addEventListener('click', function() {
+                    navbarMenu.classList.toggle('show');
+                    const isExpanded = navbarMenu.classList.contains('show');
+                    this.setAttribute('aria-expanded', isExpanded);
+                });
+            }
+            
+            // Initialize Location Manager if available
+            if (typeof LocationManager !== 'undefined') {
+                const locationManager = new LocationManager('divisionSelect', 'districtSelect');
+                
+                // Show district select when division is selected
+                const divisionSelect = document.getElementById('divisionSelect');
+                const districtSelect = document.getElementById('districtSelect');
+                
+                divisionSelect.addEventListener('change', function() {
+                    if (this.value) {
+                        districtSelect.style.display = 'block';
+                    } else {
+                        districtSelect.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+<div id="navbar-container"></div>
+
+<!-- Page content -->
+
+<div id="footer-container"></div>
+
+</html><footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <!-- About -->
+            <div class="footer-section">
+                <h3 class="footer-title">About MedFind</h3>
+                <p>Your trusted partner in finding the best healthcare providers in Bangladesh.</p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer-section">
+                <h3 class="footer-title">Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="../hospitals/hospital-list.html">Find Hospitals</a></li>
+                    <li><a href="../doctors/doctor-search.html">Find Doctors</a></li>
+                    <li><a href="../patients/appointment-booking.html">Book Appointment</a></li>
+                    <li><a href="../blog.html">Health Tips</a></li>
+                </ul>
+            </div>
+
+            <!-- Resources -->
+            <div class="footer-section">
+                <h3 class="footer-title">Resources</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact Support</a></li>
