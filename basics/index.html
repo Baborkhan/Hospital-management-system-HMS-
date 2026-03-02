@@ -2,593 +2,1748 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Find doctors and hospitals in Bangladesh. Book appointments with top medical specialists near you.">
-    <title>MedFind | Digital Healthcare Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <meta name="description" content="MedFind - Bangladesh's leading digital healthcare platform. Find doctors, hospitals, book appointments, and manage your health journey.">
+    <meta name="keywords" content="doctor, hospital, Bangladesh, healthcare, appointment, medical">
+    <meta name="author" content="MedFind Development Team">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="MedFind | Digital Healthcare Platform Bangladesh">
+    <meta property="og:description" content="Find the best doctors and hospitals in Bangladesh. Book appointments online instantly.">
+    <meta property="og:image" content="assets/images/og-image.jpg">
+    <meta property="og:url" content="https://medfind.com">
+    
+    <title>MedFind | Digital Healthcare Platform Bangladesh</title>
 
     <!-- ✅ CSS FILES -->
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/layout.css">
     <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <style>
-        /* Hero Section */
-        .hero-section {
-            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+        /* ===== ENHANCED CUSTOM STYLES WITH BEAUTIFUL COLOR COMBINATION ===== */
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #dbeafe;
+            --primary-soft: #3b82f6;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --accent: #8b5cf6;
+            --accent-light: #ede9fe;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --info: #3b82f6;
+            --dark: #1e293b;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --white: #ffffff;
+            
+            /* Beautiful New Color Palette */
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --gradient-5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --gradient-6: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+            
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px rgba(0,0,0,0.15);
+            --shadow-2xl: 0 25px 50px rgba(0,0,0,0.2);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-2xl: 32px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--gray-800);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== ADMIN PANEL ===== */
+        .admin-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            padding: 5rem 0;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow-2xl);
+            transition: var(--transition);
+            border: 3px solid white;
+        }
+
+        .admin-toggle:hover {
+            transform: scale(1.1) rotate(90deg);
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+        }
+
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 450px;
+            height: 100vh;
+            background: white;
+            box-shadow: var(--shadow-2xl);
+            z-index: 10000;
+            transition: var(--transition);
+            overflow-y: auto;
+            border-left: 4px solid var(--primary);
+        }
+
+        .admin-panel.active {
+            right: 0;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .admin-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .admin-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .close-admin {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 20px;
+        }
+
+        .close-admin:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
+        }
+
+        .admin-section {
+            padding: 25px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .admin-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-section h3 i {
+            color: var(--primary);
+        }
+
+        .admin-item {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .admin-item label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-600);
+            margin-bottom: 5px;
+        }
+
+        .admin-item input,
+        .admin-item textarea,
+        .admin-item select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            margin-bottom: 10px;
+        }
+
+        .admin-item input:focus,
+        .admin-item textarea:focus,
+        .admin-item select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .admin-item textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .admin-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .admin-btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .admin-btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .admin-btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .admin-btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .admin-save-all {
+            margin: 25px;
+            padding: 15px;
+            width: calc(100% - 50px);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .admin-save-all:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* ===== PREMIUM NAVBAR ===== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+            padding: 1rem 0;
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled {
+            padding: 0.75rem 0;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Logo with Gradient */
+        .navbar-brand .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .navbar-brand .logo i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 4px 8px rgba(37, 99, 235, 0.2));
+        }
+
+        .navbar-brand .logo span {
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Desktop Menu */
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
             position: relative;
+            color: var(--gray-700);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+
+        /* Dropdown Menu */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-trigger {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            min-width: 220px;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            padding: 1rem 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            border: 1px solid var(--gray-200);
+            z-index: 100;
+        }
+
+        .nav-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1.5rem;
+            color: var(--gray-700);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover {
+            background: linear-gradient(90deg, var(--primary-light), transparent);
+            color: var(--primary);
+            padding-left: 2rem;
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            color: var(--primary);
+        }
+
+        /* Auth Buttons */
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-login {
+            padding: 0.75rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            color: var(--gray-700);
+            text-decoration: none;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .btn-login:hover {
+            color: var(--primary);
+            border-color: var(--primary-light);
+            background: var(--gray-50);
+        }
+
+        .btn-register {
+            padding: 0.75rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Mobile Toggler */
+        .navbar-toggler {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+
+        .navbar-toggler:hover {
+            background: var(--gray-100);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero-section {
+            position: relative;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 6rem 0;
             overflow: hidden;
         }
-        
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 10s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-20px, -20px); }
+        }
+
         .hero-content {
+            position: relative;
+            z-index: 2;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
             text-align: center;
         }
-        
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            line-height: 1.2;
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 40px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.875rem;
+            font-weight: 500;
         }
-        
+
+        .hero-badge i {
+            color: var(--warning);
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .hero-subtitle {
             font-size: 1.25rem;
-            opacity: 0.9;
-            margin-bottom: 2.5rem;
+            color: var(--gray-300);
             max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
         }
-        
-        /* Search Box */
+
+        /* Search Container */
         .search-container {
-            background: white;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-2xl);
             padding: 2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
-        
+
         .search-tabs {
             display: flex;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #e5e7eb;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 1rem;
+            flex-wrap: wrap;
         }
-        
+
         .search-tab {
             padding: 0.75rem 1.5rem;
-            background: none;
+            background: transparent;
             border: none;
-            font-size: 1rem;
+            border-radius: 40px;
+            color: var(--gray-300);
             font-weight: 500;
-            color: #6b7280;
             cursor: pointer;
-            position: relative;
-            transition: color 0.2s;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        
+
         .search-tab:hover {
-            color: #2563eb;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
         }
-        
+
         .search-tab.active {
-            color: #2563eb;
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+            color: white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
-        
-        .search-tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #2563eb;
-        }
-        
+
         .search-form {
             display: grid;
             grid-template-columns: 1fr 1fr auto;
             gap: 1rem;
         }
-        
-        @media (max-width: 768px) {
-            .search-form {
-                grid-template-columns: 1fr;
-            }
+
+        .search-input-group {
+            position: relative;
         }
-        
+
+        .search-input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+        }
+
         .search-input {
-            padding: 0.875rem 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid transparent;
+            border-radius: var(--radius-lg);
             font-size: 1rem;
             font-family: 'Inter', sans-serif;
-            transition: all 0.2s;
+            transition: var(--transition);
+            background: white;
         }
-        
+
         .search-input:focus {
             outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
         }
-        
-        .search-button {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 0.875rem 2rem;
-            border-radius: 8px;
+
+        .search-select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid transparent;
+            border-radius: var(--radius-lg);
             font-size: 1rem;
-            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            background: white;
             cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .search-button {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+            border: none;
+            border-radius: var(--radius-lg);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: background 0.2s;
+            gap: 0.75rem;
             white-space: nowrap;
         }
-        
+
         .search-button:hover {
-            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
         }
-        
-        /* How It Works Section */
-        .how-it-works {
-            padding: 5rem 0;
-            background: #f9fafb;
+
+        .search-button i {
+            font-size: 1.125rem;
         }
-        
-        .section-title {
+
+        /* Stats */
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
             text-align: center;
+        }
+
+        .stat-number {
             font-size: 2.5rem;
-            font-weight: 700;
-            color: #111827;
+            font-weight: 800;
+            color: white;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-light), white);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--gray-300);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ===== FEATURES SECTION ===== */
+        .features-section {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, var(--gray-50), white);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gray-900);
             margin-bottom: 1rem;
         }
-        
-        .section-subtitle {
-            text-align: center;
-            color: #6b7280;
-            font-size: 1.125rem;
-            max-width: 600px;
-            margin: 0 auto 3rem;
-            line-height: 1.6;
+
+        .section-header h2 span {
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .steps-grid {
+
+        .section-header p {
+            color: var(--gray-600);
+            font-size: 1.125rem;
+            line-height: 1.7;
+        }
+
+        .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
         }
-        
-        .step-card {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
+
+        .feature-card {
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
+            padding: 2.5rem 2rem;
+            background: var(--white);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            border: 1px solid var(--gray-200);
+            position: relative;
+            overflow: hidden;
         }
-        
-        .step-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
+            opacity: 0;
+            transition: var(--transition);
+            transform: rotate(45deg);
+            z-index: 1;
         }
-        
-        .step-icon {
-            width: 64px;
-            height: 64px;
-            background: #dbeafe;
-            border-radius: 50%;
+
+        .feature-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
+            border-radius: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--primary);
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            z-index: 2;
         }
-        
-        .step-icon i {
-            font-size: 1.5rem;
-            color: #2563eb;
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
         }
-        
-        .step-title {
+
+        .feature-card h3 {
             font-size: 1.25rem;
-            font-weight: 600;
-            color: #111827;
+            font-weight: 700;
             margin-bottom: 1rem;
+            color: var(--gray-800);
+            position: relative;
+            z-index: 2;
         }
-        
-        .step-description {
-            color: #6b7280;
-            line-height: 1.6;
+
+        .feature-card p {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
         }
-        
-        /* Top Doctors Section */
-        .top-doctors {
-            padding: 5rem 0;
-            background: white;
+
+        /* ===== DYNAMIC DOCTORS SECTION ===== */
+        .doctors-section {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, white, var(--gray-50));
         }
-        
+
+        .section-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            padding: 0 2rem;
+        }
+
+        .view-all-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .view-all-link:hover {
+            gap: 1rem;
+            color: var(--primary-dark);
+        }
+
         .doctors-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
         }
-        
+
         .doctor-card {
-            background: white;
-            border-radius: 12px;
+            background: var(--white);
+            border-radius: var(--radius-2xl);
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 1px solid #e5e7eb;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            border: 1px solid var(--gray-200);
             cursor: pointer;
         }
-        
+
         .doctor-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-2xl);
         }
-        
+
         .doctor-image {
-            height: 200px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 250px;
             position: relative;
             overflow: hidden;
         }
-        
-        .doctor-image-placeholder {
+
+        .doctor-image img {
             width: 100%;
             height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 4rem;
-            opacity: 0.8;
+            object-fit: cover;
+            transition: var(--transition);
         }
-        
+
+        .doctor-card:hover .doctor-image img {
+            transform: scale(1.1);
+        }
+
+        .doctor-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+            color: var(--gray-900);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 2;
+            box-shadow: var(--shadow-md);
+        }
+
         .doctor-info {
             padding: 1.5rem;
         }
-        
+
         .doctor-name {
             font-size: 1.25rem;
-            font-weight: 600;
-            color: #111827;
+            font-weight: 700;
+            color: var(--gray-800);
             margin-bottom: 0.5rem;
             line-height: 1.4;
         }
-        
-        .doctor-qualification {
-            color: #6b7280;
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
-        }
-        
+
         .doctor-specialty {
             display: inline-block;
-            background: #dbeafe;
-            color: #2563eb;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
+            color: var(--primary);
+            padding: 0.25rem 1rem;
+            border-radius: 40px;
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
             margin-bottom: 1rem;
         }
-        
+
         .doctor-hospital {
-            color: #374151;
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .doctor-location {
-            color: #6b7280;
-            font-size: 0.875rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
         }
-        
-        .doctor-actions {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid #e5e7eb;
+
+        .doctor-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .doctor-rating .stars {
+            color: var(--warning);
+            letter-spacing: 2px;
+        }
+
+        .doctor-rating .reviews {
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        .doctor-footer {
             display: flex;
             justify-content: space-between;
-            gap: 0.5rem;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-200);
         }
-        
-        /* Location Search */
-        .location-search {
-            padding: 5rem 0;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+
+        .doctor-fee {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.125rem;
         }
-        
+
+        .doctor-fee small {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            font-weight: 400;
+        }
+
+        .doctor-book-btn {
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .doctor-book-btn:hover {
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            transform: scale(1.05);
+        }
+
+        /* ===== LOCATION SECTION ===== */
+        .location-section {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, var(--gray-900), #0f172a);
+            color: white;
+        }
+
         .location-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(6, 1fr);
             gap: 1.5rem;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 3rem auto 0;
             padding: 0 2rem;
         }
-        
+
         .location-card {
-            background: white;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-xl);
             padding: 1.5rem;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s;
+            transition: var(--transition);
             cursor: pointer;
         }
-        
+
         .location-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(139, 92, 246, 0.2));
+            border-color: var(--primary);
         }
-        
+
         .location-icon {
             width: 48px;
             height: 48px;
-            background: #dbeafe;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1rem;
-        }
-        
-        .location-icon i {
             font-size: 1.25rem;
-            color: #2563eb;
+            color: white;
         }
-        
+
         .location-card h3 {
-            font-size: 1.125rem;
+            font-size: 1rem;
             font-weight: 600;
-            color: #111827;
             margin-bottom: 0.5rem;
         }
-        
+
         .location-card p {
-            color: #6b7280;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
+            color: var(--gray-300);
             line-height: 1.5;
         }
-        
-        /* Blog/Articles Section */
+
+        /* ===== DYNAMIC BLOG SECTION ===== */
         .blog-section {
-            padding: 5rem 0;
-            background: #f9fafb;
+            padding: 6rem 0;
+            background: linear-gradient(135deg, white, var(--gray-50));
         }
-        
+
         .blog-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
         }
-        
+
         .blog-card {
-            background: white;
-            border-radius: 12px;
+            background: var(--white);
+            border-radius: var(--radius-2xl);
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            border: 1px solid var(--gray-200);
         }
-        
+
         .blog-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-2xl);
         }
-        
+
         .blog-image {
             height: 200px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             position: relative;
+            overflow: hidden;
         }
-        
-        .blog-content {
-            padding: 1.5rem;
+
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
         }
-        
-        .blog-title {
-            font-size: 1.125rem;
+
+        .blog-card:hover .blog-image img {
+            transform: scale(1.1);
+        }
+
+        .blog-category {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
             font-weight: 600;
-            color: #111827;
-            margin-bottom: 0.75rem;
+            z-index: 2;
+        }
+
+        .blog-content {
+            padding: 2rem;
+        }
+
+        .blog-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .blog-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
             line-height: 1.4;
         }
-        
+
         .blog-excerpt {
-            color: #6b7280;
-            font-size: 0.875rem;
-            line-height: 1.6;
-            margin-bottom: 1rem;
+            color: var(--gray-600);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
         }
-        
+
         .blog-read-more {
-            color: #2563eb;
-            font-weight: 500;
-            font-size: 0.875rem;
-            text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.25rem;
-            transition: gap 0.2s;
-        }
-        
-        .blog-read-more:hover {
             gap: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
         }
-        
-        /* CTA Section */
+
+        .blog-read-more:hover {
+            gap: 1rem;
+            color: var(--accent);
+        }
+
+        /* ===== CTA SECTION ===== */
         .cta-section {
-            padding: 4rem 0;
-            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            padding: 6rem 0;
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
             color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
             text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 2rem;
         }
-        
+
         .cta-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
         }
-        
+
         .cta-subtitle {
-            font-size: 1.125rem;
+            font-size: 1.25rem;
             opacity: 0.9;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
         }
-        
+
         .cta-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
         }
-        
-        .cta-button {
-            padding: 0.875rem 2rem;
-            border-radius: 8px;
-            font-size: 1rem;
+
+        .cta-btn {
+            padding: 1rem 2.5rem;
+            border-radius: 40px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.2s;
+            transition: var(--transition);
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
-        
-        .cta-button.primary {
+
+        .cta-btn-primary {
             background: white;
-            color: #2563eb;
+            color: var(--primary);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
-        
-        .cta-button.primary:hover {
-            background: #f8fafc;
+
+        .cta-btn-primary:hover {
             transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
         }
-        
-        .cta-button.secondary {
-            background: transparent;
+
+        .cta-btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
             color: white;
             border: 2px solid white;
         }
-        
-        .cta-button.secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
+
+        .cta-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
         }
-        
-        /* Responsive */
+
+        /* ===== PREMIUM FOOTER WITH PERMANENT DEVELOPER INFO ===== */
+        .footer {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            padding: 5rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            padding: 0 2rem;
+        }
+
+        .footer-section .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .footer-section .footer-logo i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-section p {
+            color: var(--gray-400);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: white;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer-links a i {
+            font-size: 0.75rem;
+            color: var(--primary);
+        }
+
+        /* Developer Contact Section (Permanent) */
+        .developer-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .developer-section h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-light);
+        }
+
+        .developer-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .developer-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .developer-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--primary);
+        }
+
+        .developer-name {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .developer-info {
+            font-size: 0.85rem;
+            color: var(--gray-400);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .developer-info i {
+            width: 16px;
+            color: var(--primary);
+            font-size: 0.75rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 2rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-bottom-links a {
+            color: var(--gray-500);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-bottom-links a:hover {
+            color: white;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .features-grid,
+            .doctors-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .location-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .navbar-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: var(--shadow-xl);
+            }
+
+            .navbar-menu.show {
+                display: flex;
+            }
+
+            .navbar-toggler {
+                display: block;
+            }
+
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-login,
+            .btn-register {
+                width: 100%;
+                text-align: center;
+            }
+
+            .features-grid,
+            .doctors-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .blog-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
             .hero-title {
                 font-size: 2.5rem;
             }
-            
-            .section-title {
-                font-size: 2rem;
+
+            .search-form {
+                grid-template-columns: 1fr;
             }
-            
+
+            .hero-stats {
+                gap: 2rem;
+            }
+
+            .features-grid,
+            .doctors-grid,
+            .blog-grid,
+            .location-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-actions {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
             .cta-title {
                 font-size: 2rem;
             }
-            
-            .search-container {
-                padding: 1.5rem;
-                margin: 0 1rem;
+
+            .cta-buttons {
+                flex-direction: column;
             }
-            
-            .steps-grid,
-            .doctors-grid,
-            .location-grid,
-            .blog-grid {
-                grid-template-columns: 1fr;
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .footer-bottom-links {
+                flex-wrap: wrap;
+                justify-content: center;
             }
         }
-        
+
         @media (max-width: 480px) {
             .hero-title {
                 font-size: 2rem;
             }
-            
-            .hero-section {
-                padding: 3rem 0;
+
+            .hero-subtitle {
+                font-size: 1rem;
             }
-            
-            .how-it-works,
-            .top-doctors,
-            .location-search,
-            .blog-section {
-                padding: 3rem 0;
+
+            .search-tabs {
+                flex-direction: column;
+            }
+
+            .search-tab {
+                width: 100%;
+                justify-content: center;
             }
         }
-        
-        /* Utility classes */
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        .btn-sm {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.875rem;
+
+        .animate-slide-up {
+            animation: slideInUp 0.6s ease forwards;
         }
-        
-        .btn-primary {
-            background: #2563eb;
-            color: white;
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-        
-        .btn-primary:hover {
-            background: #1d4ed8;
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-        
-        .btn-outline {
-            background: transparent;
-            color: #2563eb;
-            border: 1px solid #2563eb;
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 9999;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid var(--success);
         }
-        
-        .btn-outline:hover {
-            background: #2563eb;
-            color: white;
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning);
+        }
+
+        .toast.info {
+            border-left-color: var(--primary);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+    <!-- Admin Toggle Button -->
+    <div class="admin-toggle" id="adminToggle" title="Admin Panel">
+        <i class="fas fa-cog"></i>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h2><i class="fas fa-crown"></i> Admin Dashboard</h2>
+            <p>Manage dynamic content (Doctors, Articles, Stats)</p>
+            <div class="close-admin" id="closeAdmin">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+
+        <!-- Stats Management -->
+        <div class="admin-section">
+            <h3><i class="fas fa-chart-line"></i> Statistics</h3>
+            <div class="admin-item">
+                <label>Happy Patients</label>
+                <input type="number" id="statPatients" value="500000" step="1000">
+            </div>
+            <div class="admin-item">
+                <label>Expert Doctors</label>
+                <input type="number" id="statDoctors" value="1500" step="10">
+            </div>
+            <div class="admin-item">
+                <label>Hospitals</label>
+                <input type="number" id="statHospitals" value="300" step="5">
+            </div>
+            <div class="admin-item">
+                <label>Specialties</label>
+                <input type="number" id="statSpecialties" value="50" step="1">
+            </div>
+        </div>
+
+        <!-- Doctors Management -->
+        <div class="admin-section">
+            <h3><i class="fas fa-user-md"></i> Featured Doctors</h3>
+            <div id="doctorsAdminContainer">
+                <!-- Doctors will be dynamically loaded here -->
+            </div>
+            <button class="admin-btn admin-btn-primary" id="addDoctorBtn" style="width: 100%; margin-top: 10px;">
+                <i class="fas fa-plus"></i> Add New Doctor
+            </button>
+        </div>
+
+        <!-- Articles Management -->
+        <div class="admin-section">
+            <h3><i class="fas fa-newspaper"></i> Health Articles</h3>
+            <div id="articlesAdminContainer">
+                <!-- Articles will be dynamically loaded here -->
+            </div>
+            <button class="admin-btn admin-btn-primary" id="addArticleBtn" style="width: 100%; margin-top: 10px;">
+                <i class="fas fa-plus"></i> Add New Article
+            </button>
+        </div>
+
+        <!-- Save All Button -->
+        <button class="admin-save-all" id="saveAllBtn">
+            <i class="fas fa-save"></i> Save All Changes
+        </button>
+    </div>
+
+    <!-- Premium Navbar -->
+    <nav class="navbar" id="navbar">
         <div class="container">
             <div class="navbar-brand">
                 <a href="index.html" class="logo">
@@ -597,304 +1752,312 @@
                 </a>
             </div>
             
-            <div class="navbar-menu">
+            <div class="navbar-menu" id="navbarMenu">
                 <a href="index.html" class="nav-link active">Home</a>
-                <a href="../hospitals/hospital-list.html" class="nav-link">Hospitals</a>
-                <a href="../doctors/doctor-search.html" class="nav-link">Doctors</a>
+                
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link dropdown-trigger">
+                        Find <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="../hospitals/hospital-list.html" class="dropdown-item">
+                            <i class="fas fa-hospital"></i>
+                            Hospitals
+                        </a>
+                        <a href="../doctors/doctor-search.html" class="dropdown-item">
+                            <i class="fas fa-user-md"></i>
+                            Doctors
+                        </a>
+                        <a href="../laboratory/lab-test-booking.html" class="dropdown-item">
+                            <i class="fas fa-flask"></i>
+                            Lab Tests
+                        </a>
+                        <a href="../pharmacy/medicine-search.html" class="dropdown-item">
+                            <i class="fas fa-pills"></i>
+                            Medicines
+                        </a>
+                    </div>
+                </div>
+                
                 <a href="../patients/appointment-booking.html" class="nav-link">Appointments</a>
                 <a href="../blog.html" class="nav-link">Health Tips</a>
-                <a href="../login.html" class="nav-link">Login</a>
-                <a href="../register.html" class="btn btn-primary">Sign Up</a>
+                
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-link dropdown-trigger">
+                        Resources <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-newspaper"></i>
+                            Articles
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-video"></i>
+                            Video Consult
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-ambulance"></i>
+                            Emergency
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-headset"></i>
+                            Support
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="auth-buttons">
+                    <a href="../login.html" class="btn-login">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </a>
+                    <a href="../register.html" class="btn-register">
+                        <i class="fas fa-user-plus"></i>
+                        Sign Up
+                    </a>
+                </div>
             </div>
             
-            <button class="navbar-toggler" aria-label="Toggle navigation menu">
+            <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle menu">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-section" role="banner">
+    <section class="hero-section">
         <div class="hero-content">
-            <h1 class="hero-title">Find Your Doctor & Hospital in Bangladesh</h1>
-            <p class="hero-subtitle">The wish for better health begins by communicating the problems to a professional</p>
+            <div class="hero-badge" data-aos="fade-down">
+                <i class="fas fa-check-circle"></i>
+                Trusted by <span id="heroPatients">500,000+</span> Patients
+            </div>
             
-            <div class="search-container">
-                <div class="search-tabs" role="tablist">
-                    <button class="search-tab active" role="tab" aria-selected="true" data-tab="doctor">Find Doctor</button>
-                    <button class="search-tab" role="tab" aria-selected="false" data-tab="hospital">Find Hospital</button>
+            <h1 class="hero-title" data-aos="fade-up">
+                Find Your <span>Doctor</span> & <span>Hospital</span><br>
+                in Bangladesh
+            </h1>
+            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="100">
+                The wish for better health begins by communicating the problems to a professional. 
+                Connect with <span id="heroDoctors">1500+</span> specialists across Bangladesh.
+            </p>
+            
+            <div class="search-container" data-aos="fade-up" data-aos-delay="200">
+                <div class="search-tabs">
+                    <button class="search-tab active" data-tab="doctor">
+                        <i class="fas fa-user-md"></i>
+                        Find Doctor
+                    </button>
+                    <button class="search-tab" data-tab="hospital">
+                        <i class="fas fa-hospital"></i>
+                        Find Hospital
+                    </button>
+                    <button class="search-tab" data-tab="lab">
+                        <i class="fas fa-flask"></i>
+                        Lab Test
+                    </button>
                 </div>
                 
                 <form class="search-form" id="searchForm">
-                    <input type="text" 
-                           class="search-input" 
-                           id="searchInput" 
-                           placeholder="Search by doctor name, specialty, or condition"
-                           aria-label="Search for doctors"
-                           required>
+                    <div class="search-input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" 
+                               class="search-input" 
+                               id="searchInput" 
+                               placeholder="Search by doctor name, specialty, or condition"
+                               aria-label="Search">
+                    </div>
                     
-                    <select class="search-input" id="divisionSelect" aria-label="Select division">
-                        <option value="">Select Division</option>
-                        <!-- Options will be populated by location.js -->
+                    <select class="search-select" id="divisionSelect">
+                        <option value="">All Divisions</option>
+                        <option value="dhaka">Dhaka</option>
+                        <option value="chittagong">Chittagong</option>
+                        <option value="rajshahi">Rajshahi</option>
+                        <option value="khulna">Khulna</option>
+                        <option value="sylhet">Sylhet</option>
+                        <option value="barisal">Barisal</option>
+                        <option value="rangpur">Rangpur</option>
+                        <option value="mymensingh">Mymensingh</option>
                     </select>
                     
-                    <button type="submit" class="search-button" aria-label="Search">
+                    <button type="submit" class="search-button">
                         <i class="fas fa-search"></i>
                         Search
                     </button>
                 </form>
-                
-                <!-- District select will be hidden initially -->
-                <select class="search-input mt-1" id="districtSelect" style="display: none;" aria-label="Select district">
-                    <option value="">Select District</option>
-                </select>
             </div>
-        </div>
-    </section>
-
-    <!-- How It Works -->
-    <section class="how-it-works" aria-labelledby="how-it-works-title">
-        <div class="container">
-            <h2 class="section-title" id="how-it-works-title">How MedFind Works</h2>
-            <p class="section-subtitle">An efficient way of finding the best doctors and hospitals in Bangladesh</p>
             
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-icon" aria-hidden="true">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <h3 class="step-title">Find a Local Doctor</h3>
-                    <p class="step-description">Search for specialized doctors in your area. All their information is available for you to make the most suitable decision.</p>
+            <div class="hero-stats" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-item">
+                    <div class="stat-number" id="statPatientsDisplay">500K+</div>
+                    <div class="stat-label">Happy Patients</div>
                 </div>
-                
-                <div class="step-card">
-                    <div class="step-icon" aria-hidden="true">
-                        <i class="fas fa-hospital"></i>
-                    </div>
-                    <h3 class="step-title">Find Nearest Hospital</h3>
-                    <p class="step-description">Search for the closest hospital near you anytime for any possible emergencies that you may encounter.</p>
+                <div class="stat-item">
+                    <div class="stat-number" id="statDoctorsDisplay">1500+</div>
+                    <div class="stat-label">Expert Doctors</div>
                 </div>
-                
-                <div class="step-card">
-                    <div class="step-icon" aria-hidden="true">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <h3 class="step-title">Book Appointment</h3>
-                    <p class="step-description">Make an appointment with your chosen doctor. Get instant confirmation and reminders for your visit.</p>
+                <div class="stat-item">
+                    <div class="stat-number" id="statHospitalsDisplay">300+</div>
+                    <div class="stat-label">Hospitals</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="statSpecialtiesDisplay">50+</div>
+                    <div class="stat-label">Specialties</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Top Doctors -->
-    <section class="top-doctors" aria-labelledby="top-doctors-title">
+    <!-- Features Section -->
+    <section class="features-section">
         <div class="container">
-            <h2 class="section-title" id="top-doctors-title">Top Searched Doctors</h2>
-            <p class="section-subtitle">Connect with the best medical professionals in Bangladesh</p>
+            <div class="section-header" data-aos="fade-up">
+                <h2>Why Choose <span>MedFind</span></h2>
+                <p>Experience the future of healthcare with our comprehensive digital platform</p>
+            </div>
             
-            <div class="doctors-grid">
-                <!-- Doctor 1 -->
-                <div class="doctor-card" data-doctor-id="1" role="article">
-                    <div class="doctor-image">
-                        <div class="doctor-image-placeholder">
-                            <i class="fas fa-user-md"></i>
-                        </div>
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
-                    <div class="doctor-info">
-                        <h3 class="doctor-name">Prof. Dr. N. A. M. Momenuzzaman</h3>
-                        <p class="doctor-qualification">MBBS, MD (Cardiology)</p>
-                        <span class="doctor-specialty">Cardiologist</span>
-                        <p class="doctor-hospital">United Hospital Ltd.</p>
-                        <p class="doctor-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            Working Area: Dhaka, Gulshan-2
-                        </p>
-                    </div>
-                    <div class="doctor-actions">
-                        <button class="btn btn-sm btn-outline view-profile-btn">View Profile</button>
-                        <button class="btn btn-sm btn-primary book-now-btn">Book Now</button>
-                    </div>
+                    <h3>Verified Doctors</h3>
+                    <p>All doctors are verified with BMDC registration and credentials</p>
                 </div>
                 
-                <!-- Doctor 2 -->
-                <div class="doctor-card" data-doctor-id="2" role="article">
-                    <div class="doctor-image">
-                        <div class="doctor-image-placeholder">
-                            <i class="fas fa-user-md"></i>
-                        </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
                     </div>
-                    <div class="doctor-info">
-                        <h3 class="doctor-name">DR. S. M. ABUL KHAYER MIAH</h3>
-                        <p class="doctor-qualification">MBBS, Fellow FWHO (PHC)</p>
-                        <span class="doctor-specialty">Medicine</span>
-                        <p class="doctor-hospital">Rainbow Diagnostic Center</p>
-                        <p class="doctor-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            Working Area: Dhaka, KachuKhet
-                        </p>
-                    </div>
-                    <div class="doctor-actions">
-                        <button class="btn btn-sm btn-outline view-profile-btn">View Profile</button>
-                        <button class="btn btn-sm btn-primary book-now-btn">Book Now</button>
-                    </div>
+                    <h3>Instant Booking</h3>
+                    <p>Book appointments 24/7 with instant confirmation</p>
                 </div>
                 
-                <!-- Doctor 3 -->
-                <div class="doctor-card" data-doctor-id="3" role="article">
-                    <div class="doctor-image">
-                        <div class="doctor-image-placeholder">
-                            <i class="fas fa-user-md"></i>
-                        </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-video"></i>
                     </div>
-                    <div class="doctor-info">
-                        <h3 class="doctor-name">PROFESSOR DR. KOHINOOR AKHTER BANU</h3>
-                        <p class="doctor-qualification">MBBS, DGO</p>
-                        <span class="doctor-specialty">Gynecologist & Obstetrician</span>
-                        <p class="doctor-hospital">Lab Aid Diagnostic Center</p>
-                        <p class="doctor-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            Working Area: Mymensingh, Charpara
-                        </p>
-                    </div>
-                    <div class="doctor-actions">
-                        <button class="btn btn-sm btn-outline view-profile-btn">View Profile</button>
-                        <button class="btn btn-sm btn-primary book-now-btn">Book Now</button>
-                    </div>
+                    <h3>Video Consult</h3>
+                    <p>Consult with doctors from the comfort of your home</p>
                 </div>
                 
-                <!-- Doctor 4 -->
-                <div class="doctor-card" data-doctor-id="4" role="article">
-                    <div class="doctor-image">
-                        <div class="doctor-image-placeholder">
-                            <i class="fas fa-user-md"></i>
-                        </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-medical"></i>
                     </div>
-                    <div class="doctor-info">
-                        <h3 class="doctor-name">DR. MAHBOBA AKTHER</h3>
-                        <p class="doctor-qualification">MD, FCPS</p>
-                        <span class="doctor-specialty">Paediatrics & Neonatologist</span>
-                        <p class="doctor-hospital">Unity Aid Hospital</p>
-                        <p class="doctor-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            Working Area: Dhaka, Dakhin Banasree
-                        </p>
-                    </div>
-                    <div class="doctor-actions">
-                        <button class="btn btn-sm btn-outline view-profile-btn">View Profile</button>
-                        <button class="btn btn-sm btn-primary book-now-btn">Book Now</button>
-                    </div>
+                    <h3>Digital Records</h3>
+                    <p>Access your medical history and reports anytime</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Location Search -->
-    <section class="location-search" aria-labelledby="location-search-title">
+    <!-- Dynamic Doctors Section -->
+    <section class="doctors-section">
         <div class="container">
-            <h2 class="section-title" id="location-search-title">Find Doctors by Area in Bangladesh</h2>
-            <p class="section-subtitle">Search for doctors by area, city, department, or name anywhere in Bangladesh</p>
+            <div class="section-actions" data-aos="fade-up">
+                <div class="section-header" style="margin: 0; text-align: left;">
+                    <h2>Top <span>Rated</span> Doctors</h2>
+                    <p style="margin: 0">Most booked specialists this week</p>
+                </div>
+                <a href="../doctors/doctor-search.html" class="view-all-link">
+                    View All Doctors
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="doctors-grid" id="doctorsGrid">
+                <!-- Doctors will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section class="location-section">
+        <div class="container">
+            <div class="section-header" style="color: white;" data-aos="fade-up">
+                <h2 style="color: white;">Find Doctors <span>by Area</span></h2>
+                <p style="color: var(--gray-300);">Search across all divisions and districts of Bangladesh</p>
+            </div>
             
             <div class="location-grid">
-                <div class="location-card" data-division="Dhaka">
+                <div class="location-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="location-icon">
                         <i class="fas fa-city"></i>
                     </div>
-                    <h3>Dhaka Division</h3>
-                    <p>Find doctors in Dhaka, Gazipur, Narayanganj, Narsingdi</p>
+                    <h3>Dhaka</h3>
+                    <p id="dhakaStats">850+ Doctors · 120 Hospitals</p>
                 </div>
                 
-                <div class="location-card" data-division="Chattogram">
+                <div class="location-card" data-aos="fade-up" data-aos-delay="150">
                     <div class="location-icon">
                         <i class="fas fa-anchor"></i>
                     </div>
-                    <h3>Chittagong Division</h3>
-                    <p>Find doctors in Chittagong, Cox's Bazar, Comilla, Brahmanbaria</p>
+                    <h3>Chattogram</h3>
+                    <p id="chattogramStats">320+ Doctors · 45 Hospitals</p>
                 </div>
                 
-                <div class="location-card" data-division="Sylhet">
+                <div class="location-card" data-aos="fade-up" data-aos-delay="200">
                     <div class="location-icon">
-                        <i class="fas fa-mountains"></i>
+                        <i class="fas fa-umbrella-beach"></i>
                     </div>
-                    <h3>Sylhet Division</h3>
-                    <p>Find doctors in Sylhet, Moulvibazar, Habiganj, Sunamganj</p>
+                    <h3>Sylhet</h3>
+                    <p id="sylhetStats">180+ Doctors · 25 Hospitals</p>
                 </div>
                 
-                <div class="location-card" data-division="Khulna">
+                <div class="location-card" data-aos="fade-up" data-aos-delay="250">
                     <div class="location-icon">
                         <i class="fas fa-water"></i>
                     </div>
-                    <h3>Khulna Division</h3>
-                    <p>Find doctors in Khulna, Jessore, Satkhira, Bagerhat</p>
+                    <h3>Khulna</h3>
+                    <p id="khulnaStats">160+ Doctors · 22 Hospitals</p>
                 </div>
                 
-                <div class="location-card" data-division="Rajshahi">
+                <div class="location-card" data-aos="fade-up" data-aos-delay="300">
                     <div class="location-icon">
                         <i class="fas fa-university"></i>
                     </div>
-                    <h3>Rajshahi Division</h3>
-                    <p>Find doctors in Rajshahi, Bogura, Pabna, Sirajganj</p>
+                    <h3>Rajshahi</h3>
+                    <p id="rajshahiStats">140+ Doctors · 20 Hospitals</p>
                 </div>
                 
-                <div class="location-card" data-division="Barishal">
+                <div class="location-card" data-aos="fade-up" data-aos-delay="350">
                     <div class="location-icon">
                         <i class="fas fa-ship"></i>
                     </div>
-                    <h3>Barisal Division</h3>
-                    <p>Find doctors in Barisal, Patuakhali, Bhola, Jhalokati</p>
+                    <h3>Barishal</h3>
+                    <p id="barishalStats">90+ Doctors · 12 Hospitals</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Health Tips -->
-    <section class="blog-section" aria-labelledby="blog-section-title">
+    <!-- Dynamic Blog Section -->
+    <section class="blog-section">
         <div class="container">
-            <h2 class="section-title" id="blog-section-title">Recent Health Articles</h2>
-            <p class="section-subtitle">Stay informed with the latest health tips and medical information</p>
+            <div class="section-header" data-aos="fade-up">
+                <h2>Health <span>Articles</span></h2>
+                <p>Stay informed with the latest health tips and medical insights</p>
+            </div>
             
-            <div class="blog-grid">
-                <article class="blog-card">
-                    <div class="blog-image" role="img" aria-label="Dengue Fever prevention"></div>
-                    <div class="blog-content">
-                        <h3 class="blog-title">Dengue Fever: Symptoms, Prevention & Treatment</h3>
-                        <p class="blog-excerpt">Learn about dengue symptoms, prevention methods, and when to seek medical help during outbreak seasons.</p>
-                        <a href="#" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-                
-                <article class="blog-card">
-                    <div class="blog-image" role="img" aria-label="Mpox awareness"></div>
-                    <div class="blog-content">
-                        <h3 class="blog-title">Mpox (Monkeypox): What You Need to Know</h3>
-                        <p class="blog-excerpt">Understanding Mpox symptoms, transmission, and prevention strategies for better health awareness.</p>
-                        <a href="#" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-                
-                <article class="blog-card">
-                    <div class="blog-image" role="img" aria-label="Regular health checkups"></div>
-                    <div class="blog-content">
-                        <h3 class="blog-title">The Importance of Regular Health Check-ups</h3>
-                        <p class="blog-excerpt">Regular health screenings can detect problems early when they're easier to treat. Learn which tests you need.</p>
-                        <a href="#" class="blog-read-more">Read More <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
+            <div class="blog-grid" id="blogGrid">
+                <!-- Articles will be dynamically loaded here -->
             </div>
         </div>
     </section>
 
-    <!-- CTA -->
-    <section class="cta-section" aria-labelledby="cta-title">
-        <div class="container">
-            <h2 class="cta-title" id="cta-title">Ready to Find Your Doctor?</h2>
-            <p class="cta-subtitle">Join thousands of patients who found their perfect healthcare provider through MedFind</p>
-            
-            <div class="cta-buttons">
-                <a href="../register.html" class="cta-button primary">
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title" data-aos="fade-up">Ready to Start Your Health Journey?</h2>
+            <p class="cta-subtitle" data-aos="fade-up" data-aos-delay="100">
+                Join <span id="ctaPatients">500,000+</span> patients who found their perfect healthcare provider through MedFind
+            </p>
+            <div class="cta-buttons" data-aos="fade-up" data-aos-delay="200">
+                <a href="../register.html" class="cta-btn cta-btn-primary">
                     <i class="fas fa-user-plus"></i>
                     Sign Up Free
                 </a>
-                <a href="../doctors/doctor-search.html" class="cta-button secondary">
+                <a href="../doctors/doctor-search.html" class="cta-btn cta-btn-secondary">
                     <i class="fas fa-search"></i>
                     Search Doctors
                 </a>
@@ -902,208 +2065,656 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer" role="contentinfo">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3 class="footer-title">MedFind</h3>
-                    <p>Your trusted partner in finding the best healthcare providers in Bangladesh.</p>
+    <!-- Premium Footer with Permanent Developer Information -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>MedFind</span>
                 </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <a href="../hospitals/hospital-list.html">Find Hospitals</a>
-                    <a href="../doctors/doctor-search.html">Find Doctors</a>
-                    <a href="../patients/appointment-booking.html">Book Appointment</a>
-                    <a href="#">Health Tips</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Contact</h4>
-                    <p><i class="fas fa-phone"></i> +880 1234 567890</p>
-                    <p><i class="fas fa-envelope"></i> info@medfind.com</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</p>
+                <p>Bangladesh's leading digital healthcare platform connecting patients with doctors and hospitals. Making healthcare accessible to everyone.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 MedFind. All rights reserved.</p>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="../hospitals/hospital-list.html"><i class="fas fa-chevron-right"></i> Find Hospitals</a></li>
+                    <li><a href="../doctors/doctor-search.html"><i class="fas fa-chevron-right"></i> Find Doctors</a></li>
+                    <li><a href="../patients/appointment-booking.html"><i class="fas fa-chevron-right"></i> Book Appointment</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Lab Tests</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Pharmacy</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Health Tips</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Video Consult</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Emergency Services</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Health Insurance</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> FAQs</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <ul class="footer-links">
+                    <li><i class="fas fa-phone"></i> +880 1234 567890</li>
+                    <li><i class="fas fa-envelope"></i> info@medfind.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</li>
+                    <li><i class="fas fa-clock"></i> 24/7 Support</li>
+                </ul>
+                
+                <!-- Permanent Developer Contact Section (Cannot be changed) -->
+                <div class="developer-section">
+                    <h4><i class="fas fa-code"></i> Development Team</h4>
+                    <div class="developer-grid">
+                        <div class="developer-card">
+                            <div class="developer-name">Ahsanul Yamin Babor</div>
+                            <div class="developer-info"><i class="fas fa-envelope"></i> ahsanaulyaminbabor@gmail.com</div>
+                            <div class="developer-info"><i class="fas fa-phone"></i> +880 1772-172829</div>
+                        </div>
+                        
+                        <div class="developer-card">
+                            <div class="developer-name">Md Monowarul Aziz</div>
+                            <div class="developer-info"><i class="fas fa-envelope"></i> amdmonowarul47@gmail.com</div>
+                            <div class="developer-info"><i class="fas fa-phone"></i> +880 1820-832814</div>
+                        </div>
+                        
+                        <div class="developer-card">
+                            <div class="developer-name">Tandra Pramanik</div>
+                            <div class="developer-info"><i class="fas fa-envelope"></i> tandra01304@gmail.com</div>
+                            <div class="developer-info"><i class="fas fa-phone"></i> +880 1304-012162</div>
+                        </div>
+                        
+                        <div class="developer-card">
+                            <div class="developer-name">A H M Al Toufiq Noor</div>
+                            <div class="developer-info"><i class="fas fa-envelope"></i> altoufiqnoor294@gmail.com</div>
+                            <div class="developer-info"><i class="fas fa-phone"></i> +880 1877-022966</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 MedFind. All rights reserved. Made with <i class="fas fa-heart" style="color: var(--danger);"></i> by the MedFind Team</p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Sitemap</a>
             </div>
         </div>
     </footer>
 
-    <!-- ✅ JS FILES -->
-    <script src="assets/js/location.js"></script>
-    <script src="assets/js/ui.js"></script>
-    <script src="assets/js/main.js"></script>
-
-    <!-- Inline JavaScript for page-specific functionality -->
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Main JavaScript with Dynamic Content Management -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Search tabs functionality
-            const tabs = document.querySelectorAll('.search-tab');
-            const searchInput = document.getElementById('searchInput');
-            
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabType = this.getAttribute('data-tab');
-                    
-                    // Update active tab
-                    tabs.forEach(t => {
-                        t.classList.remove('active');
-                        t.setAttribute('aria-selected', 'false');
-                    });
-                    this.classList.add('active');
-                    this.setAttribute('aria-selected', 'true');
-                    
-                    // Update placeholder based on selected tab
-                    if (tabType === 'doctor') {
-                        searchInput.placeholder = 'Search by doctor name, specialty, or condition';
-                        searchInput.setAttribute('aria-label', 'Search for doctors');
-                    } else {
-                        searchInput.placeholder = 'Search by hospital name or specialty';
-                        searchInput.setAttribute('aria-label', 'Search for hospitals');
-                    }
-                });
-            });
-            
-            // Search form submission
-            const searchForm = document.getElementById('searchForm');
-            if (searchForm) {
-                searchForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const searchTerm = searchInput.value.trim();
-                    const division = document.getElementById('divisionSelect').value;
-                    const district = document.getElementById('districtSelect').value;
-                    const activeTab = document.querySelector('.search-tab.active').getAttribute('data-tab');
-                    
-                    if (!searchTerm && !division) {
-                        alert('Please enter search terms or select a location');
-                        return;
-                    }
-                    
-                    // Build search URL
-                    let searchUrl = activeTab === 'doctor' 
-                        ? '../doctors/doctor-search.html' 
-                        : '../hospitals/hospital-search.html';
-                    
-                    const params = new URLSearchParams();
-                    if (searchTerm) params.append('q', searchTerm);
-                    if (division) params.append('division', division);
-                    if (district) params.append('district', district);
-                    
-                    if (params.toString()) {
-                        searchUrl += '?' + params.toString();
-                    }
-                    
-                    // Redirect to search results page
-                    window.location.href = searchUrl;
-                });
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        // ===== DYNAMIC CONTENT MANAGEMENT SYSTEM =====
+        
+        // Default Data
+        let doctorsData = [
+            {
+                id: 1,
+                name: "Prof. Dr. Ahmed Hossain",
+                specialty: "Cardiologist",
+                hospital: "United Hospital, Dhaka",
+                fee: 800,
+                rating: 4.9,
+                reviews: 324,
+                image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop"
+            },
+            {
+                id: 2,
+                name: "Dr. Fatima Begum",
+                specialty: "Gynecologist",
+                hospital: "Square Hospital, Dhaka",
+                fee: 700,
+                rating: 4.8,
+                reviews: 256,
+                image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop"
+            },
+            {
+                id: 3,
+                name: "Prof. Dr. Kamal Uddin",
+                specialty: "Neurosurgeon",
+                hospital: "Apollo Hospital, Dhaka",
+                fee: 1000,
+                rating: 4.9,
+                reviews: 189,
+                image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop"
+            },
+            {
+                id: 4,
+                name: "Dr. Shahidul Islam",
+                specialty: "Orthopedic Surgeon",
+                hospital: "Labaid Hospital, Dhaka",
+                fee: 900,
+                rating: 4.7,
+                reviews: 145,
+                image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop"
             }
-            
-            // Location card click handlers
-            const locationCards = document.querySelectorAll('.location-card');
-            locationCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    const division = this.getAttribute('data-division');
-                    if (division) {
-                        // Redirect to doctor search with division filter
-                        window.location.href = `../doctors/doctor-search.html?division=${encodeURIComponent(division)}`;
-                    }
-                });
-            });
-            
-            // Doctor card button handlers
-            document.querySelectorAll('.view-profile-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const doctorCard = this.closest('.doctor-card');
-                    const doctorId = doctorCard.getAttribute('data-doctor-id');
-                    window.location.href = `../doctors/doctor-profile.html?id=${doctorId}`;
-                });
-            });
-            
-            document.querySelectorAll('.book-now-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const doctorCard = this.closest('.doctor-card');
-                    const doctorId = doctorCard.getAttribute('data-doctor-id');
-                    window.location.href = `../patients/appointment-booking.html?doctor=${doctorId}`;
-                });
-            });
-            
-            // Doctor card click (excluding buttons)
-            document.querySelectorAll('.doctor-card').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    // Don't trigger if clicking on buttons
-                    if (e.target.closest('button')) return;
-                    
-                    const doctorId = this.getAttribute('data-doctor-id');
-                    window.location.href = `../doctors/doctor-profile.html?id=${doctorId}`;
-                });
-            });
-            
-            // Mobile navbar toggler
-            const navbarToggler = document.querySelector('.navbar-toggler');
-            const navbarMenu = document.querySelector('.navbar-menu');
-            
-            if (navbarToggler && navbarMenu) {
-                navbarToggler.addEventListener('click', function() {
-                    navbarMenu.classList.toggle('show');
-                    const isExpanded = navbarMenu.classList.contains('show');
-                    this.setAttribute('aria-expanded', isExpanded);
-                });
+        ];
+
+        let articlesData = [
+            {
+                id: 1,
+                title: "Dengue: Symptoms, Prevention & Treatment",
+                excerpt: "Learn about dengue symptoms, prevention methods, and when to seek medical help during outbreak seasons.",
+                category: "Dengue",
+                author: "Dr. Rahman",
+                date: "2 days ago",
+                image: "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=400&h=300&fit=crop"
+            },
+            {
+                id: 2,
+                title: "Why Regular Health Check-ups Matter",
+                excerpt: "Regular health screenings can detect problems early when they're easier to treat. Learn which tests you need.",
+                category: "Wellness",
+                author: "Dr. Sultana",
+                date: "5 days ago",
+                image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop"
+            },
+            {
+                id: 3,
+                title: "5 Signs of Heart Disease You Shouldn't Ignore",
+                excerpt: "Recognizing early warning signs of heart disease can save lives. Learn the critical symptoms.",
+                category: "Heart Health",
+                author: "Dr. Ahmed",
+                date: "1 week ago",
+                image: "https://images.unsplash.com/photo-1628348070889-cb656235b4eb?w=400&h=300&fit=crop"
             }
+        ];
+
+        let statsData = {
+            patients: 500000,
+            doctors: 1500,
+            hospitals: 300,
+            specialties: 50
+        };
+
+        // Load data from localStorage if available
+        function loadData() {
+            const savedDoctors = localStorage.getItem('medfind_doctors');
+            const savedArticles = localStorage.getItem('medfind_articles');
+            const savedStats = localStorage.getItem('medfind_stats');
             
-            // Initialize Location Manager if available
-            if (typeof LocationManager !== 'undefined') {
-                const locationManager = new LocationManager('divisionSelect', 'districtSelect');
-                
-                // Show district select when division is selected
-                const divisionSelect = document.getElementById('divisionSelect');
-                const districtSelect = document.getElementById('districtSelect');
-                
-                divisionSelect.addEventListener('change', function() {
-                    if (this.value) {
-                        districtSelect.style.display = 'block';
-                    } else {
-                        districtSelect.style.display = 'none';
-                    }
+            if (savedDoctors) doctorsData = JSON.parse(savedDoctors);
+            if (savedArticles) articlesData = JSON.parse(savedArticles);
+            if (savedStats) statsData = JSON.parse(savedStats);
+            
+            updateAllDisplays();
+        }
+
+        // Save all data
+        function saveAllData() {
+            localStorage.setItem('medfind_doctors', JSON.stringify(doctorsData));
+            localStorage.setItem('medfind_articles', JSON.stringify(articlesData));
+            localStorage.setItem('medfind_stats', JSON.stringify(statsData));
+            
+            updateAllDisplays();
+            showToast('All changes saved successfully!', 'success');
+        }
+
+        // Update all displays
+        function updateAllDisplays() {
+            // Update stats
+            document.getElementById('heroPatients').textContent = formatNumber(statsData.patients) + '+';
+            document.getElementById('heroDoctors').textContent = formatNumber(statsData.doctors) + '+';
+            document.getElementById('statPatientsDisplay').textContent = formatNumber(statsData.patients) + '+';
+            document.getElementById('statDoctorsDisplay').textContent = formatNumber(statsData.doctors) + '+';
+            document.getElementById('statHospitalsDisplay').textContent = formatNumber(statsData.hospitals) + '+';
+            document.getElementById('statSpecialtiesDisplay').textContent = formatNumber(statsData.specialties) + '+';
+            document.getElementById('ctaPatients').textContent = formatNumber(statsData.patients) + '+';
+            
+            // Update doctors grid
+            updateDoctorsGrid();
+            
+            // Update articles grid
+            updateArticlesGrid();
+            
+            // Update admin panels
+            updateAdminDoctors();
+            updateAdminArticles();
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        // Update doctors grid
+        function updateDoctorsGrid() {
+            const grid = document.getElementById('doctorsGrid');
+            grid.innerHTML = doctorsData.map(doctor => `
+                <div class="doctor-card" data-aos="fade-up">
+                    <div class="doctor-image">
+                        <div class="doctor-badge">${doctor.rating} ★</div>
+                        <img src="${doctor.image}" alt="${doctor.name}">
+                    </div>
+                    <div class="doctor-info">
+                        <h3 class="doctor-name">${doctor.name}</h3>
+                        <span class="doctor-specialty">${doctor.specialty}</span>
+                        <div class="doctor-hospital">
+                            <i class="fas fa-hospital"></i>
+                            ${doctor.hospital}
+                        </div>
+                        <div class="doctor-rating">
+                            <span class="stars">
+                                ${generateStars(doctor.rating)}
+                            </span>
+                            <span class="reviews">(${doctor.reviews} reviews)</span>
+                        </div>
+                        <div class="doctor-footer">
+                            <span class="doctor-fee">৳${doctor.fee} <small>/ visit</small></span>
+                            <button class="doctor-book-btn" onclick="bookDoctor(${doctor.id})">Book</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update articles grid
+        function updateArticlesGrid() {
+            const grid = document.getElementById('blogGrid');
+            grid.innerHTML = articlesData.map(article => `
+                <article class="blog-card" data-aos="fade-up">
+                    <div class="blog-image">
+                        <span class="blog-category">${article.category}</span>
+                        <img src="${article.image}" alt="${article.title}">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="fas fa-calendar"></i> ${article.date}</span>
+                            <span><i class="fas fa-user"></i> ${article.author}</span>
+                        </div>
+                        <h3 class="blog-title">${article.title}</h3>
+                        <p class="blog-excerpt">${article.excerpt}</p>
+                        <a href="#" class="blog-read-more">
+                            Read Full Article
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Generate star ratings
+        function generateStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= Math.floor(rating)) {
+                    stars += '<i class="fas fa-star"></i>';
+                } else if (i - rating < 0.5) {
+                    stars += '<i class="fas fa-star-half-alt"></i>';
+                } else {
+                    stars += '<i class="far fa-star"></i>';
+                }
+            }
+            return stars;
+        }
+
+        // Update admin doctors panel
+        function updateAdminDoctors() {
+            const container = document.getElementById('doctorsAdminContainer');
+            container.innerHTML = doctorsData.map((doctor, index) => `
+                <div class="admin-item" data-doctor-index="${index}">
+                    <label>Doctor Name</label>
+                    <input type="text" class="doctor-name-input" value="${doctor.name}" placeholder="Name">
+                    
+                    <label>Specialty</label>
+                    <input type="text" class="doctor-specialty-input" value="${doctor.specialty}" placeholder="Specialty">
+                    
+                    <label>Hospital</label>
+                    <input type="text" class="doctor-hospital-input" value="${doctor.hospital}" placeholder="Hospital">
+                    
+                    <label>Consultation Fee (৳)</label>
+                    <input type="number" class="doctor-fee-input" value="${doctor.fee}" min="0">
+                    
+                    <label>Rating</label>
+                    <input type="number" class="doctor-rating-input" value="${doctor.rating}" min="0" max="5" step="0.1">
+                    
+                    <label>Reviews</label>
+                    <input type="number" class="doctor-reviews-input" value="${doctor.reviews}" min="0">
+                    
+                    <label>Image URL</label>
+                    <input type="text" class="doctor-image-input" value="${doctor.image}" placeholder="Image URL">
+                    
+                    <div class="admin-actions">
+                        <button class="admin-btn admin-btn-primary update-doctor" data-index="${index}">
+                            <i class="fas fa-save"></i> Update
+                        </button>
+                        <button class="admin-btn admin-btn-danger delete-doctor" data-index="${index}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add event listeners to doctor update buttons
+            document.querySelectorAll('.update-doctor').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    const item = this.closest('.admin-item');
+                    
+                    doctorsData[index] = {
+                        id: doctorsData[index].id,
+                        name: item.querySelector('.doctor-name-input').value,
+                        specialty: item.querySelector('.doctor-specialty-input').value,
+                        hospital: item.querySelector('.doctor-hospital-input').value,
+                        fee: parseInt(item.querySelector('.doctor-fee-input').value),
+                        rating: parseFloat(item.querySelector('.doctor-rating-input').value),
+                        reviews: parseInt(item.querySelector('.doctor-reviews-input').value),
+                        image: item.querySelector('.doctor-image-input').value
+                    };
+                    
+                    updateDoctorsGrid();
+                    showToast('Doctor updated successfully', 'success');
                 });
+            });
+
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-doctor').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    doctorsData.splice(index, 1);
+                    updateDoctorsGrid();
+                    updateAdminDoctors();
+                    showToast('Doctor deleted successfully', 'success');
+                });
+            });
+        }
+
+        // Update admin articles panel
+        function updateAdminArticles() {
+            const container = document.getElementById('articlesAdminContainer');
+            container.innerHTML = articlesData.map((article, index) => `
+                <div class="admin-item" data-article-index="${index}">
+                    <label>Article Title</label>
+                    <input type="text" class="article-title-input" value="${article.title}" placeholder="Title">
+                    
+                    <label>Category</label>
+                    <input type="text" class="article-category-input" value="${article.category}" placeholder="Category">
+                    
+                    <label>Author</label>
+                    <input type="text" class="article-author-input" value="${article.author}" placeholder="Author">
+                    
+                    <label>Date</label>
+                    <input type="text" class="article-date-input" value="${article.date}" placeholder="Date">
+                    
+                    <label>Excerpt</label>
+                    <textarea class="article-excerpt-input" placeholder="Excerpt">${article.excerpt}</textarea>
+                    
+                    <label>Image URL</label>
+                    <input type="text" class="article-image-input" value="${article.image}" placeholder="Image URL">
+                    
+                    <div class="admin-actions">
+                        <button class="admin-btn admin-btn-primary update-article" data-index="${index}">
+                            <i class="fas fa-save"></i> Update
+                        </button>
+                        <button class="admin-btn admin-btn-danger delete-article" data-index="${index}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add event listeners to article update buttons
+            document.querySelectorAll('.update-article').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    const item = this.closest('.admin-item');
+                    
+                    articlesData[index] = {
+                        id: articlesData[index].id,
+                        title: item.querySelector('.article-title-input').value,
+                        category: item.querySelector('.article-category-input').value,
+                        author: item.querySelector('.article-author-input').value,
+                        date: item.querySelector('.article-date-input').value,
+                        excerpt: item.querySelector('.article-excerpt-input').value,
+                        image: item.querySelector('.article-image-input').value
+                    };
+                    
+                    updateArticlesGrid();
+                    showToast('Article updated successfully', 'success');
+                });
+            });
+
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-article').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    articlesData.splice(index, 1);
+                    updateArticlesGrid();
+                    updateAdminArticles();
+                    showToast('Article deleted successfully', 'success');
+                });
+            });
+        }
+
+        // Add new doctor
+        document.getElementById('addDoctorBtn').addEventListener('click', function() {
+            const newDoctor = {
+                id: doctorsData.length + 1,
+                name: "New Doctor",
+                specialty: "Specialty",
+                hospital: "Hospital Name",
+                fee: 500,
+                rating: 4.5,
+                reviews: 0,
+                image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop"
+            };
+            doctorsData.push(newDoctor);
+            updateDoctorsGrid();
+            updateAdminDoctors();
+            showToast('New doctor added', 'success');
+        });
+
+        // Add new article
+        document.getElementById('addArticleBtn').addEventListener('click', function() {
+            const newArticle = {
+                id: articlesData.length + 1,
+                title: "New Health Article",
+                excerpt: "Article excerpt goes here...",
+                category: "Health",
+                author: "Dr. Author",
+                date: "Today",
+                image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop"
+            };
+            articlesData.push(newArticle);
+            updateArticlesGrid();
+            updateAdminArticles();
+            showToast('New article added', 'success');
+        });
+
+        // Save all button
+        document.getElementById('saveAllBtn').addEventListener('click', function() {
+            // Update stats from inputs
+            statsData = {
+                patients: parseInt(document.getElementById('statPatients').value),
+                doctors: parseInt(document.getElementById('statDoctors').value),
+                hospitals: parseInt(document.getElementById('statHospitals').value),
+                specialties: parseInt(document.getElementById('statSpecialties').value)
+            };
+            
+            saveAllData();
+        });
+
+        // ===== UI INTERACTIONS =====
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
             }
         });
+
+        // Mobile menu toggle
+        const navbarToggler = document.getElementById('navbarToggler');
+        const navbarMenu = document.getElementById('navbarMenu');
+
+        navbarToggler.addEventListener('click', function() {
+            navbarMenu.classList.toggle('show');
+            const icon = this.querySelector('i');
+            if (navbarMenu.classList.contains('show')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!navbarMenu.contains(event.target) && !navbarToggler.contains(event.target)) {
+                navbarMenu.classList.remove('show');
+                const icon = navbarToggler.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+        });
+
+        // Admin panel toggle
+        const adminToggle = document.getElementById('adminToggle');
+        const adminPanel = document.getElementById('adminPanel');
+        const closeAdmin = document.getElementById('closeAdmin');
+
+        adminToggle.addEventListener('click', function() {
+            adminPanel.classList.add('active');
+        });
+
+        closeAdmin.addEventListener('click', function() {
+            adminPanel.classList.remove('active');
+        });
+
+        // Close admin panel when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!adminPanel.contains(event.target) && !adminToggle.contains(event.target)) {
+                adminPanel.classList.remove('active');
+            }
+        });
+
+        // Search tabs
+        const searchTabs = document.querySelectorAll('.search-tab');
+        const searchInput = document.getElementById('searchInput');
+
+        searchTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                searchTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const tabType = this.getAttribute('data-tab');
+                switch(tabType) {
+                    case 'doctor':
+                        searchInput.placeholder = 'Search by doctor name, specialty, or condition';
+                        break;
+                    case 'hospital':
+                        searchInput.placeholder = 'Search by hospital name or location';
+                        break;
+                    case 'lab':
+                        searchInput.placeholder = 'Search for lab tests...';
+                        break;
+                }
+            });
+        });
+
+        // Search form submission
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const searchTerm = searchInput.value.trim();
+            const division = document.getElementById('divisionSelect').value;
+            const activeTab = document.querySelector('.search-tab.active').getAttribute('data-tab');
+            
+            if (!searchTerm && !division) {
+                showToast('Please enter search terms or select location', 'warning');
+                return;
+            }
+            
+            let searchUrl = '';
+            switch(activeTab) {
+                case 'doctor':
+                    searchUrl = '../doctors/doctor-search.html';
+                    break;
+                case 'hospital':
+                    searchUrl = '../hospitals/hospital-search.html';
+                    break;
+                case 'lab':
+                    searchUrl = '../laboratory/lab-test-search.html';
+                    break;
+            }
+            
+            const params = new URLSearchParams();
+            if (searchTerm) params.append('q', searchTerm);
+            if (division) params.append('division', division);
+            
+            if (params.toString()) {
+                searchUrl += '?' + params.toString();
+            }
+            
+            window.location.href = searchUrl;
+        });
+
+        // Book doctor function
+        function bookDoctor(doctorId) {
+            showToast('Redirecting to booking page...', 'info');
+            setTimeout(() => {
+                window.location.href = `../patients/appointment-booking.html?doctor=${doctorId}`;
+            }, 1000);
+        }
+
+        // Toast notification system
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Location cards click
+        document.querySelectorAll('.location-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const division = this.querySelector('h3').textContent;
+                window.location.href = `../doctors/doctor-search.html?division=${encodeURIComponent(division)}`;
+            });
+        });
+
+        // Load initial data
+        loadData();
     </script>
 </body>
-<div id="navbar-container"></div>
-
-<!-- Page content -->
-
-<div id="footer-container"></div>
-
-</html><footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <!-- About -->
-            <div class="footer-section">
-                <h3 class="footer-title">About MedFind</h3>
-                <p>Your trusted partner in finding the best healthcare providers in Bangladesh.</p>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="footer-section">
-                <h3 class="footer-title">Quick Links</h3>
-                <ul class="footer-links">
-                    <li><a href="../hospitals/hospital-list.html">Find Hospitals</a></li>
-                    <li><a href="../doctors/doctor-search.html">Find Doctors</a></li>
-                    <li><a href="../patients/appointment-booking.html">Book Appointment</a></li>
-                    <li><a href="../blog.html">Health Tips</a></li>
-                </ul>
-            </div>
-
-            <!-- Resources -->
-            <div class="footer-section">
-                <h3 class="footer-title">Resources</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Help Center</a></li>
-                    <li><a href="#">Contact Support</a></li>
+</html>
