@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bangladesh Hospital Map | Healthcare Division</title>
+  <link rel="stylesheet" href="viewmaps.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <i class="fas fa-hospital"></i>
+          <h1>Bangladesh <span>Hospital</span> Map</h1>
+        </div>
+        <p class="subtitle">Healthcare facilities across all divisions of Bangladesh</p>
+      </div>
+      <div class="header-right">
+        <div class="search-box">
+          <input type="text" placeholder="Search division..." id="searchInput">
+          <button id="searchBtn"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Map Section -->
+      <section class="map-section">
+        <div class="section-title">
+          <h2><i class="fas fa-map"></i> Bangladesh Division Healthcare Map</h2>
+          <p>Interactive map showing hospital distribution across all divisions</p>
+        </div>
+        
+        <div class="map-wrapper">
+          <div class="map-container">
+            <!-- Bangladesh Map with Exact Shape -->
+            <svg viewBox="0 0 1200 800" id="bangladesh-map" xmlns="http://www.w3.org/2000/svg">
+              <!-- Bangladesh Country Outline -->
+              <path class="country-outline" 
+                d="M300,150 L400,120 L500,180 L600,250 L700,300 L750,350 L800,400 L780,500 L750,550 L700,600 L650,550 L600,500 L550,450 L500,400 L450,350 L400,400 L350,350 L300,300 L250,350 L200,300 L150,250 L100,200 L150,150 Z"
+                fill="#e8f4fd" stroke="#1e88e5" stroke-width="3"/>
+              
+              <!-- Bay of Bengal Water -->
+              <path class="bay-water" 
+                d="M650,600 L750,650 L780,680 L800,700 L820,720 L850,740 L880,750 L900,730 L920,710 L950,700 L980,690 L1000,680 L1020,670 L1050,660 L1080,650 L1100,640"
+                fill="#e3f2fd" stroke="#90caf9" stroke-width="2" stroke-dasharray="5,3"/>
+              
+              <!-- Division Boundaries -->
+              <!-- Rangpur Division -->
+              <path id="Rangpur" class="division" 
+                d="M250,200 L350,180 L400,250 L380,300 L330,280 L280,250 Z"
+                data-hospitals="100" data-selected="10" data-other="50"/>
+              
+              <!-- Rajshahi Division -->
+              <path id="Rajshahi" class="division active" 
+                d="M380,300 L480,350 L520,400 L460,450 L400,400 L380,350 Z"
+                data-hospitals="80" data-selected="10" data-other="60"/>
+              
+              <!-- Mymensingh Division -->
+              <path id="Mymensingh" class="division" 
+                d="M520,400 L620,450 L580,500 L520,450 L500,420 Z"
+                data-hospitals="70" data-selected="10" data-other="50"/>
+              
+              <!-- Dhaka Division -->
+              <path id="Dhaka" class="division" 
+                d="M580,500 L680,550 L640,600 L580,550 L560,520 Z"
+                data-hospitals="50" data-selected="10" data-other="30"/>
+              
+              <!-- Sylhet Division -->
+              <path id="Sylhet" class="division" 
+                d="M680,350 L780,400 L740,450 L680,400 L660,370 Z"
+                data-hospitals="60" data-selected="10" data-other="40"/>
+              
+              <!-- Khulna Division -->
+              <path id="Khulna" class="division" 
+                d="M400,450 L500,500 L460,550 L400,500 L380,470 Z"
+                data-hospitals="40" data-selected="10" data-other="20"/>
+              
+              <!-- Barisal Division -->
+              <path id="Barisal" class="division" 
+                d="M560,600 L660,650 L620,700 L560,650 L540,620 Z"
+                data-hospitals="20" data-selected="10" data-other="10"/>
+              
+              <!-- Chittagong Division -->
+              <path id="Chittagong" class="division" 
+                d="M700,450 L800,500 L780,550 L720,500 L700,470 Z"
+                data-hospitals="30" data-selected="10" data-other="10"/>
+              
+              <!-- Division Labels -->
+              <g class="division-labels">
+                <!-- Rangpur -->
+                <g transform="translate(320, 240)">
+                  <circle cx="0" cy="0" r="20" fill="#2196f3" opacity="0.1"/>
+                  <text x="0" y="5" text-anchor="middle" class="division-label">Rangpur</text>
+                  <text x="0" y="22" text-anchor="middle" class="hospital-count">10 Selected</text>
+                </g>
+                
+                <!-- Rajshahi -->
+                <g transform="translate(450, 380)">
+                  <circle cx="0" cy="0" r="20" fill="#4caf50" opacity="0.1"/>
+                  <text x="0" y="5" text-anchor="middle" class="division-label active">Rajshahi</text>
+                  <text x="0" y="22" text-anchor="middle" class="hospital-count active">10 Selected</text>
+                </g>
+                
+                <!-- Mymensingh -->
+                <g transform="translate(560, 450)">
+                  <circle cx="0" cy="0" r="20" fill="#2196f3" opacity="0.1"/>
+                  <text x="0" y="5" text-anchor="middle" class="division-label">Mymensingh</text>
+                  <text x="0" y="22" text-anchor="middle" class="hospital-count">10 Selected</text>
+                </g>
+                
+                <!-- Dhaka -->
+                <g transform="translate(620, 550)">
+                  <circle cx="0" cy="0" r="20" fill="#2196f3" opacity="0.1"/>
+                  <text x="0" y="5" text-anchor="middle" class="division-label">Dhaka</text>
+                  <text x="0" y="22" text-anchor="middle" class="hospital-count">10 Selected</text>
+                </g>
+                
+                <!-- Sylhet -->
+                <g transform="translate(720, 400)">
+                  <circle cx="0" cy="0" r="20" fill="#2196f3" opacity="0.1"/>
+                  <text x="0" y="5" text-anchor="middle" class="division-label">Sylhet</text>
+                  <text x="0" y="22" text-anchor="middle" class="hospital-count">10 Selected</text>
+                </g>
+                
+                <!-- Khulna -->
+                <g transform="translate(440, 500)">
+                  <circle cx="0" cy="0" r="20" fill="#2196f3" opacity="0.1"/>
+                  <text x="0" y="5" text-anchor="middle" class="division-label">Khulna</text>
+                  <text x="0" y="22" text-anchor="middle" class="hospital-count">10 Selected</text>
+                </g>
+                
+                <!-- Barisal -->
+                <g transform="translate(600, 650)">
+                  <circle cx="0" cy="0" r="20" fill="#2196f3" opacity="0.1"/>
+                  <text x="0" y="5" text-anchor="middle" class="division-label">Barisal</text>
+                  <text x="0" y="22" text-anchor="middle" class="hospital-count">10 Selected</text>
+                </g>
+                
+                <!-- Chittagong -->
+                <g transform="translate(750, 500)">
+                  <circle cx="0" cy="0" r="20" fill="#2196f3" opacity="0.1"/>
+                  <text x="0" y="5" text-anchor="middle" class="division-label">Chittagong</text>
+                  <text x="0" y="22" text-anchor="middle" class="hospital-count">10 Selected</text>
+                </g>
+              </g>
+              
+              <!-- Legend -->
+              <g class="map-legend" transform="translate(900, 100)">
+                <rect width="250" height="180" rx="10" fill="white" stroke="#ddd" stroke-width="1" 
+                      filter="url(#shadow)"/>
+                
+                <!-- Legend Title -->
+                <text x="20" y="30" class="legend-title">Legend</text>
+                
+                <!-- Selected Division -->
+                <rect x="20" y="45" width="15" height="15" fill="#4caf50" rx="3"/>
+                <text x="45" y="58" class="legend-text">Selected Division</text>
+                
+                <!-- Other Division -->
+                <rect x="20" y="70" width="15" height="15" fill="#bbdefb" rx="3"/>
+                <text x="45" y="83" class="legend-text">Other Division</text>
+                
+                <!-- Hospital Location -->
+                <circle cx="27" y="100" r="6" fill="#ff9800"/>
+                <text x="45" y="105" class="legend-text">Hospital Location</text>
+                
+                <!-- Water Area -->
+                <path d="M20,115 L35,115" stroke="#90caf9" stroke-width="2" stroke-dasharray="5,3"/>
+                <text x="45" y="120" class="legend-text">Bay of Bengal</text>
+                
+                <!-- Division Key -->
+                <text x="20" y="145" class="legend-title">Each Division:</text>
+                <text x="20" y="165" class="legend-text">• Shows 10 Selected Hospitals</text>
+              </g>
+              
+              <!-- Filter for shadow -->
+              <defs>
+                <filter id="shadow">
+                  <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.1)"/>
+                </filter>
+              </defs>
+            </svg>
+            
+            <div id="map-tooltip" class="map-tooltip"></div>
+          </div>
+          
+          <!-- Statistics Panel -->
+          <div class="stats-panel">
+            <div class="panel-header">
+              <h3><i class="fas fa-chart-pie"></i> Division Statistics</h3>
+              <p>Hospital distribution across divisions</p>
+            </div>
+            
+            <div class="stats-table-container">
+              <table class="stats-table">
+                <thead>
+                  <tr>
+                    <th><i class="fas fa-map-marker-alt"></i> Division</th>
+                    <th><i class="fas fa-hospital"></i> Selected</th>
+                    <th><i class="fas fa-building"></i> Other</th>
+                    <th><i class="fas fa-chart-line"></i> Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><i class="fas fa-map-pin" style="color: #bbdefb;"></i> Rangpur</td>
+                    <td>10</td>
+                    <td>50</td>
+                    <td><strong>100</strong></td>
+                  </tr>
+                  <tr class="active-row">
+                    <td><i class="fas fa-map-pin" style="color: #4caf50;"></i> Rajshahi</td>
+                    <td>10</td>
+                    <td>60</td>
+                    <td><strong>80</strong></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fas fa-map-pin" style="color: #bbdefb;"></i> Mymensingh</td>
+                    <td>10</td>
+                    <td>50</td>
+                    <td><strong>70</strong></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fas fa-map-pin" style="color: #bbdefb;"></i> Dhaka</td>
+                    <td>10</td>
+                    <td>30</td>
+                    <td><strong>50</strong></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fas fa-map-pin" style="color: #bbdefb;"></i> Sylhet</td>
+                    <td>10</td>
+                    <td>40</td>
+                    <td><strong>60</strong></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fas fa-map-pin" style="color: #bbdefb;"></i> Khulna</td>
+                    <td>10</td>
+                    <td>20</td>
+                    <td><strong>40</strong></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fas fa-map-pin" style="color: #bbdefb;"></i> Barisal</td>
+                    <td>10</td>
+                    <td>10</td>
+                    <td><strong>20</strong></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fas fa-map-pin" style="color: #bbdefb;"></i> Chittagong</td>
+                    <td>10</td>
+                    <td>10</td>
+                    <td><strong>30</strong></td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr class="total-row">
+                    <td><strong>Total</strong></td>
+                    <td><strong>80</strong></td>
+                    <td><strong>270</strong></td>
+                    <td><strong>350</strong></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            
+            <div class="stats-summary">
+              <div class="summary-item">
+                <div class="summary-icon" style="background: #4caf50;">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="summary-text">
+                  <h4>80</h4>
+                  <p>Selected Hospitals</p>
+                </div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-icon" style="background: #2196f3;">
+                  <i class="fas fa-hospital"></i>
+                </div>
+                <div class="summary-text">
+                  <h4>350</h4>
+                  <p>Total Hospitals</p>
+                </div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-icon" style="background: #ff9800;">
+                  <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <div class="summary-text">
+                  <h4>8</h4>
+                  <p>Divisions</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Division Selector -->
+        <div class="division-selector">
+          <div class="selector-header">
+            <h4><i class="fas fa-map-signs"></i> Select Division</h4>
+            <p>Click to view hospital details</p>
+          </div>
+          <div class="division-buttons">
+            <button class="division-btn" data-division="Rangpur">
+              <span class="btn-icon"><i class="fas fa-map-pin"></i></span>
+              <span class="btn-text">Rangpur</span>
+              <span class="btn-stats">10 Selected</span>
+            </button>
+            <button class="division-btn active" data-division="Rajshahi">
+              <span class="btn-icon"><i class="fas fa-map-pin"></i></span>
+              <span class="btn-text">Rajshahi</span>
+              <span class="btn-stats">10 Selected</span>
+            </button>
+            <button class="division-btn" data-division="Mymensingh">
+              <span class="btn-icon"><i class="fas fa-map-pin"></i></span>
+              <span class="btn-text">Mymensingh</span>
+              <span class="btn-stats">10 Selected</span>
+            </button>
+            <button class="division-btn" data-division="Dhaka">
+              <span class="btn-icon"><i class="fas fa-map-pin"></i></span>
+              <span class="btn-text">Dhaka</span>
+              <span class="btn-stats">10 Selected</span>
+            </button>
+            <button class="division-btn" data-division="Sylhet">
+              <span class="btn-icon"><i class="fas fa-map-pin"></i></span>
+              <span class="btn-text">Sylhet</span>
+              <span class="btn-stats">10 Selected</span>
+            </button>
+            <button class="division-btn" data-division="Khulna">
+              <span class="btn-icon"><i class="fas fa-map-pin"></i></span>
+              <span class="btn-text">Khulna</span>
+              <span class="btn-stats">10 Selected</span>
+            </button>
+            <button class="division-btn" data-division="Barisal">
+              <span class="btn-icon"><i class="fas fa-map-pin"></i></span>
+              <span class="btn-text">Barisal</span>
+              <span class="btn-stats">10 Selected</span>
+            </button>
+            <button class="division-btn" data-division="Chittagong">
+              <span class="btn-icon"><i class="fas fa-map-pin"></i></span>
+              <span class="btn-text">Chittagong</span>
+              <span class="btn-stats">10 Selected</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hospitals Section -->
+      <section class="hospitals-section">
+        <div class="section-title">
+          <h2><i class="fas fa-hospital-alt"></i> Hospitals in <span id="selected-division">Rajshahi</span> Division</h2>
+          <p>Showing <span id="hospital-count">10</span> selected hospitals</p>
+        </div>
+        
+        <div class="hospital-filters">
+          <div class="filter-group">
+            <input type="text" placeholder="Search hospital name..." id="hospitalSearch">
+            <button class="filter-btn"><i class="fas fa-search"></i> Search</button>
+          </div>
+          <div class="filter-group">
+            <select id="hospitalType">
+              <option value="all">All Types</option>
+              <option value="government">Government</option>
+              <option value="private">Private</option>
+              <option value="specialized">Specialized</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="hospitals-grid" id="hospitalsGrid">
+          <!-- Hospitals will be loaded here -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <div class="footer-logo">
+            <i class="fas fa-heartbeat"></i>
+            <div>
+              <h3>Bangladesh Hospital Map</h3>
+              <p>Ministry of Health & Family Welfare</p>
+            </div>
+          </div>
+          <p class="footer-description">
+            A comprehensive directory of healthcare facilities across all divisions of Bangladesh.
+            Providing access to hospital information for better healthcare services.
+          </p>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Emergency Contacts</h4>
+          <div class="emergency-contacts">
+            <p><i class="fas fa-phone"></i> National Helpline: <strong>16263</strong></p>
+            <p><i class="fas fa-ambulance"></i> Ambulance: <strong>199</strong></p>
+            <p><i class="fas fa-first-aid"></i> Emergency: <strong>999</strong></p>
+          </div>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="#"><i class="fas fa-chevron-right"></i> All Divisions</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Government Hospitals</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Private Hospitals</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Emergency Services</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2023 Bangladesh Hospital Map. Ministry of Health & Family Welfare. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="viewmaps.js"></script>
+</body>
+</html>
