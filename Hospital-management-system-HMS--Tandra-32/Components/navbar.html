@@ -1,0 +1,265 @@
+<!-- ===================== NAVBAR START ===================== -->
+<nav class="navbar">
+    <div class="container">
+
+        <!-- Brand -->
+        <div class="navbar-brand">
+            <a href="../../index.html" class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <span>MedFind</span>
+            </a>
+        </div>
+
+        <!-- Menu -->
+        <div class="navbar-menu" id="navbarMenu">
+
+            <a href="../../index.html" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+
+            <!-- Find Dropdown -->
+            <div class="nav-dropdown">
+                <button class="nav-link dropdown-toggle">
+                    <i class="fas fa-search"></i>
+                    <span>Find</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+
+                <div class="dropdown-menu">
+                    <a href="../hospitals/hospital-list.html" class="dropdown-item">
+                        <i class="fas fa-hospital"></i> Hospitals
+                    </a>
+                    <a href="../doctors/doctor-search.html" class="dropdown-item">
+                        <i class="fas fa-user-md"></i> Doctors
+                    </a>
+                    <a href="../laboratory/lab-test-booking.html" class="dropdown-item">
+                        <i class="fas fa-flask"></i> Lab Tests
+                    </a>
+                </div>
+            </div>
+
+            <a href="../patients/appointment-booking.html" class="nav-link">
+                <i class="fas fa-calendar-check"></i>
+                <span>Appointments</span>
+            </a>
+
+            <a href="../blog.html" class="nav-link">
+                <i class="fas fa-newspaper"></i>
+                <span>Health Tips</span>
+            </a>
+
+            <!-- Account Dropdown -->
+            <div class="nav-dropdown">
+                <button class="nav-link dropdown-toggle">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Account</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+
+                <div class="dropdown-menu">
+                    <a href="../patients/patient-dashboard.html" class="dropdown-item">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <a href="../patients/medical-history.html" class="dropdown-item">
+                        <i class="fas fa-file-medical"></i> Medical History
+                    </a>
+                    <a href="../profile.html" class="dropdown-item">
+                        <i class="fas fa-user"></i> My Profile
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="../login.html" class="dropdown-item">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="../register.html" class="dropdown-item">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                </div>
+            </div>
+
+            <a href="../contact.html" class="nav-link">
+                <i class="fas fa-headset"></i>
+                <span>Support</span>
+            </a>
+        </div>
+
+        <!-- Mobile Toggler -->
+        <button class="navbar-toggler" id="navbarToggler">
+            <i class="fas fa-bars"></i>
+        </button>
+
+    </div>
+</nav>
+<!-- ===================== NAVBAR END ===================== -->
+
+
+<!-- ===================== NAVBAR CSS ===================== -->
+<style>
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    height:70px;
+    background:#ffffff;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.navbar .container{
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+/* Brand */
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:1.5rem;
+    font-weight:700;
+    color:#0d6efd;
+    text-decoration:none;
+}
+.logo i{font-size:2rem}
+
+/* Menu */
+.navbar-menu{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.nav-link{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:10px 14px;
+    border-radius:8px;
+    font-weight:500;
+    color:#444;
+    background:none;
+    border:none;
+    cursor:pointer;
+    text-decoration:none;
+    transition:.2s;
+}
+.nav-link:hover,
+.nav-link.active{
+    background:#e8f1ff;
+    color:#0d6efd;
+}
+
+/* Dropdown */
+.nav-dropdown{position:relative}
+
+.dropdown-toggle{
+    background:none;
+}
+
+.dropdown-menu{
+    position:absolute;
+    top:110%;
+    left:0;
+    min-width:200px;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+    padding:8px 0;
+    display:none;
+}
+
+.nav-dropdown.open .dropdown-menu{
+    display:block;
+    animation:fadeDown .2s ease;
+}
+
+.dropdown-item{
+    padding:10px 16px;
+    display:flex;
+    gap:10px;
+    color:#444;
+    text-decoration:none;
+    transition:.2s;
+}
+.dropdown-item:hover{
+    background:#f1f5ff;
+    color:#0d6efd;
+}
+
+.dropdown-divider{
+    height:1px;
+    background:#ddd;
+    margin:6px 0;
+}
+
+/* Toggler */
+.navbar-toggler{
+    display:none;
+    background:none;
+    border:none;
+    font-size:1.6rem;
+    cursor:pointer;
+}
+
+/* Mobile */
+@media(max-width:768px){
+    .navbar-menu{
+        position:fixed;
+        top:70px;
+        left:0;
+        right:0;
+        background:#fff;
+        flex-direction:column;
+        padding:15px;
+        display:none;
+    }
+    .navbar-menu.show{display:flex}
+    .navbar-toggler{display:block}
+    .dropdown-menu{
+        position:static;
+        box-shadow:none;
+        margin-top:5px;
+    }
+}
+
+@keyframes fadeDown{
+    from{opacity:0;transform:translateY(-10px)}
+    to{opacity:1;transform:translateY(0)}
+}
+</style>
+
+
+<!-- ===================== NAVBAR JS ===================== -->
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+
+    const toggler=document.getElementById("navbarToggler");
+    const menu=document.getElementById("navbarMenu");
+    const dropdowns=document.querySelectorAll(".nav-dropdown");
+
+    toggler.onclick=()=>menu.classList.toggle("show");
+
+    dropdowns.forEach(drop=>{
+        const btn=drop.querySelector(".dropdown-toggle");
+        btn.onclick=(e)=>{
+            e.stopPropagation();
+            dropdowns.forEach(d=>d.classList.remove("open"));
+            drop.classList.toggle("open");
+        }
+    });
+
+    document.onclick=()=>{
+        dropdowns.forEach(d=>d.classList.remove("open"));
+    };
+
+    // Active link
+    const current=location.pathname.split("/").pop();
+    document.querySelectorAll(".nav-link").forEach(link=>{
+        if(link.getAttribute("href")?.includes(current)){
+            link.classList.add("active");
+        }
+    });
+
+});
+</script>

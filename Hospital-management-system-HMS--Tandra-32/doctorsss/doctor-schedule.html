@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Schedule Management | MedFind</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #dbeafe;
+            --primary-soft: #3b82f6;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --accent: #8b5cf6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --info: #3b82f6;
+            --dark: #1e293b;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px rgba(0,0,0,0.15);
+            --shadow-2xl: 0 25px 50px rgba(0,0,0,0.2);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-2xl: 32px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea0d 0%, #764ba20d 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: var(--gray-600);
+            font-size: 16px;
+        }
+
+        /* Doctor Selector */
+        .doctor-selector {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            border: 1px solid var(--gray-200);
+        }
+
+        .doctor-selector label {
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+        }
+
+        .doctor-selector select {
+            flex: 1;
+            min-width: 400px;
+            padding: 15px 20px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--gray-800);
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .doctor-selector select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        /* Doctor Profile Card */
+        .doctor-profile-card {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: var(--radius-2xl);
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .doctor-profile-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .doctor-profile {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .doctor-avatar-large {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--primary);
+            box-shadow: var(--shadow-2xl);
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+
+        .doctor-info-large h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .doctor-info-large p {
+            font-size: 16px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .doctor-badges {
+            display: flex;
+            gap: 15px;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 14px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 25px;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: var(--transition);
+            border: 1px solid var(--gray-200);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-light);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        .stat-content h3 {
+            font-size: 14px;
+            color: var(--gray-600);
+            margin-bottom: 5px;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        /* Tabs */
+        .schedule-tabs {
+            background: white;
+            border-radius: 60px;
+            padding: 10px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            gap: 10px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            background: transparent;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+            background: var(--gray-50);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Weekly Calendar */
+        .calendar-container {
+            background: white;
+            border-radius: var(--radius-2xl);
+            padding: 30px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--gray-200);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .calendar-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--gray-200);
+            background: white;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .week-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .day-header {
+            text-align: center;
+            font-weight: 600;
+            color: var(--gray-600);
+            padding: 10px;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 15px;
+        }
+
+        .day-card {
+            background: var(--gray-50);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .day-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .day-card.available {
+            background: linear-gradient(145deg, #f0f9ff, white);
+        }
+
+        .day-card.emergency {
+            background: linear-gradient(145deg, #fee2e2, white);
+            border-left: 4px solid var(--danger);
+        }
+
+        .day-card.surgery {
+            background: linear-gradient(145deg, #f3e8ff, white);
+            border-left: 4px solid var(--accent);
+        }
+
+        .day-card.off {
+            background: #f3f4f6;
+            opacity: 0.7;
+        }
+
+        .day-card.leave {
+            background: linear-gradient(145deg, #fef3c7, white);
+            border-left: 4px solid var(--warning);
+        }
+
+        .day-number {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--gray-800);
+            margin-bottom: 5px;
+        }
+
+        .day-schedule {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .time-badge {
+            background: white;
+            padding: 6px 10px;
+            border-radius: var(--radius-lg);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .room-badge {
+            background: var(--gray-100);
+            padding: 6px 10px;
+            border-radius: var(--radius-lg);
+            font-size: 12px;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .slots-badge {
+            background: var(--primary-light);
+            padding: 6px 10px;
+            border-radius: var(--radius-lg);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .status-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .status-badge.available {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.emergency {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge.off {
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+
+        /* Time Slots Section */
+        .time-slots-section {
+            background: white;
+            border-radius: var(--radius-2xl);
+            padding: 30px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--gray-200);
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .date-picker {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--gray-50);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+
+        .date-picker input {
+            border: none;
+            background: transparent;
+            font-weight: 500;
+            color: var(--gray-700);
+            padding: 5px;
+        }
+
+        .slots-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .session-card {
+            background: var(--gray-50);
+            border-radius: var(--radius-xl);
+            padding: 25px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .session-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .session-header h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .session-time {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .slot-item {
+            padding: 12px;
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .slot-item.available {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #a7f3d0;
+        }
+
+        .slot-item.booked {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #fecaca;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .slot-item.break {
+            background: #f3f4f6;
+            color: #6b7280;
+            border: 2px dashed #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .slot-item.available:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        .slot-time {
+            font-weight: 700;
+        }
+
+        .slot-status {
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Appointment Types */
+        .appointment-types {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .type-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .type-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .type-color {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .type-name {
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 5px;
+        }
+
+        .type-duration {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: 10px;
+        }
+
+        .type-fee {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Queue Section */
+        .queue-section {
+            background: white;
+            border-radius: var(--radius-2xl);
+            padding: 30px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--gray-200);
+        }
+
+        .queue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .queue-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .queue-stat {
+            background: var(--gray-50);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .queue-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .queue-item {
+            display: grid;
+            grid-template-columns: 80px 1fr 100px 120px auto;
+            align-items: center;
+            gap: 20px;
+            padding: 15px 20px;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            transition: var(--transition);
+            border: 1px solid var(--gray-200);
+        }
+
+        .queue-item:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .queue-item.current {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+        }
+
+        .token {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        .patient-name {
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .appt-time {
+            color: var(--gray-600);
+            font-size: 14px;
+        }
+
+        .appt-type {
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary-light);
+        }
+
+        .status {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status.waiting {
+            color: var(--warning);
+        }
+
+        .status.in-progress {
+            color: var(--primary);
+        }
+
+        .status.completed {
+            color: var(--success);
+        }
+
+        /* Leave Section */
+        .leave-section {
+            background: white;
+            border-radius: var(--radius-2xl);
+            padding: 30px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--gray-200);
+        }
+
+        .leave-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .leave-card {
+            background: var(--gray-50);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            border-left: 4px solid var(--warning);
+        }
+
+        .leave-dates {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 10px;
+        }
+
+        .leave-reason {
+            color: var(--gray-600);
+            margin-bottom: 10px;
+        }
+
+        .leave-alternative {
+            font-size: 14px;
+            color: var(--gray-500);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .leave-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #d1fae5;
+            color: #065f46;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* Holidays */
+        .holidays-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .holiday-item {
+            background: var(--gray-50);
+            padding: 15px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            border: 1px solid var(--gray-200);
+        }
+
+        .holiday-date {
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 5px;
+        }
+
+        .holiday-name {
+            font-size: 14px;
+            color: var(--gray-600);
+            margin-bottom: 10px;
+        }
+
+        .holiday-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            background: #fee2e2;
+            color: #991b1b;
+            border-radius: 40px;
+            display: inline-block;
+        }
+
+        /* Emergency Contact */
+        .emergency-card {
+            background: linear-gradient(135deg, #fee2e2, #fff5f5);
+            border-radius: var(--radius-xl);
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid #fecaca;
+        }
+
+        .emergency-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .emergency-header i {
+            font-size: 32px;
+            color: var(--danger);
+        }
+
+        .emergency-header h4 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--danger);
+        }
+
+        .emergency-phone {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--danger);
+            margin-bottom: 15px;
+        }
+
+        .oncall-doctors {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .oncall-item {
+            background: rgba(255,255,255,0.5);
+            padding: 15px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .oncall-item i {
+            font-size: 24px;
+            color: var(--danger);
+        }
+
+        .oncall-info h5 {
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 5px;
+        }
+
+        .oncall-info p {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        /* MODAL POPUP */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius-2xl);
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: modalSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+        }
+
+        .modal-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            padding: 25px 30px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-btn-outline {
+            background: transparent;
+            border: 2px solid var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .modal-btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Booking Details in Modal */
+        .booking-details {
+            background: var(--gray-50);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed var(--gray-200);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .detail-value {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .patient-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px 15px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            font-size: 15px;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .slots-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .appointment-types {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .holidays-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .doctor-selector select {
+                min-width: 100%;
+            }
+            
+            .doctor-profile {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .week-days,
+            .calendar-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .slots-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .appointment-types {
+                grid-template-columns: 1fr;
+            }
+            
+            .queue-item {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .leave-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .holidays-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .oncall-doctors {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Doctor Schedule Management</h1>
+            <p>Complete schedule management system with real-time updates and booking</p>
+        </div>
+
+        <!-- Doctor Selector -->
+        <div class="doctor-selector">
+            <label><i class="fas fa-user-md"></i> Select Doctor:</label>
+            <select id="doctorSelect">
+                <option value="1">Prof. Dr. Ahmed Hossain - Cardiologist</option>
+                <option value="2">Dr. Fatima Begum - Gynaecologist</option>
+                <option value="3">Prof. Dr. Kamal Uddin - Neurosurgeon</option>
+                <option value="4">Dr. Shahidul Islam - Orthopedic Surgeon</option>
+                <option value="5">Dr. Nazma Akhter - Pediatrician</option>
+            </select>
+        </div>
+
+        <!-- Doctor Profile -->
+        <div class="doctor-profile-card" id="doctorProfile">
+            <div class="doctor-profile">
+                <div class="doctor-avatar-large">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <div class="doctor-info-large">
+                    <h2 id="doctorName">Prof. Dr. Ahmed Hossain</h2>
+                    <p><i class="fas fa-star" style="color: #fbbf24;"></i> Senior Cardiologist | 25+ Years Experience</p>
+                    <div class="doctor-badges">
+                        <span class="badge"><i class="fas fa-hospital"></i> Rajshahi Medical College</span>
+                        <span class="badge"><i class="fas fa-map-marker-alt"></i> Room 205, Cardio Dept</span>
+                        <span class="badge"><i class="fas fa-clock"></i> Available Today</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Working Days</h3>
+                    <div class="stat-number">6 <span class="stat-label">/week</span></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Weekly Hours</h3>
+                    <div class="stat-number">42 <span class="stat-label">hours</span></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Today's Patients</h3>
+                    <div class="stat-number">15/20 <span class="stat-label">slots</span></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Avg. Wait Time</h3>
+                    <div class="stat-number">15 <span class="stat-label">minutes</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="schedule-tabs">
+            <button class="tab-btn active" onclick="showTab('weekly')">
+                <i class="fas fa-calendar-week"></i> Weekly Schedule
+            </button>
+            <button class="tab-btn" onclick="showTab('timeslots')">
+                <i class="fas fa-clock"></i> Time Slots
+            </button>
+            <button class="tab-btn" onclick="showTab('queue')">
+                <i class="fas fa-users"></i> Queue
+            </button>
+            <button class="tab-btn" onclick="showTab('leave')">
+                <i class="fas fa-calendar-times"></i> Leave & Holidays
+            </button>
+        </div>
+
+        <!-- Weekly Schedule Tab -->
+        <div id="weekly" class="tab-content active">
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h3><i class="fas fa-calendar-alt" style="color: var(--primary);"></i> Weekly Schedule - December 2024</h3>
+                    <div class="calendar-nav">
+                        <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                        <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="week-days">
+                    <div class="day-header">Sunday</div>
+                    <div class="day-header">Monday</div>
+                    <div class="day-header">Tuesday</div>
+                    <div class="day-header">Wednesday</div>
+                    <div class="day-header">Thursday</div>
+                    <div class="day-header">Friday</div>
+                    <div class="day-header">Saturday</div>
+                </div>
+
+                <div class="calendar-grid">
+                    <!-- Sunday -->
+                    <div class="day-card available" onclick="openBookingModal('Sunday', '15 Dec 2024')">
+                        <div class="day-number">15</div>
+                        <div class="day-schedule">
+                            <div class="time-badge"><i class="fas fa-clock"></i> 9:00 AM - 2:00 PM</div>
+                            <div class="room-badge"><i class="fas fa-door-open"></i> Room 205</div>
+                            <div class="slots-badge">15/20 Slots Booked</div>
+                            <span class="status-badge available">5 Slots Left</span>
+                        </div>
+                    </div>
+
+                    <!-- Monday -->
+                    <div class="day-card available" onclick="openBookingModal('Monday', '16 Dec 2024')">
+                        <div class="day-number">16</div>
+                        <div class="day-schedule">
+                            <div class="time-badge"><i class="fas fa-clock"></i> 4:00 PM - 9:00 PM</div>
+                            <div class="room-badge"><i class="fas fa-door-open"></i> Room 205</div>
+                            <div class="slots-badge">8/15 Slots Booked</div>
+                            <span class="status-badge available">7 Slots Left</span>
+                        </div>
+                    </div>
+
+                    <!-- Tuesday -->
+                    <div class="day-card emergency" onclick="openEmergencyModal()">
+                        <div class="day-number">17</div>
+                        <div class="day-schedule">
+                            <div class="time-badge"><i class="fas fa-clock"></i> 8:00 PM - 8:00 AM</div>
+                            <div class="room-badge"><i class="fas fa-ambulance"></i> Emergency Unit</div>
+                            <span class="status-badge emergency">Emergency Duty</span>
+                        </div>
+                    </div>
+
+                    <!-- Wednesday -->
+                    <div class="day-card surgery" onclick="openSurgeryModal()">
+                        <div class="day-number">18</div>
+                        <div class="day-schedule">
+                            <div class="time-badge"><i class="fas fa-clock"></i> 10:00 AM - 5:00 PM</div>
+                            <div class="room-badge"><i class="fas fa-procedures"></i> OT Room 3</div>
+                            <div class="slots-badge">2/3 Surgeries</div>
+                            <span class="status-badge emergency">Surgery Day</span>
+                        </div>
+                    </div>
+
+                    <!-- Thursday -->
+                    <div class="day-card off">
+                        <div class="day-number">19</div>
+                        <div class="day-schedule">
+                            <div class="time-badge"><i class="fas fa-clock"></i> Weekly Holiday</div>
+                            <span class="status-badge off">Off Day</span>
+                        </div>
+                    </div>
+
+                    <!-- Friday -->
+                    <div class="day-card available" onclick="openBookingModal('Friday', '20 Dec 2024')">
+                        <div class="day-number">20</div>
+                        <div class="day-schedule">
+                            <div class="time-badge"><i class="fas fa-clock"></i> 9:00 AM - 1:00 PM</div>
+                            <div class="room-badge"><i class="fas fa-door-open"></i> Room 205</div>
+                            <div class="slots-badge">5/10 Slots Booked</div>
+                            <span class="status-badge available">5 Slots Left</span>
+                        </div>
+                    </div>
+
+                    <!-- Saturday -->
+                    <div class="day-card emergency" onclick="openEmergencyModal()">
+                        <div class="day-number">21</div>
+                        <div class="day-schedule">
+                            <div class="time-badge"><i class="fas fa-clock"></i> 8:00 AM - 8:00 PM</div>
+                            <div class="room-badge"><i class="fas fa-ambulance"></i> Emergency Unit</div>
+                            <span class="status-badge emergency">Emergency Duty</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointment Types -->
+            <div class="appointment-types">
+                <div class="type-card" onclick="selectAppointmentType('New Patient')">
+                    <div class="type-color" style="background: #3b82f6;"></div>
+                    <div class="type-name">New Patient</div>
+                    <div class="type-duration">30 minutes</div>
+                    <div class="type-fee">৳ 1000</div>
+                </div>
+                <div class="type-card" onclick="selectAppointmentType('Follow-up')">
+                    <div class="type-color" style="background: #10b981;"></div>
+                    <div class="type-name">Follow-up</div>
+                    <div class="type-duration">15 minutes</div>
+                    <div class="type-fee">৳ 500</div>
+                </div>
+                <div class="type-card" onclick="selectAppointmentType('Emergency')">
+                    <div class="type-color" style="background: #ef4444;"></div>
+                    <div class="type-name">Emergency</div>
+                    <div class="type-duration">As needed</div>
+                    <div class="type-fee">৳ 1500</div>
+                </div>
+                <div class="type-card" onclick="selectAppointmentType('Video Consult')">
+                    <div class="type-color" style="background: #8b5cf6;"></div>
+                    <div class="type-name">Video Consult</div>
+                    <div class="type-duration">20 minutes</div>
+                    <div class="type-fee">৳ 800</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Time Slots Tab -->
+        <div id="timeslots" class="tab-content">
+            <div class="time-slots-section">
+                <div class="section-title">
+                    <h3><i class="fas fa-clock" style="color: var(--primary);"></i> Available Time Slots - Sunday, 15 Dec 2024</h3>
+                    <div class="date-picker">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="date" value="2024-12-15">
+                    </div>
+                </div>
+
+                <div class="slots-container">
+                    <!-- Morning Session -->
+                    <div class="session-card">
+                        <div class="session-header">
+                            <h4><i class="fas fa-sun"></i> Morning Session</h4>
+                            <span class="session-time">9:00 AM - 2:00 PM</span>
+                        </div>
+                        <div class="slots-grid">
+                            <div class="slot-item booked" onclick="showSlotDetails('9:00 AM', 'booked')">
+                                <span class="slot-time">9:00 AM</span>
+                                <span class="slot-status">Booked</span>
+                            </div>
+                            <div class="slot-item available" onclick="showSlotDetails('9:15 AM', 'available')">
+                                <span class="slot-time">9:15 AM</span>
+                                <span class="slot-status">Available</span>
+                            </div>
+                            <div class="slot-item available" onclick="showSlotDetails('9:30 AM', 'available')">
+                                <span class="slot-time">9:30 AM</span>
+                                <span class="slot-status">Available</span>
+                            </div>
+                            <div class="slot-item booked" onclick="showSlotDetails('9:45 AM', 'booked')">
+                                <span class="slot-time">9:45 AM</span>
+                                <span class="slot-status">Booked</span>
+                            </div>
+                            <div class="slot-item available" onclick="showSlotDetails('10:00 AM', 'available')">
+                                <span class="slot-time">10:00 AM</span>
+                                <span class="slot-status">Available</span>
+                            </div>
+                            <div class="slot-item available" onclick="showSlotDetails('10:15 AM', 'available')">
+                                <span class="slot-time">10:15 AM</span>
+                                <span class="slot-status">Available</span>
+                            </div>
+                            <div class="slot-item booked" onclick="showSlotDetails('10:30 AM', 'booked')">
+                                <span class="slot-time">10:30 AM</span>
+                                <span class="slot-status">Booked</span>
+                            </div>
+                            <div class="slot-item break">
+                                <span class="slot-time">1:00 PM</span>
+                                <span class="slot-status">Break</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Afternoon Session -->
+                    <div class="session-card">
+                        <div class="session-header">
+                            <h4><i class="fas fa-cloud-sun"></i> Afternoon Session</h4>
+                            <span class="session-time">3:00 PM - 6:00 PM</span>
+                        </div>
+                        <div class="slots-grid">
+                            <div class="slot-item available" onclick="showSlotDetails('3:00 PM', 'available')">
+                                <span class="slot-time">3:00 PM</span>
+                                <span class="slot-status">Available</span>
+                            </div>
+                            <div class="slot-item available" onclick="showSlotDetails('3:20 PM', 'available')">
+                                <span class="slot-time">3:20 PM</span>
+                                <span class="slot-status">Available</span>
+                            </div>
+                            <div class="slot-item booked" onclick="showSlotDetails('3:40 PM', 'booked')">
+                                <span class="slot-time">3:40 PM</span>
+                                <span class="slot-status">Booked</span>
+                            </div>
+                            <div class="slot-item available" onclick="showSlotDetails('4:00 PM', 'available')">
+                                <span class="slot-time">4:00 PM</span>
+                                <span class="slot-status">Available</span>
+                            </div>
+                            <div class="slot-item break">
+                                <span class="slot-time">4:30 PM</span>
+                                <span class="slot-status">Break</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evening Session -->
+                    <div class="session-card">
+                        <div class="session-header">
+                            <h4><i class="fas fa-moon"></i> Evening Session</h4>
+                            <span class="session-time">6:30 PM - 9:30 PM</span>
+                        </div>
+                        <div class="slots-grid">
+                            <div class="slot-item available" onclick="showSlotDetails('6:30 PM', 'available')">
+                                <span class="slot-time">6:30 PM</span>
+                                <span class="slot-status">Available</span>
+                            </div>
+                            <div class="slot-item available" onclick="showSlotDetails('6:45 PM', 'available')">
+                                <span class="slot-time">6:45 PM</span>
+                                <span class="slot-status">Available</span>
+                            </div>
+                            <div class="slot-item booked" onclick="showSlotDetails('7:00 PM', 'booked')">
+                                <span class="slot-time">7:00 PM</span>
+                                <span class="slot-status">Booked</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Queue Tab -->
+        <div id="queue" class="tab-content">
+            <div class="queue-section">
+                <div class="queue-header">
+                    <h3><i class="fas fa-users" style="color: var(--primary);"></i> Today's Queue - Sunday, 15 Dec 2024</h3>
+                    <div class="queue-stats">
+                        <span class="queue-stat"><i class="fas fa-hourglass-half"></i> Avg Wait: 15 min</span>
+                        <span class="queue-stat"><i class="fas fa-user-clock"></i> Waiting: 12</span>
+                        <span class="queue-stat"><i class="fas fa-arrow-right"></i> Next: C002</span>
+                    </div>
+                </div>
+
+                <div class="queue-list">
+                    <div class="queue-item current">
+                        <span class="token">C001</span>
+                        <span class="patient-name">Md. Rahim Khan</span>
+                        <span class="appt-time">9:00 AM</span>
+                        <span class="appt-type">New Patient</span>
+                        <span class="status in-progress">In Progress</span>
+                    </div>
+                    <div class="queue-item">
+                        <span class="token">C002</span>
+                        <span class="patient-name">Fatema Begum</span>
+                        <span class="appt-time">9:15 AM</span>
+                        <span class="appt-type">Follow-up</span>
+                        <span class="status waiting">Waiting</span>
+                    </div>
+                    <div class="queue-item">
+                        <span class="token">C003</span>
+                        <span class="patient-name">Shahidul Islam</span>
+                        <span class="appt-time">9:30 AM</span>
+                        <span class="appt-type">New Patient</span>
+                        <span class="status waiting">Waiting</span>
+                    </div>
+                    <div class="queue-item">
+                        <span class="token">C004</span>
+                        <span class="patient-name">Nasima Akhter</span>
+                        <span class="appt-time">9:45 AM</span>
+                        <span class="appt-type">Video Consult</span>
+                        <span class="status waiting">Waiting</span>
+                    </div>
+                    <div class="queue-item">
+                        <span class="token">C005</span>
+                        <span class="patient-name">Abdur Rahim</span>
+                        <span class="appt-time">10:00 AM</span>
+                        <span class="appt-type">Follow-up</span>
+                        <span class="status waiting">Waiting</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Contact -->
+            <div class="emergency-card">
+                <div class="emergency-header">
+                    <i class="fas fa-ambulance"></i>
+                    <h4>Emergency Contact (Off Hours)</h4>
+                </div>
+                <div class="emergency-phone">
+                    <i class="fas fa-phone-alt"></i> 0721-761777
+                </div>
+                <div class="oncall-doctors">
+                    <div class="oncall-item">
+                        <i class="fas fa-user-md"></i>
+                        <div class="oncall-info">
+                            <h5>Dr. Shahidul Islam</h5>
+                            <p>Cardiology · 01711-111111</p>
+                        </div>
+                    </div>
+                    <div class="oncall-item">
+                        <i class="fas fa-user-md"></i>
+                        <div class="oncall-info">
+                            <h5>Dr. Nazma Akhter</h5>
+                            <p>Cardiology · 01711-222222</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leave & Holidays Tab -->
+        <div id="leave" class="tab-content">
+            <div class="leave-section">
+                <h3 style="margin-bottom: 20px;"><i class="fas fa-calendar-times" style="color: var(--primary);"></i> Upcoming Leaves</h3>
+                
+                <div class="leave-grid">
+                    <div class="leave-card">
+                        <div class="leave-dates">25-28 December 2024</div>
+                        <div class="leave-reason">Christmas Holiday</div>
+                        <div class="leave-alternative">
+                            <i class="fas fa-user-md"></i>
+                            Alternative: Dr. Kamal Uddin
+                        </div>
+                        <span class="leave-badge">Approved</span>
+                    </div>
+                    
+                    <div class="leave-card">
+                        <div class="leave-dates">15-20 January 2025</div>
+                        <div class="leave-reason">International Cardiology Summit - Singapore</div>
+                        <div class="leave-alternative">
+                            <i class="fas fa-user-md"></i>
+                            Alternative: Dr. Shahidul Islam
+                        </div>
+                        <span class="leave-badge">Approved</span>
+                    </div>
+                </div>
+
+                <h3 style="margin: 30px 0 20px;"><i class="fas fa-gift" style="color: var(--primary);"></i> Government Holidays</h3>
+                
+                <div class="holidays-grid">
+                    <div class="holiday-item">
+                        <div class="holiday-date">16 Dec</div>
+                        <div class="holiday-name">Victory Day</div>
+                        <span class="holiday-status">Closed</span>
+                    </div>
+                    <div class="holiday-item">
+                        <div class="holiday-date">25 Dec</div>
+                        <div class="holiday-name">Christmas Day</div>
+                        <span class="holiday-status">Closed</span>
+                    </div>
+                    <div class="holiday-item">
+                        <div class="holiday-date">1 Jan</div>
+                        <div class="holiday-name">New Year's Day</div>
+                        <span class="holiday-status">Closed</span>
+                    </div>
+                    <div class="holiday-item">
+                        <div class="holiday-date">21 Feb</div>
+                        <div class="holiday-name">Language Day</div>
+                        <span class="holiday-status">Closed</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; background: var(--gray-50); padding: 15px; border-radius: var(--radius-lg);">
+                    <p><i class="fas fa-info-circle" style="color: var(--primary);"></i> Weekly Holiday: Thursday</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOKING MODAL -->
+    <div class="modal-overlay" id="bookingModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-plus"></i> Book Appointment</h3>
+                <button class="modal-close" onclick="closeModal('bookingModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="booking-details" id="bookingDetails">
+                    <div class="detail-row">
+                        <span class="detail-label">Doctor:</span>
+                        <span class="detail-value" id="modalDoctorName">Prof. Dr. Ahmed Hossain</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Date:</span>
+                        <span class="detail-value" id="modalDate">Sunday, 15 Dec 2024</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Time:</span>
+                        <span class="detail-value" id="modalTime">9:15 AM</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Duration:</span>
+                        <span class="detail-value">30 minutes</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Room:</span>
+                        <span class="detail-value">Cardio Room 205</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Fee:</span>
+                        <span class="detail-value" style="color: var(--primary); font-size: 20px;">৳ 1000</span>
+                    </div>
+                </div>
+
+                <div class="patient-form">
+                    <h4 style="margin-bottom: 15px;">Patient Information</h4>
+                    
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" placeholder="Enter patient's full name" id="patientName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" placeholder="01XXXXXXXXX" id="patientPhone">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Appointment Type *</label>
+                        <select id="appointmentType">
+                            <option value="new">New Patient Consultation (30 min - ৳1000)</option>
+                            <option value="followup">Follow-up Visit (15 min - ৳500)</option>
+                            <option value="emergency">Emergency Consultation (As needed - ৳1500)</option>
+                            <option value="video">Video Consultation (20 min - ৳800)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Reason for Visit</label>
+                        <textarea rows="3" placeholder="Briefly describe your symptoms or reason for consultation..." id="visitReason"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-outline" onclick="closeModal('bookingModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="confirmBooking()">
+                    <i class="fas fa-check"></i> Confirm Booking
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EMERGENCY MODAL -->
+    <div class="modal-overlay" id="emergencyModal">
+        <div class="modal">
+            <div class="modal-header" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                <h3><i class="fas fa-ambulance"></i> Emergency Duty Information</h3>
+                <button class="modal-close" onclick="closeModal('emergencyModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: var(--danger);"></i>
+                    <h4 style="margin: 15px 0; color: var(--danger);">Doctor is on Emergency Duty</h4>
+                </div>
+                
+                <div class="booking-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Date:</span>
+                        <span class="detail-value">Tuesday, 17 Dec 2024</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Time:</span>
+                        <span class="detail-value">8:00 PM - 8:00 AM (Next Day)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Location:</span>
+                        <span class="detail-value">Emergency Unit, Ground Floor</span>
+                    </div>
+                </div>
+                
+                <div style="margin: 20px 0; padding: 20px; background: #fee2e2; border-radius: var(--radius-lg);">
+                    <h5 style="margin-bottom: 10px; color: var(--danger);">For Emergency Cases:</h5>
+                    <p style="display: flex; align-items: center; gap: 10px; font-size: 18px;">
+                        <i class="fas fa-phone-alt" style="color: var(--danger);"></i>
+                        <strong>Call: 0721-761777</strong>
+                    </p>
+                    <p style="margin-top: 10px;">Or visit the emergency unit directly. 24/7 service available.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-primary" onclick="closeModal('emergencyModal')">
+                    <i class="fas fa-check"></i> Understood
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SURGERY MODAL -->
+    <div class="modal-overlay" id="surgeryModal">
+        <div class="modal">
+            <div class="modal-header" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                <h3><i class="fas fa-procedures"></i> Surgery Day Information</h3>
+                <button class="modal-close" onclick="closeModal('surgeryModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <i class="fas fa-syringe" style="font-size: 48px; color: var(--accent);"></i>
+                    <h4 style="margin: 15px 0; color: var(--accent);">Doctor is in Surgery</h4>
+                </div>
+                
+                <div class="booking-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Date:</span>
+                        <span class="detail-value">Wednesday, 18 Dec 2024</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Time:</span>
+                        <span class="detail-value">10:00 AM - 5:00 PM</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Location:</span>
+                        <span class="detail-value">OT Room 3, 2nd Floor</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Surgeries:</span>
+                        <span class="detail-value">2/3 Scheduled</span>
+                    </div>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <h5 style="margin-bottom: 10px;">Scheduled Surgeries:</h5>
+                    <ul style="list-style: none;">
+                        <li style="padding: 10px; background: var(--gray-50); margin-bottom: 5px; border-radius: var(--radius-md);">
+                            <strong>10:30 AM</strong> - CABG (Coronary Artery Bypass)
+                        </li>
+                        <li style="padding: 10px; background: var(--gray-50); margin-bottom: 5px; border-radius: var(--radius-md);">
+                            <strong>2:00 PM</strong> - Angioplasty
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-primary" onclick="closeModal('surgeryModal')">
+                    <i class="fas fa-check"></i> OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUCCESS TOAST -->
+    <div class="modal-overlay" id="successToast" style="align-items: flex-start; justify-content: flex-end; padding: 30px; background: transparent;">
+        <div style="background: white; border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-2xl); border-left: 4px solid var(--success); max-width: 350px; animation: slideInRight 0.3s ease;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <i class="fas fa-check-circle" style="font-size: 28px; color: var(--success);"></i>
+                <div>
+                    <h4 style="font-weight: 600; margin-bottom: 5px;">Success!</h4>
+                    <p id="toastMessage" style="color: var(--gray-600); font-size: 14px;">Appointment booked successfully</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switching
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Modal Functions
+        function openBookingModal(day, date) {
+            document.getElementById('modalDate').textContent = day + ', ' + date;
+            document.getElementById('bookingModal').classList.add('active');
+        }
+
+        function openEmergencyModal() {
+            document.getElementById('emergencyModal').classList.add('active');
+        }
+
+        function openSurgeryModal() {
+            document.getElementById('surgeryModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showSlotDetails(time, status) {
+            if (status === 'available') {
+                document.getElementById('modalTime').textContent = time;
+                document.getElementById('bookingModal').classList.add('active');
+            } else if (status === 'booked') {
+                alert('This slot is already booked. Please select another time.');
+            }
+        }
+
+        function selectAppointmentType(type) {
+            document.getElementById('appointmentType').value = type.toLowerCase();
+            document.getElementById('bookingModal').classList.add('active');
+        }
+
+        function confirmBooking() {
+            const name = document.getElementById('patientName').value;
+            const phone = document.getElementById('patientPhone').value;
+            
+            if (!name || !phone) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Close booking modal
+            closeModal('bookingModal');
+            
+            // Show success toast
+            document.getElementById('toastMessage').textContent = `Appointment booked for ${name}`;
+            document.getElementById('successToast').classList.add('active');
+            
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                document.getElementById('successToast').classList.remove('active');
+            }, 3000);
+            
+            // Reset form
+            document.getElementById('patientName').value = '';
+            document.getElementById('patientPhone').value = '';
+            document.getElementById('visitReason').value = '';
+        }
+
+        // Doctor change handler
+        document.getElementById('doctorSelect').addEventListener('change', function() {
+            const doctors = {
+                '1': 'Prof. Dr. Ahmed Hossain - Cardiologist',
+                '2': 'Dr. Fatima Begum - Gynaecologist',
+                '3': 'Prof. Dr. Kamal Uddin - Neurosurgeon',
+                '4': 'Dr. Shahidul Islam - Orthopedic Surgeon',
+                '5': 'Dr. Nazma Akhter - Pediatrician'
+            };
+            
+            document.getElementById('doctorName').textContent = doctors[this.value];
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('active');
+            }
+        });
+
+        // Keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

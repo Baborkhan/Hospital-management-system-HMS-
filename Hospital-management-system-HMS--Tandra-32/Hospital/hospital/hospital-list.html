@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Hospitals - MedFind</title>
+    <link rel="stylesheet" href="../../assetsCSS/base.css">
+    <link rel="stylesheet" href="../../assetsCSS/layout.css">
+    <link rel="stylesheet" href="../../assetsCSS/components.css">
+    <link rel="stylesheet" href="../../assetsCSS/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Hospital List Page Styles */
+        .hospital-list-page {
+            padding: 2rem 0;
+            background: #f9fafb;
+            min-height: calc(100vh - 70px);
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Search and Filters */
+        .search-filters {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+        
+        .filter-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 0.625rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: #374151;
+            background: white;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .search-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+        
+        /* Hospital Grid */
+        .hospitals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .hospital-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .hospital-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hospital-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hospital-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .hospital-info {
+            padding: 1.5rem;
+        }
+        
+        .hospital-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hospital-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stars {
+            color: #fbbf24;
+        }
+        
+        .rating-text {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .hospital-details {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+        }
+        
+        .hospital-specialties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .specialty-tag {
+            background: #dbeafe;
+            color: #2563eb;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .hospital-actions {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* Pagination */
+        .pagination,
+        .page-list {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            list-style: none;
+            padding: 0;
+        }
+        
+        .page-item {
+            list-style: none;
+        }
+        
+        .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            color: #374151;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        
+        .page-link:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+        
+        .page-item.active .page-link {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+        }
+        
+        /* Map View */
+        .map-container {
+            height: 400px;
+            background: #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+        }
+        
+        .view-toggle {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .view-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 8px;
+            color: #374151;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .view-btn.active {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #d1d5db;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hospitals-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-actions {
+                flex-direction: column;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-container"></div>
+    
+    <main class="hospital-list-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Find Hospitals in Bangladesh</h1>
+                <p class="page-subtitle">Search for hospitals by location, specialty, or facilities. Find the best healthcare providers near you.</p>
+            </div>
+            
+            <!-- View Toggle -->
+            <div class="view-toggle">
+                <button class="view-btn active" id="listViewBtn">
+                    <i class="fas fa-list"></i>
+                    List View
+                </button>
+                <button class="view-btn" id="mapViewBtn">
+                    <i class="fas fa-map"></i>
+                    Map View
+                </button>
+            </div>
+            
+            <!-- Map View (Hidden by default) -->
+            <div class="map-container" id="mapView" style="display: none;">
+                <div class="text-center">
+                    <i class="fas fa-map-marker-alt fa-3x mb-3"></i>
+                    <h3>Hospital Map View</h3>
+                    <p>Interactive map showing hospital locations</p>
+                    <p class="text-small">(In production, integrate with Google Maps API)</p>
+                </div>
+            </div>
+            
+            <!-- List View -->
+            <div id="listView">
+                <!-- Search and Filters -->
+                <div class="search-filters">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label class="filter-label">Location</label>
+                            <select class="filter-select" id="locationFilter">
+                                <option value="">All Locations</option>
+                                <option value="dhaka">Dhaka</option>
+                                <option value="chittagong">Chittagong</option>
+                                <option value="sylhet">Sylhet</option>
+                                <option value="khulna">Khulna</option>
+                                <option value="rajshahi">Rajshahi</option>
+                                <option value="barisal">Barisal</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Hospital Type</label>
+                            <select class="filter-select" id="typeFilter">
+                                <option value="">All Types</option>
+                                <option value="government">Government</option>
+                                <option value="private">Private</option>
+                                <option value="specialized">Specialized</option>
+                                <option value="diagnostic">Diagnostic Center</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Specialties</label>
+                            <select class="filter-select" id="specialtyFilter">
+                                <option value="">All Specialties</option>
+                                <option value="cardiology">Cardiology</option>
+                                <option value="neurology">Neurology</option>
+                                <option value="orthopedics">Orthopedics</option>
+                                <option value="pediatrics">Pediatrics</option>
+                                <option value="gynecology">Gynecology</option>
+                                <option value="general">General Medicine</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Facilities</label>
+                            <select class="filter-select" id="facilityFilter">
+                                <option value="">All Facilities</option>
+                                <option value="emergency">24/7 Emergency</option>
+                                <option value="icu">ICU Available</option>
+                                <option value="ambulance">Ambulance Service</option>
+                                <option value="pharmacy">In-house Pharmacy</option>
+                                <option value="lab">Diagnostic Lab</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="search-actions">
+                        <button class="btn btn-light" id="resetFiltersBtn">
+                            <i class="fas fa-redo"></i>
+                            Reset Filters
+                        </button>
+                        <button class="btn btn-primary" id="applyFiltersBtn">
+                            <i class="fas fa-filter"></i>
+                            Apply Filters
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Hospitals Grid -->
+                <div class="hospitals-grid">
+                    <!-- Hospital 1 -->
+                    <div class="hospital-card">
+                        <div class="hospital-image">
+                            <div class="hospital-badge">24/7 Emergency</div>
+                            <!-- In production, use actual hospital image -->
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%;"></div>
+                        </div>
+                        <div class="hospital-info">
+                            <h3 class="hospital-name">United Hospital Ltd.</h3>
+                            <div class="hospital-rating">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="rating-text">4.5 (1,234 reviews)</span>
+                            </div>
+                            
+                            <div class="hospital-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Gulshan-2, Dhaka</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span>+880 2 883 6000</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-bed"></i>
+                                    <span>450 Beds | 12 ICU Units</span>
+                                </div>
+                            </div>
+                            
+                            <div class="hospital-specialties">
+                                <span class="specialty-tag">Cardiology</span>
+                                <span class="specialty-tag">Neurology</span>
+                                <span class="specialty-tag">Orthopedics</span>
+                                <span class="specialty-tag">Oncology</span>
+                                <span class="specialty-tag">+5 more</span>
+                            </div>
+                        </div>
+                        <div class="hospital-actions">
+                            <button class="btn btn-sm btn-outline view-doctors-btn">
+                                <i class="fas fa-user-md"></i>
+                                View Doctors
+                            </button>
+                            <button class="btn btn-sm btn-primary view-hospital-btn">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Hospital 2 -->
+                    <div class="hospital-card">
+                        <div class="hospital-image">
+                            <div class="hospital-badge">ICU Available</div>
+                            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); height: 100%;"></div>
+                        </div>
+                        <div class="hospital-info">
+                            <h3 class="hospital-name">Square Hospitals Ltd.</h3>
+                            <div class="hospital-rating">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span class="rating-text">4.2 (987 reviews)</span>
+                            </div>
+                            
+                            <div class="hospital-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Panthapath, Dhaka</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span>+880 2 814 4400</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-bed"></i>
+                                    <span>380 Beds | 8 ICU Units</span>
+                                </div>
+                            </div>
+                            
+                            <div class="hospital-specialties">
+                                <span class="specialty-tag">Cardiology</span>
+                                <span class="specialty-tag">Nephrology</span>
+                                <span class="specialty-tag">Urology</span>
+                                <span class="specialty-tag">+7 more</span>
+                            </div>
+                        </div>
+                        <div class="hospital-actions">
+                            <button class="btn btn-sm btn-outline view-doctors-btn">
+                                <i class="fas fa-user-md"></i>
+                                View Doctors
+                            </button>
+                            <button class="btn btn-sm btn-primary view-hospital-btn">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Hospital 3 -->
+                    <div class="hospital-card">
+                        <div class="hospital-image">
+                            <div class="hospital-badge">Ambulance Service</div>
+                            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); height: 100%;"></div>
+                        </div>
+                        <div class="hospital-info">
+                            <h3 class="hospital-name">Apollo Hospitals Dhaka</h3>
+                            <div class="hospital-rating">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="rating-text">4.8 (2,345 reviews)</span>
+                            </div>
+                            
+                            <div class="hospital-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Bashundhara R/A, Dhaka</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span>+880 2 550 37242</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-bed"></i>
+                                    <span>500 Beds | 20 ICU Units</span>
+                                </div>
+                            </div>
+                            
+                            <div class="hospital-specialties">
+                                <span class="specialty-tag">Neurosurgery</span>
+                                <span class="specialty-tag">Cardiac Surgery</span>
+                                <span class="specialty-tag">Transplant</span>
+                                <span class="specialty-tag">+12 more</span>
+                            </div>
+                        </div>
+                        <div class="hospital-actions">
+                            <button class="btn btn-sm btn-outline view-doctors-btn">
+                                <i class="fas fa-user-md"></i>
+                                View Doctors
+                            </button>
+                            <button class="btn btn-sm btn-primary view-hospital-btn">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Hospital 4 -->
+                    <div class="hospital-card">
+                        <div class="hospital-image">
+                            <div class="hospital-badge">Diagnostic Lab</div>
+                            <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); height: 100%;"></div>
+                        </div>
+                        <div class="hospital-info">
+                            <h3 class="hospital-name">Labaid Specialized Hospital</h3>
+                            <div class="hospital-rating">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="rating-text">4.4 (1,567 reviews)</span>
+                            </div>
+                            
+                            <div class="hospital-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Dhanmondi, Dhaka</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span>+880 2 967 6350</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-bed"></i>
+                                    <span>250 Beds | 6 ICU Units</span>
+                                </div>
+                            </div>
+                            
+                            <div class="hospital-specialties">
+                                <span class="specialty-tag">Cardiology</span>
+                                <span class="specialty-tag">Gastroenterology</span>
+                                <span class="specialty-tag">Endocrinology</span>
+                                <span class="specialty-tag">+8 more</span>
+                            </div>
+                        </div>
+                        <div class="hospital-actions">
+                            <button class="btn btn-sm btn-outline view-doctors-btn">
+                                <i class="fas fa-user-md"></i>
+                                View Doctors
+                            </button>
+                            <button class="btn btn-sm btn-primary view-hospital-btn">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Hospital 5 -->
+                    <div class="hospital-card">
+                        <div class="hospital-image">
+                            <div class="hospital-badge">In-house Pharmacy</div>
+                            <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); height: 100%;"></div>
+                        </div>
+                        <div class="hospital-info">
+                            <h3 class="hospital-name">Popular Diagnostic Centre Ltd.</h3>
+                            <div class="hospital-rating">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span class="rating-text">4.1 (876 reviews)</span>
+                            </div>
+                            
+                            <div class="hospital-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Dhanmondi, Dhaka</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span>+880 2 966 0015</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-bed"></i>
+                                    <span>150 Beds | 4 ICU Units</span>
+                                </div>
+                            </div>
+                            
+                            <div class="hospital-specialties">
+                                <span class="specialty-tag">Radiology</span>
+                                <span class="specialty-tag">Pathology</span>
+                                <span class="specialty-tag">Ultrasonography</span>
+                                <span class="specialty-tag">+6 more</span>
+                            </div>
+                        </div>
+                        <div class="hospital-actions">
+                            <button class="btn btn-sm btn-outline view-doctors-btn">
+                                <i class="fas fa-user-md"></i>
+                                View Doctors
+                            </button>
+                            <button class="btn btn-sm btn-primary view-hospital-btn">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Hospital 6 -->
+                    <div class="hospital-card">
+                        <div class="hospital-image">
+                            <div class="hospital-badge">24/7 Emergency</div>
+                            <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); height: 100%;"></div>
+                        </div>
+                        <div class="hospital-info">
+                            <h3 class="hospital-name">Bangabandhu Sheikh Mujib Medical University</h3>
+                            <div class="hospital-rating">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="rating-text">4.3 (2,100 reviews)</span>
+                            </div>
+                            
+                            <div class="hospital-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>Shahbag, Dhaka</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span>+880 2 861 0311</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-bed"></i>
+                                    <span>600 Beds | 25 ICU Units</span>
+                                </div>
+                            </div>
+                            
+                            <div class="hospital-specialties">
+                                <span class="specialty-tag">All Specialties</span>
+                                <span class="specialty-tag">Medical College</span>
+                                <span class="specialty-tag">Research Center</span>
+                            </div>
+                        </div>
+                        <div class="hospital-actions">
+                            <button class="btn btn-sm btn-outline view-doctors-btn">
+                                <i class="fas fa-user-md"></i>
+                                View Doctors
+                            </button>
+                            <button class="btn btn-sm btn-primary view-hospital-btn">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <nav class="pagination">
+                    <ul class="page-list">
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">4</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">5</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </main>
+    
+    <div id="footer-container"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load navbar and footer
+            loadComponent('../../Components/navbar.html', 'navbar-container');
+            loadComponent('../../Components/footer.html', 'footer-container');
+            
+            // View toggle functionality
+            const listViewBtn = document.getElementById('listViewBtn');
+            const mapViewBtn = document.getElementById('mapViewBtn');
+            const listView = document.getElementById('listView');
+            const mapView = document.getElementById('mapView');
+            
+            if (listViewBtn && mapViewBtn) {
+                listViewBtn.addEventListener('click', () => {
+                    listViewBtn.classList.add('active');
+                    mapViewBtn.classList.remove('active');
+                    listView.style.display = 'block';
+                    mapView.style.display = 'none';
+                });
+                
+                mapViewBtn.addEventListener('click', () => {
+                    mapViewBtn.classList.add('active');
+                    listViewBtn.classList.remove('active');
+                    mapView.style.display = 'block';
+                    listView.style.display = 'none';
+                });
+            }
+            
+            // Filter functionality
+            const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+            const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+            
+            if (applyFiltersBtn) {
+                applyFiltersBtn.addEventListener('click', applyFilters);
+            }
+            
+            if (resetFiltersBtn) {
+                resetFiltersBtn.addEventListener('click', resetFilters);
+            }
+            
+            // Hospital card click handlers
+            const viewHospitalBtns = document.querySelectorAll('.view-hospital-btn');
+            const viewDoctorsBtns = document.querySelectorAll('.view-doctors-btn');
+            
+            viewHospitalBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.location.href = 'hospital-profile.html';
+                });
+            });
+            
+            viewDoctorsBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const hospitalName = e.target.closest('.hospital-card').querySelector('.hospital-name').textContent;
+                    window.location.href = `hospital-profile.html?tab=doctors&hospital=${encodeURIComponent(hospitalName)}`;
+                });
+            });
+            
+            // Hospital card click (whole card)
+            const hospitalCards = document.querySelectorAll('.hospital-card');
+            hospitalCards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('.btn')) return;
+                    window.location.href = 'hospital-profile.html';
+                });
+            });
+        });
+        
+        function loadComponent(url, containerId) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Component not found');
+                    return response.text();
+                })
+                .then(html => {
+                    const container = document.getElementById(containerId);
+                    if (container) {
+                        container.innerHTML = html;
+                        initComponentScripts(containerId);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading component:', error);
+                });
+        }
+        
+        function initComponentScripts(containerId) {
+            // Initialize any scripts in loaded components
+            const container = document.getElementById(containerId);
+            
+            // Navbar toggler
+            const navbarToggler = container?.querySelector('.navbar-toggler');
+            const navbarMenu = container?.querySelector('.navbar-menu');
+            
+            if (navbarToggler && navbarMenu) {
+                navbarToggler.addEventListener('click', () => {
+                    navbarMenu.classList.toggle('show');
+                });
+            }
+        }
+        
+        function applyFilters() {
+            const location = document.getElementById('locationFilter').value;
+            const type = document.getElementById('typeFilter').value;
+            const specialty = document.getElementById('specialtyFilter').value;
+            const facility = document.getElementById('facilityFilter').value;
+            
+            // In production, this would make an API call to filter hospitals
+            console.log('Applying filters:', { location, type, specialty, facility });
+            
+            // Show loading state
+            const hospitalsGrid = document.querySelector('.hospitals-grid');
+            const originalContent = hospitalsGrid.innerHTML;
+            
+            hospitalsGrid.innerHTML = `
+                <div class="loading-container" style="grid-column: 1/-1;">
+                    <div class="loading"></div>
+                    <p class="loading-text">Filtering hospitals...</p>
+                </div>
+            `;
+            
+            // Simulate API call
+            setTimeout(() => {
+                hospitalsGrid.innerHTML = originalContent;
+                showToast('Filters applied successfully!', 'success');
+            }, 1000);
+        }
+        
+        function resetFilters() {
+            document.getElementById('locationFilter').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('specialtyFilter').value = '';
+            document.getElementById('facilityFilter').value = '';
+            
+            showToast('Filters reset successfully!', 'info');
+        }
+        
+        function showToast(message, type = 'info') {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+                <button class="toast-close">&times;</button>
+            `;
+            
+            // Add to page
+            document.body.appendChild(toast);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('fade-out');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+            
+            // Close button
+            const closeBtn = toast.querySelector('.toast-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    toast.classList.add('fade-out');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 300);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
