@@ -1,0 +1,1413 @@
+<!--
+Doctor & Hospital Search System with Google Maps
+This page is part of a comprehensive system covering all regions of Bangladesh.
+It allows users to search for doctors by name, specialty, or location,
+with results displayed on an integrated Google Map.
+Links are provided for easy navigation to other pages like index.html and hospital-search.html.
+-->
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Doctors in Bangladesh - MedFind</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places,geometry&callback=initMap" async defer></script>
+    
+    <style>
+        /* Doctor Search Page */
+        .doctor-search-page {
+            padding: 2rem 0;
+            background: #f9fafb;
+            min-height: calc(100vh - 70px);
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Search and Map Container */
+        .search-map-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .search-map-container {
+                grid-template-columns: 400px 1fr;
+            }
+        }
+        
+        /* Search Sidebar */
+        .search-sidebar {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            height: fit-content;
+        }
+        
+        /* Location Search Box */
+        .location-search-box {
+            margin-bottom: 1.5rem;
+        }
+        
+        .location-input-group {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .location-input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .location-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .location-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+        }
+        
+        .current-location-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            color: #374151;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        
+        .current-location-btn:hover {
+            background: #e5e7eb;
+        }
+        
+        /* Division and District Selection */
+        .location-selection {
+            margin-bottom: 1.5rem;
+        }
+        
+        .location-tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 1rem;
+        }
+        
+        .location-tab {
+            padding: 0.75rem 1rem;
+            background: none;
+            border: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .location-tab.active {
+            color: #2563eb;
+        }
+        
+        .location-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #2563eb;
+        }
+        
+        .location-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+        
+        .location-option {
+            padding: 0.75rem;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+        
+        .location-option:hover,
+        .location-option.active {
+            background: #dbeafe;
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+        
+        /* Filters */
+        .filter-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .filter-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .filter-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .filter-option input[type="checkbox"],
+        .filter-option input[type="radio"] {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .filter-option label {
+            font-size: 0.875rem;
+            color: #374151;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .filter-count {
+            color: #6b7280;
+            font-size: 0.75rem;
+        }
+        
+        /* Map Container */
+        .map-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            height: 500px;
+            position: relative;
+        }
+        
+        #google-map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .map-controls {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .map-control-btn {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+        }
+        
+        .map-control-btn:hover {
+            background: #f9fafb;
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Results Section */
+        .results-section {
+            margin-top: 2rem;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .results-count {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .results-sort {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .sort-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+        }
+        
+        /* Doctor Cards Grid */
+        .doctors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .doctor-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .doctor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: #2563eb;
+        }
+        
+        .doctor-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .doctor-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .doctor-info {
+            flex: 1;
+        }
+        
+        .doctor-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+        
+        .doctor-qualification {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .doctor-specialty {
+            display: inline-block;
+            background: #dbeafe;
+            color: #2563eb;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .doctor-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: #fbbf24;
+            font-size: 0.875rem;
+        }
+        
+        .doctor-body {
+            padding: 0 1.5rem 1.5rem;
+        }
+        
+        .doctor-details {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4b5563;
+            font-size: 0.875rem;
+        }
+        
+        .doctor-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .doctor-fee {
+            font-weight: 600;
+            color: #111827;
+        }
+        
+        /* Top Doctors Section */
+        .top-doctors-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1.5rem;
+        }
+        
+        .top-doctors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .top-doctor-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .top-doctor-card:hover {
+            background: #e5e7eb;
+            transform: translateX(4px);
+        }
+        
+        .top-doctor-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .top-doctor-info {
+            flex: 1;
+        }
+        
+        .top-doctor-name {
+            font-weight: 600;
+            color: #111827;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .top-doctor-specialty {
+            color: #6b7280;
+            font-size: 0.75rem;
+        }
+        
+        /* Hospital Cards Grid */
+        .hospitals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .hospital-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .hospital-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: #2563eb;
+        }
+        
+        .hospital-image {
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+        
+        .hospital-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .hospital-info {
+            padding: 1.5rem;
+        }
+        
+        .hospital-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hospital-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hospital-stars {
+            color: #fbbf24;
+        }
+        
+        .hospital-facilities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .facility-tag {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .hospital-doctors {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hospital-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .doctors-grid,
+            .hospitals-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .location-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .map-container {
+                height: 400px;
+            }
+        }
+        
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-container"></div>
+    
+    <main class="doctor-search-page">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Find Doctors & Hospitals in Bangladesh</h1>
+                <p class="page-subtitle">Search for doctors, hospitals, and specialists near you. View availability, ratings, and book appointments instantly.</p>
+            </div>
+            
+            <!-- Search and Map Container -->
+            <div class="search-map-container">
+                <!-- Search Sidebar -->
+                <div class="search-sidebar">
+                    <!-- Location Search -->
+                    <div class="location-search-box">
+                        <h3 class="filter-title">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Search Location
+                        </h3>
+                        
+                        <div class="location-input-group">
+                            <i class="fas fa-search location-icon"></i>
+                            <input type="text" class="location-input" id="locationInput" placeholder="Enter your area, city, or district">
+                        </div>
+                        
+                        <button class="current-location-btn" id="currentLocationBtn">
+                            <i class="fas fa-location-arrow"></i>
+                            Use My Current Location
+                        </button>
+                    </div>
+                    
+                    <!-- Division/District Selection -->
+                    <div class="location-selection">
+                        <div class="location-tabs">
+                            <button class="location-tab active" data-type="division">Division</button>
+                            <button class="location-tab" data-type="district">District</button>
+                            <button class="location-tab" data-type="city">City</button>
+                        </div>
+                        
+                        <div class="location-grid" id="divisionGrid">
+                            <!-- Divisions will be loaded by JavaScript -->
+                        </div>
+                        
+                        <div class="location-grid" id="districtGrid" style="display: none;">
+                            <!-- Districts will be loaded by JavaScript -->
+                        </div>
+                        
+                        <div class="location-grid" id="cityGrid" style="display: none;">
+                            <!-- Cities will be loaded by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Doctor/Hospital Filter -->
+                    <div class="filter-section">
+                        <h3 class="filter-title">Search Type</h3>
+                        <div class="filter-options">
+                            <div class="filter-option">
+                                <input type="radio" id="searchDoctors" name="searchType" value="doctors" checked>
+                                <label for="searchDoctors">Doctors Only</label>
+                                <span class="filter-count">(1,234)</span>
+                            </div>
+                            <div class="filter-option">
+                                <input type="radio" id="searchHospitals" name="searchType" value="hospitals">
+                                <label for="searchHospitals">Hospitals Only</label>
+                                <span class="filter-count">(456)</span>
+                            </div>
+                            <div class="filter-option">
+                                <input type="radio" id="searchBoth" name="searchType" value="both">
+                                <label for="searchBoth">Both Doctors & Hospitals</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Specialty Filter -->
+                    <div class="filter-section">
+                        <h3 class="filter-title">
+                            <i class="fas fa-stethoscope"></i>
+                            Specialties
+                        </h3>
+                        <div class="filter-options" id="specialtyFilter">
+                            <!-- Specialties will be loaded by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Hospital Facilities Filter -->
+                    <div class="filter-section" id="facilitiesFilter">
+                        <h3 class="filter-title">
+                            <i class="fas fa-clinic-medical"></i>
+                            Hospital Facilities
+                        </h3>
+                        <div class="filter-options">
+                            <div class="filter-option">
+                                <input type="checkbox" id="facilityEmergency" value="emergency">
+                                <label for="facilityEmergency">24/7 Emergency</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="facilityICU" value="icu">
+                                <label for="facilityICU">ICU Available</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="facilityOT" value="ot">
+                                <label for="facilityOT">Operation Theater</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="facilityLab" value="lab">
+                                <label for="facilityLab">Diagnostic Lab</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="facilityPharmacy" value="pharmacy">
+                                <label for="facilityPharmacy">Pharmacy</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Apply Filters Button -->
+                    <button class="btn btn-primary btn-block" id="applyFiltersBtn">
+                        <i class="fas fa-filter"></i>
+                        Apply Filters
+                    </button>
+                    
+                    <!-- Reset Filters -->
+                    <button class="btn btn-outline btn-block mt-3" id="resetFiltersBtn">
+                        <i class="fas fa-redo"></i>
+                        Reset All Filters
+                    </button>
+                </div>
+                
+                <!-- Map Container -->
+                <div class="map-container">
+                    <div id="google-map"></div>
+                    <div class="map-controls">
+                        <button class="map-control-btn" id="zoomInBtn" title="Zoom In">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="map-control-btn" id="zoomOutBtn" title="Zoom Out">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button class="map-control-btn" id="currentLocationMapBtn" title="My Location">
+                            <i class="fas fa-location-arrow"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="results-section">
+                <div class="results-header">
+                    <div>
+                        <h2 class="section-title">Search Results</h2>
+                        <p class="results-count" id="resultsCount">Showing 0 results</p>
+                    </div>
+                    <div class="results-sort">
+                        <label for="sortBy">Sort by:</label>
+                        <select class="sort-select" id="sortBy">
+                            <option value="rating">Highest Rated</option>
+                            <option value="distance">Nearest First</option>
+                            <option value="experience">Most Experienced</option>
+                            <option value="fee">Lowest Fee</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Doctors Results -->
+                <div class="doctors-grid" id="doctorsResults">
+                    <!-- Doctors will be loaded by JavaScript -->
+                </div>
+                
+                <!-- Hospitals Results -->
+                <div class="hospitals-grid" id="hospitalsResults" style="display: none;">
+                    <!-- Hospitals will be loaded by JavaScript -->
+                </div>
+                
+                <!-- No Results Message -->
+                <div class="text-center py-8" id="noResultsMessage" style="display: none;">
+                    <i class="fas fa-search fa-3x text-gray-400 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">No Results Found</h3>
+                    <p class="text-gray-600">Try adjusting your filters or search criteria.</p>
+                </div>
+            </div>
+            
+            <!-- Top Doctors Section -->
+            <div class="top-doctors-section">
+                <h2 class="section-title">
+                    <i class="fas fa-crown text-yellow-500"></i>
+                    Top Rated Doctors in Bangladesh
+                </h2>
+                <div class="top-doctors-grid" id="topDoctorsGrid">
+                    <!-- Top doctors will be loaded by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="loader"></div>
+            <div class="loading-text">Loading doctors and hospitals...</div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div id="footer-container"></div>
+    
+    <!-- JavaScript -->
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/location.js"></script>
+    <script>
+        // Bangladesh location data
+        const bangladeshData = {
+            divisions: [
+                { id: 'dhaka', name: 'Dhaka', districts: 13 },
+                { id: 'chittagong', name: 'Chittagong', districts: 11 },
+                { id: 'sylhet', name: 'Sylhet', districts: 4 },
+                { id: 'khulna', name: 'Khulna', districts: 10 },
+                { id: 'rajshahi', name: 'Rajshahi', districts: 8 },
+                { id: 'barisal', name: 'Barisal', districts: 6 },
+                { id: 'rangpur', name: 'Rangpur', districts: 8 },
+                { id: 'mymensingh', name: 'Mymensingh', districts: 4 }
+            ],
+            
+            districts: {
+                dhaka: [
+                    'Dhaka', 'Gazipur', 'Narayanganj', 'Narsingdi', 'Tangail',
+                    'Kishoreganj', 'Manikganj', 'Munshiganj', 'Rajbari',
+                    'Faridpur', 'Gopalganj', 'Madaripur', 'Shariatpur'
+                ],
+                chittagong: [
+                    'Chittagong', 'Cox\'s Bazar', 'Comilla', 'Brahmanbaria',
+                    'Chandpur', 'Lakshmipur', 'Noakhali', 'Feni',
+                    'Khagrachhari', 'Rangamati', 'Bandarban'
+                ],
+                sylhet: ['Sylhet', 'Moulvibazar', 'Habiganj', 'Sunamganj'],
+                khulna: [
+                    'Khulna', 'Jessore', 'Satkhira', 'Bagerhat',
+                    'Chuadanga', 'Jhenaidah', 'Kushtia', 'Magura',
+                    'Meherpur', 'Narail'
+                ],
+                rajshahi: [
+                    'Rajshahi', 'Bogura', 'Pabna', 'Sirajganj',
+                    'Natore', 'Naogaon', 'Chapai Nawabganj', 'Joypurhat'
+                ],
+                barisal: [
+                    'Barisal', 'Patuakhali', 'Bhola', 'Jhalokati',
+                    'Pirojpur', 'Barguna'
+                ],
+                rangpur: [
+                    'Rangpur', 'Dinajpur', 'Gaibandha', 'Kurigram',
+                    'Lalmonirhat', 'Nilphamari', 'Panchagarh', 'Thakurgaon'
+                ],
+                mymensingh: ['Mymensingh', 'Jamalpur', 'Netrokona', 'Sherpur']
+            },
+            
+            specialties: [
+                { id: 'cardiology', name: 'Cardiology', count: 245 },
+                { id: 'neurology', name: 'Neurology', count: 189 },
+                { id: 'orthopedics', name: 'Orthopedics', count: 312 },
+                { id: 'pediatrics', name: 'Pediatrics', count: 278 },
+                { id: 'gynecology', name: 'Gynecology', count: 267 },
+                { id: 'dermatology', name: 'Dermatology', count: 156 },
+                { id: 'psychiatry', name: 'Psychiatry', count: 98 },
+                { id: 'dentistry', name: 'Dentistry', count: 201 },
+                { id: 'ophthalmology', name: 'Ophthalmology', count: 167 },
+                { id: 'ent', name: 'ENT Specialist', count: 143 },
+                { id: 'urology', name: 'Urology', count: 89 },
+                { id: 'gastroenterology', name: 'Gastroenterology', count: 112 }
+            ]
+        };
+        
+        // Mock data for doctors and hospitals
+        const mockData = {
+            doctors: [
+                {
+                    id: 1,
+                    name: 'Prof. Dr. N. A. M. Momenuzzaman',
+                    qualification: 'MBBS, MD (Cardiology)',
+                    specialty: 'Cardiology',
+                    experience: 25,
+                    rating: 4.8,
+                    fee: 1500,
+                    hospital: 'United Hospital Ltd.',
+                    location: 'Dhaka, Gulshan-2',
+                    available: true,
+                    division: 'dhaka',
+                    district: 'Dhaka',
+                    coordinates: { lat: 23.7985, lng: 90.4254 }
+                },
+                {
+                    id: 2,
+                    name: 'Dr. S. M. Abul Khayer Miah',
+                    qualification: 'MBBS, Fellow FWHO (PHC)',
+                    specialty: 'Medicine',
+                    experience: 20,
+                    rating: 4.6,
+                    fee: 1200,
+                    hospital: 'Rainbow Diagnostic Center',
+                    location: 'Dhaka, Kachukhet',
+                    available: true,
+                    division: 'dhaka',
+                    district: 'Dhaka',
+                    coordinates: { lat: 23.8033, lng: 90.4312 }
+                },
+                {
+                    id: 3,
+                    name: 'Prof. Dr. Kohinoor Akhter Banu',
+                    qualification: 'MBBS, DGO',
+                    specialty: 'Gynecology',
+                    experience: 22,
+                    rating: 4.7,
+                    fee: 1300,
+                    hospital: 'Lab Aid Diagnostic Center',
+                    location: 'Mymensingh, Charpara',
+                    available: true,
+                    division: 'mymensingh',
+                    district: 'Mymensingh',
+                    coordinates: { lat: 24.7471, lng: 90.4203 }
+                },
+                {
+                    id: 4,
+                    name: 'Dr. Mahboba Akther',
+                    qualification: 'MD, FCPS',
+                    specialty: 'Pediatrics',
+                    experience: 18,
+                    rating: 4.5,
+                    fee: 1100,
+                    hospital: 'Unity Aid Hospital',
+                    location: 'Dhaka, Dakhin Banasree',
+                    available: true,
+                    division: 'dhaka',
+                    district: 'Dhaka',
+                    coordinates: { lat: 23.7639, lng: 90.4289 }
+                }
+            ],
+            
+            hospitals: [
+                {
+                    id: 1,
+                    name: 'United Hospital Ltd.',
+                    type: 'private',
+                    rating: 4.5,
+                    beds: 450,
+                    icuBeds: 12,
+                    emergency: true,
+                    specialties: ['Cardiology', 'Neurology', 'Orthopedics', 'Oncology'],
+                    doctorsCount: 45,
+                    location: 'Gulshan-2, Dhaka',
+                    division: 'dhaka',
+                    district: 'Dhaka',
+                    coordinates: { lat: 23.7985, lng: 90.4254 }
+                },
+                {
+                    id: 2,
+                    name: 'Square Hospitals Ltd.',
+                    type: 'private',
+                    rating: 4.2,
+                    beds: 380,
+                    icuBeds: 8,
+                    emergency: true,
+                    specialties: ['Cardiology', 'Nephrology', 'Urology'],
+                    doctorsCount: 38,
+                    location: 'Panthapath, Dhaka',
+                    division: 'dhaka',
+                    district: 'Dhaka',
+                    coordinates: { lat: 23.7499, lng: 90.3912 }
+                },
+                {
+                    id: 3,
+                    name: 'Apollo Hospitals Dhaka',
+                    type: 'private',
+                    rating: 4.8,
+                    beds: 500,
+                    icuBeds: 20,
+                    emergency: true,
+                    specialties: ['Neurosurgery', 'Cardiac Surgery', 'Transplant'],
+                    doctorsCount: 52,
+                    location: 'Bashundhara R/A, Dhaka',
+                    division: 'dhaka',
+                    district: 'Dhaka',
+                    coordinates: { lat: 23.8151, lng: 90.4265 }
+                }
+            ],
+            
+            topDoctors: [
+                { id: 101, name: 'Dr. A. R. Khan', specialty: 'Cardiology', rating: 4.9 },
+                { id: 102, name: 'Prof. Dr. S. Islam', specialty: 'Neurology', rating: 4.8 },
+                { id: 103, name: 'Dr. M. H. Rahman', specialty: 'Orthopedics', rating: 4.7 },
+                { id: 104, name: 'Dr. N. Ahmed', specialty: 'Pediatrics', rating: 4.7 },
+                { id: 105, name: 'Dr. F. Begum', specialty: 'Gynecology', rating: 4.6 },
+                { id: 106, name: 'Dr. K. M. Hasan', specialty: 'Dermatology', rating: 4.6 }
+            ]
+        };
+        
+        class DoctorSearch {
+            constructor() {
+                this.map = null;
+                this.markers = [];
+                this.currentLocation = null;
+                this.selectedDivision = null;
+                this.selectedDistrict = null;
+                this.selectedSpecialties = new Set();
+                this.selectedFacilities = new Set();
+                this.searchType = 'doctors';
+                
+                this.init();
+            }
+            
+            init() {
+                this.loadComponents();
+                this.initLocationTabs();
+                this.initSpecialtyFilter();
+                this.initEventListeners();
+                this.loadTopDoctors();
+                this.loadInitialResults();
+            }
+            
+            loadComponents() {
+                // Load navbar and footer
+                this.loadComponent('../components/navbar.html', 'navbar-container');
+                this.loadComponent('../components/footer.html', 'footer-container');
+            }
+            
+            async loadComponent(url, containerId) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error('Component not found');
+                    
+                    const html = await response.text();
+                    document.getElementById(containerId).innerHTML = html;
+                    
+                    // Initialize navbar scripts
+                    this.initNavbarScripts();
+                    
+                } catch (error) {
+                    console.error('Error loading component:', error);
+                }
+            }
+            
+            initNavbarScripts() {
+                // Navbar toggler for mobile
+                const navbarToggler = document.querySelector('.navbar-toggler');
+                const navbarMenu = document.querySelector('.navbar-menu');
+                
+                if (navbarToggler && navbarMenu) {
+                    navbarToggler.addEventListener('click', () => {
+                        navbarMenu.classList.toggle('show');
+                    });
+                }
+            }
+            
+            initLocationTabs() {
+                const tabs = document.querySelectorAll('.location-tab');
+                const grids = {
+                    division: document.getElementById('divisionGrid'),
+                    district: document.getElementById('districtGrid'),
+                    city: document.getElementById('cityGrid')
+                };
+                
+                // Load divisions
+                this.loadDivisions();
+                
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        // Update active tab
+                        tabs.forEach(t => t.classList.remove('active'));
+                                                tab.classList.add('active');
+
+                        const type = tab.getAttribute('data-type');
+                        Object.keys(grids).forEach(key => {
+                            grids[key].style.display = key === type ? 'grid' : 'none';
+                        });
+                    });
+                });
+            }
+
+            loadDivisions() {
+                const divisionGrid = document.getElementById('divisionGrid');
+                divisionGrid.innerHTML = '';
+
+                bangladeshData.divisions.forEach(div => {
+                    const divEl = document.createElement('div');
+                    divEl.className = 'location-option';
+                    divEl.textContent = div.name;
+                    divEl.addEventListener('click', () => {
+                        this.selectedDivision = div.id;
+                        this.loadDistricts(div.id);
+                        document.querySelectorAll('.location-option').forEach(o => o.classList.remove('active'));
+                        divEl.classList.add('active');
+                    });
+                    divisionGrid.appendChild(divEl);
+                });
+            }
+
+            loadDistricts(divisionId) {
+                const districtGrid = document.getElementById('districtGrid');
+                districtGrid.innerHTML = '';
+
+                bangladeshData.districts[divisionId].forEach(dist => {
+                    const distEl = document.createElement('div');
+                    distEl.className = 'location-option';
+                    distEl.textContent = dist;
+                    distEl.addEventListener('click', () => {
+                        this.selectedDistrict = dist;
+                        document.querySelectorAll('#districtGrid .location-option')
+                            .forEach(o => o.classList.remove('active'));
+                        distEl.classList.add('active');
+                    });
+                    districtGrid.appendChild(distEl);
+                });
+            }
+
+            initSpecialtyFilter() {
+                const container = document.getElementById('specialtyFilter');
+                bangladeshData.specialties.forEach(sp => {
+                    const div = document.createElement('div');
+                    div.className = 'filter-option';
+                    div.innerHTML = `
+                        <input type="checkbox" value="${sp.id}">
+                        <label>${sp.name}</label>
+                        <span class="filter-count">(${sp.count})</span>
+                    `;
+                    div.querySelector('input').addEventListener('change', e => {
+                        e.target.checked
+                            ? this.selectedSpecialties.add(sp.id)
+                            : this.selectedSpecialties.delete(sp.id);
+                    });
+                    container.appendChild(div);
+                });
+            }
+
+            initEventListeners() {
+                document.getElementById('applyFiltersBtn').addEventListener('click', () => {
+                    this.loadInitialResults();
+                });
+
+                document.getElementById('resetFiltersBtn').addEventListener('click', () => {
+                    this.selectedDivision = null;
+                    this.selectedDistrict = null;
+                    this.selectedSpecialties.clear();
+                    this.selectedFacilities.clear();
+                    this.loadInitialResults();
+                });
+
+                document.querySelectorAll('input[name="searchType"]').forEach(radio => {
+                    radio.addEventListener('change', e => {
+                        this.searchType = e.target.value;
+                        this.loadInitialResults();
+                    });
+                });
+            }
+
+            loadInitialResults() {
+                document.getElementById('doctorsResults').innerHTML = '';
+                document.getElementById('hospitalsResults').innerHTML = '';
+
+                if (this.searchType === 'doctors' || this.searchType === 'both') {
+                    this.renderDoctors();
+                }
+
+                if (this.searchType === 'hospitals' || this.searchType === 'both') {
+                    this.renderHospitals();
+                }
+            }
+
+            renderDoctors() {
+                const container = document.getElementById('doctorsResults');
+                mockData.doctors.forEach(doc => {
+                    const card = document.createElement('div');
+                    card.className = 'doctor-card';
+                    card.innerHTML = `
+                        <div class="doctor-header">
+                            <div class="doctor-avatar">${doc.name.charAt(0)}</div>
+                            <div class="doctor-info">
+                                <div class="doctor-name">${doc.name}</div>
+                                <div class="doctor-qualification">${doc.qualification}</div>
+                                <span class="doctor-specialty">${doc.specialty}</span>
+                            </div>
+                        </div>
+                        <div class="doctor-body">
+                            <div class="doctor-details">
+                                <div class="detail-item"><i class="fas fa-hospital"></i>${doc.hospital}</div>
+                                <div class="detail-item"><i class="fas fa-map-marker-alt"></i>${doc.location}</div>
+                            </div>
+                        </div>
+                        <div class="doctor-footer">
+                            <div class="doctor-fee">৳ ${doc.fee}</div>
+                            <button class="btn btn-primary">Book</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+
+                document.getElementById('resultsCount').textContent =
+                    `Showing ${mockData.doctors.length} results`;
+            }
+
+            renderHospitals() {
+                const container = document.getElementById('hospitalsResults');
+                container.style.display = 'grid';
+
+                mockData.hospitals.forEach(h => {
+                    const card = document.createElement('div');
+                    card.className = 'hospital-card';
+                    card.innerHTML = `
+                        <div class="hospital-image">
+                            <span class="hospital-badge">Open</span>
+                        </div>
+                        <div class="hospital-info">
+                            <div class="hospital-name">${h.name}</div>
+                            <div class="hospital-doctors">${h.doctorsCount} Doctors</div>
+                        </div>
+                        <div class="hospital-footer">
+                            <span>⭐ ${h.rating}</span>
+                            <button class="btn btn-outline">View</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            loadTopDoctors() {
+                const container = document.getElementById('topDoctorsGrid');
+                mockData.topDoctors.forEach(d => {
+                    const el = document.createElement('div');
+                    el.className = 'top-doctor-card';
+                    el.innerHTML = `
+                        <div class="top-doctor-avatar">${d.name.charAt(0)}</div>
+                        <div class="top-doctor-info">
+                            <div class="top-doctor-name">${d.name}</div>
+                            <div class="top-doctor-specialty">${d.specialty}</div>
+                        </div>
+                    `;
+                    container.appendChild(el);
+                });
+            }
+        }
+
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById('google-map'), {
+                center: { lat: 23.8103, lng: 90.4125 },
+                zoom: 12
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new DoctorSearch();
+        });
+    </script>
+</body>
+</html>
+<body>
+    <!-- Map, Filters, Results ... -->
+
+    <!-- JS Scripts -->
+    <script src="mockData.js"></script> <!-- তোমার mock doctor data -->
+    <script src="bangladeshData.js"></script> <!-- divisions, districts, specialties -->
+
+    <script>
+        // এখানে Map + Filters + Apply Button JS লিখবে
+        let map;
+        let markers = [];
+
+        function initMap() {
+            const bangladesh = { lat: 23.6850, lng: 90.3563 };
+            map = new google.maps.Map(document.getElementById('google-map'), {
+                center: bangladesh,
+                zoom: 7,
+            });
+            loadDoctorMarkers();
+        }
+
+        function loadDoctorMarkers() {
+            clearMarkers();
+            mockData.doctors.forEach(doctor => {
+                const marker = new google.maps.Marker({
+                    position: doctor.coordinates,
+                    map: map,
+                    title: doctor.name,
+                });
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `<strong>${doctor.name}</strong><br>${doctor.specialty}<br>${doctor.location}`
+                });
+                marker.addListener('click', () => infoWindow.open(map, marker));
+                markers.push(marker);
+            });
+        }
+
+        function clearMarkers() {
+            markers.forEach(m => m.setMap(null));
+            markers = [];
+        }
+
+        // Filter + UI Logic
+        const divisionGrid = document.getElementById('divisionGrid');
+        const districtGrid = document.getElementById('districtGrid');
+        const cityGrid = document.getElementById('cityGrid');
+        const tabs = document.querySelectorAll('.location-tab');
+
+        function loadDivisions() {
+            divisionGrid.innerHTML = '';
+            bangladeshData.divisions.forEach(d => {
+                const div = document.createElement('div');
+                div.className = 'location-option';
+                div.innerText = d.name;
+                div.dataset.id = d.id;
+                div.addEventListener('click', () => {
+                    document.querySelectorAll('#divisionGrid .location-option').forEach(o => o.classList.remove('active'));
+                    div.classList.add('active');
+                });
+                divisionGrid.appendChild(div);
+            });
+        }
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                const type = tab.dataset.type;
+                divisionGrid.style.display = type === 'division' ? 'grid' : 'none';
+                districtGrid.style.display = type === 'district' ? 'grid' : 'none';
+                cityGrid.style.display = type === 'city' ? 'grid' : 'none';
+            });
+        });
+
+        loadDivisions();
+
+        // Specialty Filter
+        const specialtyFilter = document.getElementById('specialtyFilter');
+        function loadSpecialties() {
+            specialtyFilter.innerHTML = '';
+            bangladeshData.specialties.forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'filter-option';
+                div.innerHTML = `
+                    <input type="checkbox" id="${s.id}" value="${s.name}">
+                    <label for="${s.id}">${s.name}</label>
+                    <span class="filter-count">(${s.count})</span>
+                `;
+                specialtyFilter.appendChild(div);
+            });
+        }
+        loadSpecialties();
+
+        // Apply Filters
+        const applyBtn = document.getElementById('applyFiltersBtn');
+        const doctorsResults = document.getElementById('doctorsResults');
+
+        applyBtn.addEventListener('click', () => {
+            const selectedSpecialties = Array.from(document.querySelectorAll('#specialtyFilter input:checked'))
+                .map(i => i.value);
+
+            const filteredDoctors = mockData.doctors.filter(d =>
+                selectedSpecialties.length === 0 || selectedSpecialties.includes(d.specialty)
+            );
+
+            doctorsResults.innerHTML = '';
+            if(filteredDoctors.length === 0) {
+                document.getElementById('noResultsMessage').style.display = 'block';
+            } else {
+                document.getElementById('noResultsMessage').style.display = 'none';
+                filteredDoctors.forEach(d => {
+                    const card = document.createElement('div');
+                    card.className = 'doctor-card';
+                    card.innerHTML = `
+                        <div class="doctor-header">
+                            <div class="doctor-avatar">${d.name[0]}</div>
+                            <div class="doctor-info">
+                                <div class="doctor-name">${d.name}</div>
+                                <div class="doctor-qualification">${d.qualification}</div>
+                                <div class="doctor-specialty">${d.specialty}</div>
+                                <div class="doctor-rating">⭐ ${d.rating}</div>
+                            </div>
+                        </div>
+                        <div class="doctor-body">
+                            <div class="detail-item">Hospital: ${d.hospital}</div>
+                            <div class="detail-item">Location: ${d.location}</div>
+                            <div class="detail-item">Fee: ${d.fee} BDT</div>
+                        </div>
+                    `;
+                    doctorsResults.appendChild(card);
+                });
+            }
+        });
+    </script>
+</body>
