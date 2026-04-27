@@ -483,72 +483,92 @@
             const doctorId = getDoctorIdFromURL();
             
             if (!doctorId) {
-                showError('No doctor ID provided in URL');
+                showError('No doctor ID provided');
                 return;
             }
 
             showLoading(true);
 
             try {
-                const doctor = await api.getDoctor(doctorId);
+                const response = await fetch(`http://localhost:8000/api/doctors/${doctorId}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Doctor not found (${response.status})`);
+                }
+
+                const doctor = await response.json();
                 currentDoctor = doctor;
                 displayDoctorData(doctor);
                 showLoading(false);
+                document.getElementById('contentState').style.display = 'block';
             } catch (error) {
                 console.error('Error loading doctor:', error);
-                showError(`Failed to load doctor information: ${error.message}`);
+                showError(`Failed to load: ${error.message}`);
                 showLoading(false);
             }
         }
 
         // Display doctor data in popup
         function displayDoctorData(doctor) {
-            // Header Info
-            document.getElementById('doctorName').textContent = `Dr. ${doctor.first_name} ${doctor.last_name}`;
-            document.getElementById('doctorSpecialization').textContent = doctor.specialization;
-            document.getElementById('doctorImage').src = doctor.profile_image || 'https://via.placeholder.com/100?text=Doctor';
-            
-            // Rating
-            const rating = doctor.rating || 0;
-            const stars = getStarRating(rating);
-            document.getElementById('doctorRating').textContent = stars;
-            document.getElementById('reviewCount').textContent = `(${doctor.review_count || 0} reviews)`;
+            try {
+                // Header Info
+                document.getElementById('doctorName').textContent = `Dr. ${doctor.first_name} ${doctor.last_name}`;
+                document.getElementById('doctorSpecialization').textContent = doctor.specialization;
+                document.getElementById('doctorImage').src = doctor.profile_image || 'https://via.placeholder.com/100?text=Doctor';
+                document.getElementById('doctorImage').alt = `Dr. ${doctor.first_name}`;
+                
+                // Rating
+                const rating = doctor.rating || 0;
+                const stars = getStarRating(rating);
+                document.getElementById('doctorRating').textContent = stars;
+                document.getElementById('reviewCount').textContent = `(${doctor.review_count || 0} reviews)`;
 
-            // Bio
-            if (doctor.bio) {
-                document.getElementById('doctorBio').textContent = doctor.bio;
-                document.getElementById('bioSection').style.display = 'block';
+                // Bio
+                if (doctor.bio && doctor.bio.trim()) {
+                    document.getElementById('doctorBio').textContent = doctor.bio;
+                    document.getElementById('bioSection').style.display = 'block';
+                } else {
+                    document.getElementById('bioSection').style.display = 'none';
+                }
+
+                // Hospital
+                if (doctor.hospital) {
+                    document.getElementById('hospitalName').textContent = doctor.hospital.name || 'Hospital';
+                    document.getElementById('hospitalPhone').innerHTML = `📞 ${doctor.hospital.phone || 'N/A'}<br><small>${doctor.hospital.email || ''}</small>`;
+                }
+
+                // Consultation Fee
+                document.getElementById('consultationFee').textContent = `$${parseFloat(doctor.consultation_fee || 0).toFixed(2)}`;
+
+                // Qualifications
+                if (doctor.qualifications && doctor.qualifications.length > 0) {
+                    const qualList = document.getElementById('qualificationsList');
+                    qualList.innerHTML = doctor.qualifications.map(q => `<li>${q}</li>`).join('');
+                }
+
+                // Experience
+                document.getElementById('experienceYears').textContent = `${doctor.experience_years || 0} years`;
+
+                // License Number
+                document.getElementById('licenseNumber').textContent = doctor.license_number || 'N/A';
+
+                // Available Days
+                if (doctor.available_days && doctor.available_days.length > 0) {
+                    const daysList = document.getElementById('availableDaysList');
+                    daysList.innerHTML = doctor.available_days.map(day => `<div class="day-badge">${day}</div>`).join('');
+                }
+
+                showLoading(false);
+            } catch (error) {
+                console.error('Error displaying doctor data:', error);
+                showError('Error displaying doctor information');
             }
-
-            // Hospital
-            if (doctor.hospital) {
-                document.getElementById('hospitalName').textContent = doctor.hospital.name || 'Hospital';
-                document.getElementById('hospitalPhone').textContent = `📞 ${doctor.hospital.phone || 'N/A'}`;
-            }
-
-            // Consultation Fee
-            document.getElementById('consultationFee').textContent = `$${doctor.consultation_fee || '0'}`;
-
-            // Qualifications
-            if (doctor.qualifications && doctor.qualifications.length > 0) {
-                const qualList = document.getElementById('qualificationsList');
-                qualList.innerHTML = doctor.qualifications.map(q => `<li>${q}</li>`).join('');
-            }
-
-            // Experience
-            document.getElementById('experienceYears').textContent = `${doctor.experience_years || 0} years`;
-
-            // License Number
-            document.getElementById('licenseNumber').textContent = doctor.license_number || 'N/A';
-
-            // Available Days
-            if (doctor.available_days && doctor.available_days.length > 0) {
-                const daysList = document.getElementById('availableDaysList');
-                daysList.innerHTML = doctor.available_days.map(day => `<div class="day-badge">${day}</div>`).join('');
-            }
-
-            // Show content
-            document.getElementById('contentState').style.display = 'block';
         }
 
         // Get star rating display
@@ -584,16 +604,22 @@
 
         // Book appointment
         function bookAppointment() {
-            if (!currentDoctor) return;
+            if (!currentDoctor) {
+                showError('Doctor information not loaded');
+                return;
+            }
             
-            // Open appointment booking page or modal
-            const hospitalId = currentDoctor.hospital?.id || currentDoctor.hospital;
-            window.location.href = `../Patients/appointment-booking.html?doctor_id=${currentDoctor.id}&hospital_id=${hospitalId}`;
+            const hospitalId = currentDoctor.hospital?.id || '';
+            const doctorId = currentDoctor.id;
+            window.location.href = `../Patients/appointment-booking.html?doctor_id=${doctorId}&hospital_id=${hospitalId}`;
         }
 
         // View full profile
         function viewProfile() {
-            if (!currentDoctor) return;
+            if (!currentDoctor) {
+                showError('Doctor information not loaded');
+                return;
+            }
             window.location.href = `doctor-schedule.html?id=${currentDoctor.id}`;
         }
 

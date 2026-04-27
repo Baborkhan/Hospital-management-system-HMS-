@@ -73,20 +73,34 @@ class DoctorSerializer(serializers.Serializer):
     specialization = serializers.CharField()
     qualifications = serializers.ListField(child=serializers.CharField())
     experience_years = serializers.IntegerField(required=False)
-    hospital = serializers.CharField()  # Hospital ID
+    hospital = serializers.SerializerMethodField()
     consultation_fee = serializers.FloatField()
     available_days = serializers.ListField(child=serializers.CharField())
     rating = serializers.FloatField(read_only=True)
     review_count = serializers.IntegerField(read_only=True)
-    bio = serializers.CharField(required=False)
-    profile_image = serializers.URLField(required=False)
+    bio = serializers.CharField(required=False, allow_blank=True)
+    profile_image = serializers.URLField(required=False, allow_blank=True)
     license_number = serializers.CharField()
     is_active = serializers.BooleanField()
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
 
+    def get_hospital(self, obj):
+        """Get hospital with name and phone"""
+        if obj.hospital:
+            return {
+                'id': str(obj.hospital.pk),
+                'name': obj.hospital.name,
+                'phone': obj.hospital.phone,
+                'email': obj.hospital.email,
+                'specialties': obj.hospital.specialties
+            }
+        return None
+
     def create(self, validated_data):
-        hospital_id = validated_data.pop('hospital')
+        hospital_id = validated_data.pop('hospital', None)
+        if not hospital_id:
+            raise serializers.ValidationError("Hospital is required")
         hospital = Hospital.objects(pk=hospital_id).first()
         if not hospital:
             raise serializers.ValidationError("Hospital not found")
