@@ -1,8 +1,11 @@
 from datetime import datetime
 from bson.objectid import ObjectId
 from django.shortcuts import render, redirect
-from django.http import Http404
+from django.http import Http404, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from .mongo_client import get_database
+import json
 
 db = get_database()
 
@@ -86,3 +89,62 @@ def book_doctor(request, doctor_id):
 
 def booking_success(request):
     return render(request, 'core/booking_success.html')
+
+
+# API Views
+@csrf_exempt
+@require_http_methods(["GET"])
+def api_doctors(request):
+    doctors = list(db.doctors.find({}, {
+        '_id': {'$toString': '$_id'},
+        'name': 1,
+        'specialty': 1,
+        'fee': 1
+    }))
+    return JsonResponse(doctors, safe=False)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def api_appointment_book(request):
+    try:
+        data = request.POST
+        
+        required_fields = ['patient_name', 'patient_email', 'patient_phone', 'patient_dob', 
+                          'doctor_id', 'appointment_date', 'appointment_time', 'appointment_type', 'symptoms']
+        
+        for field in required_fields:
+            if field not in data or not data[field]:
+                return JsonResponse({'error': f'Missing required field: {field}'}, status=400)
+        
+        # Validate doctor exists
+        try:
+            doctor = db.doctors.find_one({'_id': ObjectId(data['doctor_id'])})
+            if not doctor:
+                return JsonResponse({'error': 'Doctor not found'}, status=404)
+        except:
+            return JsonResponse({'error': 'Invalid doctor ID'}, status=400)
+        
+        appointment = {
+            'patient_name': data['patient_name'],
+            'patient_email': data['patient_email'],
+            'patient_phone': data['patient_phone'],
+            'patient_dob': data['patient_dob'],
+            'doctor_id': ObjectId(data['doctor_id']),
+            'doctor_name': doctor['name'],
+            'appointment_date': data['appointment_date'],
+            'appointment_time': data['appointment_time'],
+            'appointment_type': data['appointment_type'],
+            'symptoms': data['symptoms'],
+            'medical_history': data.get('medical_history', ''),
+            'status': 'pending',
+            'created_at': datetime.utcnow(),
+        }
+        
+        result = db.appointments.insert_one(appointment)
+        appointment['_id'] = str(result.inserted_id)
+        
+        return JsonResponse({'message': 'Appointment booked successfully', 'appointment_id': appointment['_id']})
+    
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

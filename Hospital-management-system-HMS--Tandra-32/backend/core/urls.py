@@ -10,4 +10,7 @@ urlpatterns = [
     path('doctor/<str:doctor_id>/book/', views.book_doctor, name='book_doctor'),
     path('hospital/<str:hospital_id>/', views.hospital_detail, name='hospital_detail'),
     path('booking/success/', views.booking_success, name='booking_success'),
+    # API endpoints
+    path('api/doctors/', views.api_doctors, name='api_doctors'),
+    path('api/appointment-book/', views.api_appointment_book, name='api_appointment_book'),
 ]

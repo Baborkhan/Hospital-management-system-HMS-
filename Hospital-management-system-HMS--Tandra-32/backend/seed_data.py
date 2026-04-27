@@ -7,6 +7,7 @@ def seed():
     db.doctors.delete_many({})
     db.hospitals.delete_many({})
     db.bookings.delete_many({})
+    db.appointments.delete_many({})
 
     hospitals = [
         {
@@ -22,6 +23,13 @@ def seed():
             'division': 'Chittagong',
             'phone': '+8801711000002',
             'rating': 4.6,
+        },
+        {
+            'name': 'Rajshahi Medical Center',
+            'city': 'Rajshahi',
+            'division': 'Rajshahi',
+            'phone': '+8801711000003',
+            'rating': 4.7,
         },
     ]
     doctor_list = [
@@ -48,6 +56,30 @@ def seed():
             'hospital': 'Chittagong Care Clinic',
             'location': 'Chittagong City',
             'fee': 900,
+        },
+        {
+            'name': 'Dr. Rafiqul Islam',
+            'specialty': 'Orthopedics',
+            'qualification': 'MBBS, MS',
+            'hospital': 'Rajshahi Medical Center',
+            'location': 'Rajshahi City',
+            'fee': 1100,
+        },
+        {
+            'name': 'Dr. Nusrat Jahan',
+            'specialty': 'Dermatology',
+            'qualification': 'MBBS, DD',
+            'hospital': 'Dhaka Central Hospital',
+            'location': 'Banani, Dhaka',
+            'fee': 1000,
+        },
+        {
+            'name': 'Dr. Kamal Hossain',
+            'specialty': 'General Medicine',
+            'qualification': 'MBBS, MD',
+            'hospital': 'Chittagong Care Clinic',
+            'location': 'Chittagong City',
+            'fee': 800,
         },
     ]
 

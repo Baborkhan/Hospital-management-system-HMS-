@@ -34,3 +34,25 @@ This backend is a simple Django app that uses MongoDB for doctor, hospital, and 
 - `/doctor/<id>/book/` — Booking page
 - `/hospital/<id>/` — Hospital detail page
 - `/booking/success/` — Booking confirmation
+
+## API Endpoints
+
+- `GET /api/doctors/` — Get list of all doctors (JSON)
+- `POST /api/appointment-book/` — Book an appointment (form data)
+
+### Appointment Booking API
+
+POST to `/api/appointment-book/` with form data:
+
+- `patient_name` (required)
+- `patient_email` (required)
+- `patient_phone` (required)
+- `patient_dob` (required)
+- `doctor_id` (required)
+- `appointment_date` (required)
+- `appointment_time` (required)
+- `appointment_type` (required)
+- `symptoms` (required)
+- `medical_history` (optional)
+
+Returns JSON: `{"message": "Appointment booked successfully", "appointment_id": "..."}`
