@@ -1,7 +1,5 @@
-# donate/apps.py
 from django.apps import AppConfig
 
-class DonateConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name         = 'donate'
-    verbose_name = 'Donate Life'
+class LabsConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.labs"
