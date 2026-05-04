@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+  <title>Contact & Support | MedFind Bangladesh</title>
+  <meta name="description" content="Contact MedFind support team. Report bugs, get help, or send feedback.">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; margin: 0; }
+    .page-hero { background: linear-gradient(135deg, #0ea5e9, #0369a1); color: #fff; padding: 60px 20px 40px; text-align: center; }
+    .page-hero h1 { font-size: 2rem; margin-bottom: 8px; }
+    .page-hero p { opacity: 0.85; font-size: 1.05rem; }
+    .contact-wrap { max-width: 900px; margin: 40px auto; padding: 0 20px 60px; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+    @media(max-width:600px){ .contact-grid { grid-template-columns: 1fr; } }
+    .contact-card { background: #fff; border-radius: 12px; padding: 28px 24px; box-shadow: 0 2px 12px rgba(0,0,0,.07); text-align: center; }
+    .contact-card .icon { font-size: 2.2rem; margin-bottom: 12px; }
+    .contact-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+    .contact-card p { color: #64748b; font-size: 0.9rem; margin-bottom: 12px; }
+    .contact-card a { color: #0ea5e9; font-weight: 500; text-decoration: none; }
+    .form-card { background: #fff; border-radius: 12px; padding: 32px; box-shadow: 0 2px 12px rgba(0,0,0,.07); }
+    .form-card h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.9rem; font-weight: 500; margin-bottom: 6px; color: #374151; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 8px;
+      font-size: 0.95rem; font-family: inherit; outline: none; box-sizing: border-box;
+      transition: border-color .2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #0ea5e9; }
+    .form-group textarea { resize: vertical; min-height: 110px; }
+    .btn-submit { background: #0ea5e9; color: #fff; border: none; padding: 12px 28px; border-radius: 8px;
+      font-size: 1rem; font-weight: 600; cursor: pointer; transition: background .2s; width: 100%; }
+    .btn-submit:hover { background: #0369a1; }
+    .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
+    .success-msg { display: none; background: #dcfce7; color: #166534; border-radius: 8px;
+      padding: 14px 18px; margin-top: 16px; font-weight: 500; text-align: center; }
+    .faq-section { margin-top: 40px; }
+    .faq-section h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; }
+    .faq-item { background: #fff; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 6px rgba(0,0,0,.05); overflow: hidden; }
+    .faq-q { padding: 16px 20px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .faq-q:hover { background: #f0f9ff; }
+    .faq-a { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height .3s, padding .3s; color: #475569; font-size: 0.93rem; }
+    .faq-a.open { max-height: 200px; padding: 0 20px 16px; }
+  </style>
+</head>
+<body>
+
+<div class="page-hero">
+  <h1>💬 Contact & Support</h1>
+  <p>We're here to help. Reach out anytime.</p>
+</div>
+
+<div class="contact-wrap">
+
+  <div class="contact-grid">
+    <div class="contact-card">
+      <div class="icon">📧</div>
+      <h3>Email Support</h3>
+      <p>For general queries and feedback</p>
+      <a href="mailto:support@medfind.com.bd">support@medfind.com.bd</a>
+    </div>
+    <div class="contact-card">
+      <div class="icon">🐛</div>
+      <h3>Report a Bug</h3>
+      <p>Found something broken? Tell us</p>
+      <a href="mailto:bugs@medfind.com.bd">bugs@medfind.com.bd</a>
+    </div>
+    <div class="contact-card">
+      <div class="icon">🏥</div>
+      <h3>Hospital / Doctor Inquiry</h3>
+      <p>Partner with MedFind</p>
+      <a href="mailto:partners@medfind.com.bd">partners@medfind.com.bd</a>
+    </div>
+    <div class="contact-card">
+      <div class="icon">🚨</div>
+      <h3>Medical Emergency</h3>
+      <p>Do NOT email — call immediately</p>
+      <a href="tel:999"><strong>999</strong> (National) · 16167 (DGHS)</a>
+    </div>
+  </div>
+
+  <!-- Contact Form -->
+  <div class="form-card">
+    <h2>Send Us a Message</h2>
+    <div class="form-group">
+      <label>Your Name</label>
+      <input type="text" id="contactName" placeholder="Enter your name">
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="contactEmail" placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label>Topic</label>
+      <select id="contactTopic">
+        <option value="">-- Select a topic --</option>
+        <option>Bug Report</option>
+        <option>Account Issue</option>
+        <option>Appointment Problem</option>
+        <option>Payment Issue</option>
+        <option>Doctor / Hospital Info</option>
+        <option>Feature Request</option>
+        <option>General Feedback</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Message</label>
+      <textarea id="contactMsg" placeholder="Describe your issue or feedback..."></textarea>
+    </div>
+    <button class="btn-submit" id="submitBtn" onclick="submitForm()">Send Message</button>
+    <div class="success-msg" id="successMsg">✅ Thank you! We'll respond within 24 hours.</div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">How do I book an appointment? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a">Go to Doctor Search, select a doctor, choose an available slot, and confirm booking. You'll receive a confirmation.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Can I cancel my appointment? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a">Yes. Go to My Appointments in your dashboard and click Cancel. Refunds depend on the hospital's policy.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Is my medical data safe? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a">Yes. All medical records are stored securely. See our <a href="privacy.html">Privacy Policy</a> for details.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Is MedFind AI a replacement for a real doctor? <i class="fas fa-chevron-down"></i></div>
+      <div class="faq-a">No. MedFind AI provides general health guidance only. Always consult a qualified doctor for diagnosis and treatment.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function submitForm() {
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  const topic = document.getElementById('contactTopic').value;
+  const msg = document.getElementById('contactMsg').value.trim();
+  if (!name || !email || !topic || !msg) {
+    alert('Please fill in all fields.');
+    return;
+  }
+  if (!/\S+@\S+\.\S+/.test(email)) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  // In production, replace with real API call
+  setTimeout(() => {
+    document.getElementById('successMsg').style.display = 'block';
+    btn.textContent = 'Message Sent ✓';
+    document.getElementById('contactName').value = '';
+    document.getElementById('contactEmail').value = '';
+    document.getElementById('contactTopic').value = '';
+    document.getElementById('contactMsg').value = '';
+  }, 1000);
+}
+
+function toggleFaq(el) {
+  const ans = el.nextElementSibling;
+  const icon = el.querySelector('i');
+  ans.classList.toggle('open');
+  icon.style.transform = ans.classList.contains('open') ? 'rotate(180deg)' : '';
+}
+</script>
+</body>
+</html>
