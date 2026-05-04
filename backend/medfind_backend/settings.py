@@ -19,22 +19,36 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost', cast=lamb
 
 # Application definition
 INSTALLED_APPS = [
-    'django.contrib.contenttypes',
+    'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'api',
+    'api.apps.ApiConfig',
+    'general_app',
+    'configuration',
+    'core_app',
+    'donation',
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'medfind_backend.urls'
+# Custom user model
+AUTH_USER_MODEL = 'core_app.User'
+
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
@@ -52,28 +66,17 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'medfind_backend.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
-# Database Configuration - MongoDB
+# Database
+# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+
 DATABASES = {
     'default': {
-        'ENGINE': 'mongoengine',
-        'NAME': 'medfind_db',
-        'HOST': 'mongodb://localhost:27017',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-# MongoEngine Configuration
-from mongoengine import connect, disconnect
-
-MONGO_DBNAME = 'medfind_db'
-MONGO_URI = config('MONGO_URI', default='mongodb://localhost:27017')
-
-try:
-    disconnect()
-    connect(MONGO_DBNAME, host=MONGO_URI)
-except Exception as e:
-    print(f"MongoDB Connection Error: {e}")
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

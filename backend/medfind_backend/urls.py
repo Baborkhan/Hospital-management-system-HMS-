@@ -16,4 +16,5 @@ router.register(r'billing', views.BillingViewSet, basename='billing')
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api/auth/', include('api.urls')),
+    path('api/donation/', include('donation.urls')),
 ]

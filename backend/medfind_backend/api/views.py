@@ -36,17 +36,17 @@ class HospitalViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'rating', 'created_at']
 
     def get_queryset(self):
-        queryset = Hospital.objects(is_active=True)
+        queryset = Hospital.objects.filter(is_active=True)
         
         # Filter by city
         city = self.request.query_params.get('city', None)
         if city:
-            queryset = queryset(address__city=city)
+            queryset = queryset.filter(address__city=city)
         
         # Filter by specialty
         specialty = self.request.query_params.get('specialty', None)
         if specialty:
-            queryset = queryset(specialties=specialty)
+            queryset = queryset.filter(specialties__contains=[specialty])
         
         return queryset
 
@@ -62,7 +62,7 @@ class HospitalViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
-        hospital = Hospital.objects(pk=kwargs['pk']).first()
+        hospital = Hospital.objects.filter(pk=kwargs['pk']).first()
         if not hospital:
             return Response(
                 {'error': 'Hospital not found'},
@@ -74,21 +74,22 @@ class HospitalViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def doctors(self, request, pk=None):
         """Get all doctors in this hospital"""
-        hospital = Hospital.objects(pk=pk).first()
+        hospital = Hospital.objects.filter(pk=pk).first()
         if not hospital:
             return Response(
                 {'error': 'Hospital not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
-        doctors = Doctor.objects(hospital=hospital, is_active=True)
+        doctors = Doctor.objects.filter(hospital=hospital, is_active=True)
         serializer = DoctorSerializer(doctors, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
     def services(self, request, pk=None):
         """Get hospital services and specialties"""
-        hospital = Hospital.objects(pk=pk).first()
-        if not hospital:
+        try:
+            hospital = Hospital.objects.get(pk=pk)
+        except Hospital.DoesNotExist:
             return Response(
                 {'error': 'Hospital not found'},
                 status=status.HTTP_404_NOT_FOUND
@@ -112,12 +113,19 @@ class DoctorViewSet(viewsets.ModelViewSet):
     ordering_fields = ['first_name', 'rating', 'consultation_fee']
 
     def get_queryset(self):
-        queryset = Doctor.objects(is_active=True)
+        queryset = Doctor.objects.filter(is_active=True)
         
         # Filter by specialization
         specialization = self.request.query_params.get('specialization', None)
         if specialization:
-            queryset = queryset(specialization=specialization)
+            queryset = queryset.filter(specialization=specialization)
+        
+        # Filter by hospital
+        hospital_id = self.request.query_params.get('hospital', None)
+        if hospital_id:
+            queryset = queryset.filter(hospital_id=hospital_id)
+        
+        return queryset
         
         # Filter by hospital
         hospital_id = self.request.query_params.get('hospital_id', None)
@@ -159,11 +167,12 @@ class PatientViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        return Patient.objects(is_active=True)
+        return Patient.objects.filter(is_active=True)
 
     def retrieve(self, request, *args, **kwargs):
-        patient = Patient.objects(pk=kwargs['pk']).first()
-        if not patient:
+        try:
+            patient = Patient.objects.get(pk=kwargs['pk'])
+        except Patient.DoesNotExist:
             return Response(
                 {'error': 'Patient not found'},
                 status=status.HTTP_404_NOT_FOUND
@@ -174,26 +183,28 @@ class PatientViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def medical_history(self, request, pk=None):
         """Get patient's medical history"""
-        patient = Patient.objects(pk=pk).first()
-        if not patient:
+        try:
+            patient = Patient.objects.get(pk=pk)
+        except Patient.DoesNotExist:
             return Response(
                 {'error': 'Patient not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
-        history = MedicalHistory.objects(patient=patient)
+        history = MedicalHistory.objects.filter(patient=patient)
         serializer = MedicalHistorySerializer(history, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
     def appointments(self, request, pk=None):
         """Get patient's appointments"""
-        patient = Patient.objects(pk=pk).first()
-        if not patient:
+        try:
+            patient = Patient.objects.get(pk=pk)
+        except Patient.DoesNotExist:
             return Response(
                 {'error': 'Patient not found'},
                 status=status.HTTP_404_NOT_FOUND
             )
-        appointments = Appointment.objects(patient=patient)
+        appointments = Appointment.objects.filter(patient=patient)
         serializer = AppointmentSerializer(appointments, many=True)
         return Response(serializer.data)
 
@@ -206,11 +217,12 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        return Appointment.objects()
+        return Appointment.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
-        appointment = Appointment.objects(pk=kwargs['pk']).first()
-        if not appointment:
+        try:
+            appointment = Appointment.objects.get(pk=kwargs['pk'])
+        except Appointment.DoesNotExist:
             return Response(
                 {'error': 'Appointment not found'},
                 status=status.HTTP_404_NOT_FOUND
@@ -227,7 +239,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
                 {'error': 'patient_id is required'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        appointments = Appointment.objects(patient__pk=patient_id)
+        appointments = Appointment.objects.filter(patient__pk=patient_id)
         serializer = self.get_serializer(appointments, many=True)
         return Response(serializer.data)
 
@@ -240,7 +252,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
                 {'error': 'doctor_id is required'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        appointments = Appointment.objects(doctor__pk=doctor_id)
+        appointments = Appointment.objects.filter(doctor__pk=doctor_id)
         serializer = self.get_serializer(appointments, many=True)
         return Response(serializer.data)
 
@@ -253,11 +265,12 @@ class LabTestViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        return LabTest.objects()
+        return LabTest.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
-        lab_test = LabTest.objects(pk=kwargs['pk']).first()
-        if not lab_test:
+        try:
+            lab_test = LabTest.objects.get(pk=kwargs['pk'])
+        except LabTest.DoesNotExist:
             return Response(
                 {'error': 'Lab test not found'},
                 status=status.HTTP_404_NOT_FOUND
@@ -274,7 +287,7 @@ class LabTestViewSet(viewsets.ModelViewSet):
                 {'error': 'patient_id is required'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        tests = LabTest.objects(patient__pk=patient_id)
+        tests = LabTest.objects.filter(patient__pk=patient_id)
         serializer = self.get_serializer(tests, many=True)
         return Response(serializer.data)
 

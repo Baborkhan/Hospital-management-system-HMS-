@@ -1,6 +1,6 @@
 """
 Sample data seeding script for MEDFIND
-Run this script to populate MongoDB with sample data
+Run this script to populate database with sample data
 Usage: python seed_data.py
 """
 
@@ -10,27 +10,433 @@ import django
 from datetime import datetime, timedelta
 
 # Setup Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'medfind_backend.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 django.setup()
 
 from api.models import (
     Hospital, Doctor, Patient, Appointment, LabTest,
-    Billing, Pharmacy, MedicalHistory, Address, WorkingHours
+    Billing, Pharmacy, MedicalHistory
 )
+from core_app.models import User
 
 
 def clear_collections():
     """Clear all collections"""
     print("🗑️  Clearing existing data...")
-    Hospital.drop_collection()
-    Doctor.drop_collection()
-    Patient.drop_collection()
-    Appointment.drop_collection()
-    LabTest.drop_collection()
-    Billing.drop_collection()
-    Pharmacy.drop_collection()
-    MedicalHistory.drop_collection()
-    print("✅ Collections cleared")
+    Hospital.objects.all().delete()
+    Doctor.objects.all().delete()
+    Patient.objects.all().delete()
+    Appointment.objects.all().delete()
+    LabTest.objects.all().delete()
+    Billing.objects.all().delete()
+    Pharmacy.objects.all().delete()
+    MedicalHistory.objects.all().delete()
+    User.objects.all().delete()
+    print("✅ Data cleared successfully!")
+
+
+def seed_hospitals():
+    """Seed hospital data"""
+    print("🏥 Seeding hospitals...")
+    hospitals_data = [
+        {
+            "name": "City General Hospital",
+            "email": "info@citygeneral.com",
+            "phone": "+1-555-0101",
+            "license_number": "LIC001",
+            "address": {
+                "street": "123 Main St",
+                "city": "New York",
+                "state": "NY",
+                "zip_code": "10001",
+                "country": "USA"
+            },
+            "specialties": ["Cardiology", "Neurology", "Orthopedics"],
+            "bed_count": 200,
+            "rating": 4.5,
+            "description": "A leading healthcare facility providing comprehensive medical services."
+        },
+        {
+            "name": "Metro Health Center",
+            "email": "contact@metrohealth.com",
+            "phone": "+1-555-0102",
+            "license_number": "LIC002",
+            "address": {
+                "street": "456 Health Ave",
+                "city": "Los Angeles",
+                "state": "CA",
+                "zip_code": "90210",
+                "country": "USA"
+            },
+            "specialties": ["Pediatrics", "Dermatology", "Gynecology"],
+            "bed_count": 150,
+            "rating": 4.2,
+            "description": "Specialized in family healthcare and pediatric services."
+        }
+    ]
+    
+    hospitals = []
+    for data in hospitals_data:
+        hospital = Hospital.objects.create(**data)
+        hospitals.append(hospital)
+        print(f"  ✅ Created hospital: {hospital.name}")
+    
+    return hospitals
+
+
+def seed_doctors():
+    """Seed doctor data"""
+    print("👨‍⚕️ Seeding doctors...")
+    hospitals = list(Hospital.objects.all())
+    
+    doctors_data = [
+        {
+            "first_name": "Sarah",
+            "last_name": "Johnson",
+            "email": "sarah.johnson@citygeneral.com",
+            "phone": "+1-555-0201",
+            "specialization": "Cardiology",
+            "license_number": "MD12345",
+            "experience_years": 15,
+            "qualifications": ["MD from Harvard Medical School"],
+            "hospital": hospitals[0],
+            "consultation_fee": 200.00,
+            "rating": 4.8
+        },
+        {
+            "first_name": "Michael",
+            "last_name": "Chen",
+            "email": "michael.chen@metrohealth.com",
+            "phone": "+1-555-0202",
+            "specialization": "Pediatrics",
+            "license_number": "MD12346",
+            "experience_years": 12,
+            "qualifications": ["MD from Johns Hopkins"],
+            "hospital": hospitals[1],
+            "consultation_fee": 150.00,
+            "rating": 4.6
+        }
+    ]
+    
+    doctors = []
+    for data in doctors_data:
+        doctor = Doctor.objects.create(**data)
+        doctors.append(doctor)
+        print(f"  ✅ Created doctor: {doctor.first_name} {doctor.last_name}")
+    
+    return doctors
+
+
+def seed_patients():
+    """Seed patient data"""
+    print("👤 Seeding patients...")
+    
+    patients_data = [
+        {
+            "name": "John Smith",
+            "email": "john.smith@email.com",
+            "phone": "+1-555-0301",
+            "date_of_birth": "1985-03-15",
+            "gender": "Male",
+            "address": {
+                "street": "789 Oak St",
+                "city": "New York",
+                "state": "NY",
+                "zip_code": "10002",
+                "country": "USA"
+            },
+            "emergency_contact": {
+                "name": "Jane Smith",
+                "phone": "+1-555-0302",
+                "relationship": "Wife"
+            },
+            "medical_history": ["Hypertension", "Allergies"],
+            "blood_group": "O+",
+            "insurance_provider": "Blue Cross",
+            "insurance_number": "BC123456"
+        },
+        {
+            "name": "Emily Davis",
+            "email": "emily.davis@email.com",
+            "phone": "+1-555-0303",
+            "date_of_birth": "1990-07-22",
+            "gender": "Female",
+            "address": {
+                "street": "321 Pine St",
+                "city": "Los Angeles",
+                "state": "CA",
+                "zip_code": "90211",
+                "country": "USA"
+            },
+            "emergency_contact": {
+                "name": "Robert Davis",
+                "phone": "+1-555-0304",
+                "relationship": "Husband"
+            },
+            "medical_history": ["Asthma"],
+            "blood_group": "A-",
+            "insurance_provider": "Aetna",
+            "insurance_number": "AE789012"
+        }
+    ]
+    
+    patients = []
+    for data in patients_data:
+        patient = Patient.objects.create(**data)
+        patients.append(patient)
+        print(f"  ✅ Created patient: {patient.name}")
+    
+    return patients
+
+
+def seed_appointments():
+    """Seed appointment data"""
+    print("📅 Seeding appointments...")
+    doctors = list(Doctor.objects.all())
+    patients = list(Patient.objects.all())
+    hospitals = list(Hospital.objects.all())
+    
+    appointments_data = [
+        {
+            "patient": patients[0],
+            "doctor": doctors[0],
+            "hospital": hospitals[0],
+            "appointment_date": datetime.now() + timedelta(days=1),
+            "appointment_time": "10:00:00",
+            "reason": "Regular checkup",
+            "status": "Scheduled",
+            "notes": "Patient reports mild chest pain"
+        },
+        {
+            "patient": patients[1],
+            "doctor": doctors[1],
+            "hospital": hospitals[1],
+            "appointment_date": datetime.now() + timedelta(days=2),
+            "appointment_time": "14:30:00",
+            "reason": "Child vaccination",
+            "status": "Scheduled",
+            "notes": "Annual vaccination schedule"
+        }
+    ]
+    
+    appointments = []
+    for data in appointments_data:
+        appointment = Appointment.objects.create(**data)
+        appointments.append(appointment)
+        print(f"  ✅ Created appointment for: {appointment.patient.name}")
+    
+    return appointments
+
+
+def seed_lab_tests():
+    """Seed lab test data"""
+    print("🧪 Seeding lab tests...")
+    patients = list(Patient.objects.all())
+    hospitals = list(Hospital.objects.all())
+    
+    lab_tests_data = [
+        {
+            "patient": patients[0],
+            "hospital": hospitals[0],
+            "test_name": "Blood Test",
+            "test_code": "BT001",
+            "test_date": datetime.now() - timedelta(days=1),
+            "results": {
+                "hemoglobin": "14.2 g/dL",
+                "white_blood_cells": "7500 /μL",
+                "platelets": "250000 /μL"
+            },
+            "status": "Completed",
+            "notes": "Normal blood count"
+        },
+        {
+            "patient": patients[1],
+            "hospital": hospitals[1],
+            "test_name": "X-Ray Chest",
+            "test_code": "XR001",
+            "test_date": datetime.now() - timedelta(days=2),
+            "results": {
+                "findings": "Clear lung fields",
+                "impression": "No abnormalities detected"
+            },
+            "status": "Completed",
+            "notes": "Routine chest X-ray"
+        }
+    ]
+    
+    lab_tests = []
+    for data in lab_tests_data:
+        lab_test = LabTest.objects.create(**data)
+        lab_tests.append(lab_test)
+        print(f"  ✅ Created lab test: {lab_test.test_name}")
+    
+    return lab_tests
+
+
+def seed_billing():
+    """Seed billing data"""
+    print("💰 Seeding billing...")
+    patients = list(Patient.objects.all())
+    hospitals = list(Hospital.objects.all())
+    
+    billing_data = [
+        {
+            "patient": patients[0],
+            "hospital": hospitals[0],
+            "invoice_number": "INV001",
+            "invoice_date": datetime.now() - timedelta(days=1),
+            "services": [
+                {"name": "Consultation", "amount": 200.00},
+                {"name": "Blood Test", "amount": 50.00}
+            ],
+            "total_amount": 250.00,
+            "paid_amount": 250.00,
+            "payment_status": "Paid",
+            "payment_method": "Credit Card",
+            "due_date": datetime.now() + timedelta(days=30)
+        },
+        {
+            "patient": patients[1],
+            "hospital": hospitals[1],
+            "invoice_number": "INV002",
+            "invoice_date": datetime.now() - timedelta(days=2),
+            "services": [
+                {"name": "Consultation", "amount": 150.00},
+                {"name": "X-Ray", "amount": 100.00}
+            ],
+            "total_amount": 250.00,
+            "paid_amount": 0.00,
+            "payment_status": "Pending",
+            "payment_method": "Insurance",
+            "due_date": datetime.now() + timedelta(days=30)
+        }
+    ]
+    
+    billing_records = []
+    for data in billing_data:
+        billing = Billing.objects.create(**data)
+        billing_records.append(billing)
+        print(f"  ✅ Created billing record: {billing.invoice_number}")
+    
+    return billing_records
+
+
+def seed_pharmacy():
+    """Seed pharmacy data"""
+    print("💊 Seeding pharmacy...")
+    hospitals = list(Hospital.objects.all())
+    
+    pharmacy_data = [
+        {
+            "hospital": hospitals[0],
+            "medicine_name": "Aspirin",
+            "medicine_code": "ASP001",
+            "generic_name": "Acetylsalicylic Acid",
+            "dosage": "100mg",
+            "manufacturer": "PharmaCorp",
+            "batch_number": "BATCH001",
+            "expiry_date": datetime.now() + timedelta(days=365),
+            "quantity": 100,
+            "unit_price": 5.00,
+            "category": "Pain Relief"
+        },
+        {
+            "hospital": hospitals[1],
+            "medicine_name": "Amoxicillin",
+            "medicine_code": "AMX001",
+            "generic_name": "Amoxicillin",
+            "dosage": "500mg",
+            "manufacturer": "MediPharm",
+            "batch_number": "BATCH002",
+            "expiry_date": datetime.now() + timedelta(days=300),
+            "quantity": 50,
+            "unit_price": 12.00,
+            "category": "Antibiotic"
+        }
+    ]
+    
+    pharmacy_items = []
+    for data in pharmacy_data:
+        item = Pharmacy.objects.create(**data)
+        pharmacy_items.append(item)
+        print(f"  ✅ Created pharmacy item: {item.medicine_name}")
+    
+    return pharmacy_items
+
+
+def seed_medical_history():
+    """Seed medical history data"""
+    print("📋 Seeding medical history...")
+    patients = list(Patient.objects.all())
+    doctors = list(Doctor.objects.all())
+    hospitals = list(Hospital.objects.all())
+    
+    medical_history_data = [
+        {
+            "patient": patients[0],
+            "doctor": doctors[0],
+            "hospital": hospitals[0],
+            "record_date": datetime.now() - timedelta(days=30),
+            "diagnosis": "Hypertension",
+            "treatment": "Prescribed medication",
+            "prescription": "Lisinopril 10mg daily",
+            "notes": "Patient shows improvement",
+            "follow_up_date": datetime.now() + timedelta(days=30)
+        },
+        {
+            "patient": patients[1],
+            "doctor": doctors[1],
+            "hospital": hospitals[1],
+            "record_date": datetime.now() - timedelta(days=15),
+            "diagnosis": "Common Cold",
+            "treatment": "Rest and fluids",
+            "prescription": "Over-the-counter medications",
+            "notes": "Mild symptoms, recovering well",
+            "follow_up_date": datetime.now() + timedelta(days=7)
+        }
+    ]
+    
+    medical_records = []
+    for data in medical_history_data:
+        record = MedicalHistory.objects.create(**data)
+        medical_records.append(record)
+        print(f"  ✅ Created medical record for: {record.patient.name}")
+    
+    return medical_records
+
+
+def main():
+    """Main seeding function"""
+    print("🌱 Starting database seeding...")
+    
+    try:
+        clear_collections()
+        hospitals = seed_hospitals()
+        doctors = seed_doctors()
+        patients = seed_patients()
+        appointments = seed_appointments()
+        lab_tests = seed_lab_tests()
+        billing = seed_billing()
+        pharmacy = seed_pharmacy()
+        medical_history = seed_medical_history()
+        
+        print("\n🎉 Database seeding completed successfully!")
+        print(f"   Hospitals: {len(hospitals)}")
+        print(f"   Doctors: {len(doctors)}")
+        print(f"   Patients: {len(patients)}")
+        print(f"   Appointments: {len(appointments)}")
+        print(f"   Lab Tests: {len(lab_tests)}")
+        print(f"   Billing Records: {len(billing)}")
+        print(f"   Pharmacy Items: {len(pharmacy)}")
+        print(f"   Medical Records: {len(medical_history)}")
+        
+    except Exception as e:
+        print(f"❌ Error during seeding: {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
 
 
 def create_hospitals():

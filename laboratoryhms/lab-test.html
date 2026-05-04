@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lab Test Booking Bangladesh - Browse and book diagnostic tests at partner labs with BDT pricing.">
+<title>Lab Tests - MedFind</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;--secondary:#0d9488;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--purple:#7c3aed;--white:#fff;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-500:#6b7280;--gray-700:#374151;--gray-800:#1f2937;--gray-900:#111827;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:#f1f5f9;color:var(--gray-800);}
+
+        /* NAVBAR */
+        .navbar{background:var(--white);height:64px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+        .nav-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+        .nav-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;}
+        .nav-text{font-size:1.2rem;font-weight:800;color:var(--primary);}
+        .nav-links{display:flex;gap:1rem;}
+        .nav-links a{font-size:.875rem;font-weight:500;color:var(--gray-700);text-decoration:none;padding:.4rem .75rem;border-radius:8px;transition:.2s;}
+        .nav-links a:hover{color:var(--primary);background:var(--gray-50);}
+        .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1.1rem;border-radius:10px;font-weight:600;font-size:.875rem;cursor:pointer;border:none;text-decoration:none;transition:.2s;}
+        .btn-primary{background:var(--primary);color:#fff;}
+        .btn-primary:hover{background:var(--primary-dark);}
+
+        /* HERO */
+        .lab-hero{background:linear-gradient(135deg,#4f2ea0,var(--purple),#2563eb);padding:3rem 2rem;text-align:center;color:#fff;}
+        .lab-hero h1{font-size:2.2rem;font-weight:800;margin-bottom:.75rem;}
+        .lab-hero p{font-size:1rem;opacity:.9;max-width:600px;margin:0 auto 1.5rem;}
+        .hero-steps{display:flex;justify-content:center;gap:2rem;margin-top:2rem;}
+        .step{display:flex;align-items:center;gap:.6rem;font-size:.9rem;font-weight:600;}
+        .step-num{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;}
+        .step-arrow{opacity:.5;font-size:.8rem;}
+
+        /* CONTAINER */
+        .container{max-width:1300px;margin:0 auto;padding:2rem;}
+
+        /* STEP 1 - SELECT HOSPITAL */
+        .step-section{display:none;}
+        .step-section.active{display:block;}
+        .section-title{font-size:1.3rem;font-weight:800;color:var(--gray-900);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;}
+        .section-sub{font-size:.9rem;color:var(--gray-500);margin-bottom:1.5rem;}
+        
+        /* HOSPITAL SEARCH */
+        .hospital-search{background:var(--white);border-radius:16px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:1.5rem;}
+        .h-search-row{display:flex;gap:1rem;flex-wrap:wrap;}
+        .h-search-input{flex:1;display:flex;align-items:center;gap:.5rem;background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:10px;padding:.55rem 1rem;}
+        .h-search-input input{flex:1;border:none;background:none;outline:none;font-size:.9rem;}
+        .h-select{padding:.55rem 1rem;border:1.5px solid var(--gray-200);border-radius:10px;font-size:.875rem;outline:none;background:var(--white);min-width:200px;cursor:pointer;}
+        .h-select:focus{border-color:var(--primary);}
+
+        /* HOSPITAL GRID */
+        .hospital-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;}
+        .hosp-card{background:var(--white);border-radius:16px;border:2px solid var(--gray-200);padding:1.25rem;cursor:pointer;transition:.3s;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+        .hosp-card:hover{border-color:var(--purple);box-shadow:0 6px 20px rgba(124,58,237,.12);transform:translateY(-2px);}
+        .hosp-card.selected{border-color:var(--purple);background:#fdf4ff;box-shadow:0 6px 20px rgba(124,58,237,.2);}
+        .hc-top{display:flex;gap:.9rem;align-items:flex-start;margin-bottom:1rem;}
+        .hc-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;flex-shrink:0;}
+        .hc-info h3{font-size:.95rem;font-weight:700;margin-bottom:.2rem;}
+        .hc-info p{font-size:.8rem;color:var(--gray-500);}
+        .hc-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem;}
+        .hc-tag{background:var(--gray-100);color:var(--gray-700);padding:.2rem .55rem;border-radius:5px;font-size:.72rem;font-weight:500;}
+        .hc-tag.lab{background:#f3e8ff;color:var(--purple);}
+        .hc-stats{display:flex;gap:1.5rem;font-size:.8rem;color:var(--gray-600);}
+        .hc-stats span{display:flex;align-items:center;gap:.3rem;}
+        .hc-select-btn{width:100%;margin-top:.9rem;padding:.6rem;border:1.5px solid var(--purple);border-radius:10px;color:var(--purple);background:none;font-weight:700;font-size:.875rem;cursor:pointer;transition:.2s;}
+        .hc-select-btn:hover,.hosp-card.selected .hc-select-btn{background:var(--purple);color:#fff;}
+
+        /* STEP INDICATOR */
+        .step-indicator{display:flex;align-items:center;gap:0;margin-bottom:2rem;background:var(--white);border-radius:16px;padding:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+        .si-step{flex:1;display:flex;align-items:center;flex-direction:column;gap:.35rem;position:relative;}
+        .si-step::after{content:'';position:absolute;top:18px;left:calc(50% + 22px);right:calc(-50% + 22px);height:2px;background:var(--gray-200);}
+        .si-step:last-child::after{display:none;}
+        .si-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;border:2px solid var(--gray-200);background:var(--white);color:var(--gray-500);z-index:1;}
+        .si-step.done .si-num{background:var(--success);color:#fff;border-color:var(--success);}
+        .si-step.active .si-num{background:var(--purple);color:#fff;border-color:var(--purple);}
+        .si-step.active::after{background:var(--gray-200);}
+        .si-step.done::after{background:var(--success);}
+        .si-label{font-size:.78rem;font-weight:600;color:var(--gray-500);}
+        .si-step.active .si-label,.si-step.done .si-label{color:var(--gray-800);}
+
+        /* STEP 2 - TESTS */
+        .selected-hospital-bar{background:linear-gradient(90deg,var(--purple),#6d28d9);color:#fff;border-radius:14px;padding:1rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;}
+        .shb-left{display:flex;align-items:center;gap:.75rem;}
+        .shb-left h3{font-size:1rem;font-weight:700;}
+        .shb-left p{font-size:.8rem;opacity:.85;}
+        .change-hosp-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;padding:.4rem .9rem;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;transition:.2s;}
+        .change-hosp-btn:hover{background:rgba(255,255,255,.3);}
+
+        /* TEST CATEGORIES */
+        .test-cat-bar{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+        .tcat-pill{padding:.4rem 1rem;border-radius:100px;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-700);font-size:.8rem;font-weight:600;cursor:pointer;transition:.2s;}
+        .tcat-pill.active{background:var(--purple);color:#fff;border-color:var(--purple);}
+        .tcat-pill:hover:not(.active){border-color:var(--purple);color:var(--purple);}
+
+        /* TEST GRID */
+        .test-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+        .test-card{background:var(--white);border-radius:14px;padding:1.1rem;border:2px solid var(--gray-200);transition:.2s;cursor:pointer;position:relative;}
+        .test-card:hover{border-color:var(--purple);box-shadow:0 4px 15px rgba(124,58,237,.1);}
+        .test-card.selected{border-color:var(--purple);background:#fdf4ff;}
+        .test-card .selected-check{position:absolute;top:.75rem;right:.75rem;width:22px;height:22px;border-radius:50%;background:var(--purple);color:#fff;display:none;align-items:center;justify-content:center;font-size:.7rem;}
+        .test-card.selected .selected-check{display:flex;}
+        .test-icon{width:40px;height:40px;border-radius:10px;background:#f3e8ff;color:var(--purple);display:flex;align-items:center;justify-content:center;font-size:1rem;margin-bottom:.75rem;}
+        .test-name{font-size:.9rem;font-weight:700;color:var(--gray-900);margin-bottom:.3rem;}
+        .test-desc{font-size:.78rem;color:var(--gray-500);margin-bottom:.75rem;line-height:1.4;}
+        .test-footer{display:flex;align-items:center;justify-content:space-between;}
+        .test-price{font-size:1rem;font-weight:800;color:var(--purple);}
+        .test-time{font-size:.75rem;color:var(--gray-500);}
+
+        /* CART */
+        .cart-panel{position:fixed;right:1.5rem;bottom:1.5rem;z-index:500;background:var(--white);border-radius:20px;box-shadow:0 8px 30px rgba(0,0,0,.15);padding:1.25rem;width:320px;border:1.5px solid var(--purple);display:none;}
+        .cart-panel.show{display:block;}
+        .cart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+        .cart-title{font-size:1rem;font-weight:700;color:var(--gray-900);}
+        .cart-count{background:var(--purple);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;}
+        .cart-items{max-height:200px;overflow-y:auto;margin-bottom:1rem;}
+        .cart-item{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--gray-100);font-size:.85rem;}
+        .cart-item-name{color:var(--gray-800);font-weight:500;}
+        .cart-item-price{color:var(--purple);font-weight:700;}
+        .cart-remove{color:var(--danger);cursor:pointer;border:none;background:none;font-size:.8rem;margin-left:.5rem;}
+        .cart-total{display:flex;justify-content:space-between;font-size:1rem;font-weight:800;color:var(--gray-900);padding:.75rem 0;border-top:2px solid var(--gray-200);margin-bottom:.75rem;}
+        .cart-book-btn{width:100%;padding:.8rem;background:var(--purple);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer;transition:.2s;}
+        .cart-book-btn:hover{background:#6d28d9;}
+        .float-cart-btn{position:fixed;bottom:1.5rem;right:1.5rem;z-index:499;background:var(--purple);color:#fff;padding:.8rem 1.5rem;border-radius:100px;border:none;font-weight:700;font-size:.9rem;cursor:pointer;box-shadow:0 4px 15px rgba(124,58,237,.4);display:flex;align-items:center;gap:.5rem;}
+
+        @media(max-width:768px){.hero-steps{flex-direction:column;gap:.75rem;}.hospital-grid{grid-template-columns:1fr;}.test-grid{grid-template-columns:1fr 1fr;}.cart-panel{right:.5rem;left:.5rem;width:auto;}.h-search-row{flex-direction:column;}}
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="../../index.html" class="nav-brand"><img src="../../assets/medfind-logo.png" alt="MedFind Bangladesh" style="height:44px;width:auto;object-fit:contain;">
+    </a>
+    <div class="nav-links">
+        <a href="../patients/dashboard.html">Dashboard</a>
+        <a href="../hospital/list.html">Hospitals</a>
+        <a href="../doctors/search.html">Doctors</a>
+        <a href="../patients/medical-history.html">My Records</a>
+    </div>
+    <a href="../patients/dashboard.html" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+</nav>
+
+<!-- HERO -->
+<div class="lab-hero">
+    <h1><i class="fas fa-flask"></i> Book Lab Tests Online</h1>
+    <p>Select a hospital, choose your tests, and confirm your booking — all in 3 simple steps. Results available online.</p>
+    <div class="hero-steps">
+        <div class="step"><div class="step-num">1</div> Select Hospital</div>
+        <div class="step-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><div class="step-num">2</div> Choose Tests</div>
+        <div class="step-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><div class="step-num">3</div> Confirm Booking</div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- STEP INDICATOR -->
+    <div class="step-indicator">
+        <div class="si-step active" id="si1">
+            <div class="si-num"><i class="fas fa-hospital"></i></div>
+            <div class="si-label">Select Hospital</div>
+        </div>
+        <div class="si-step" id="si2">
+            <div class="si-num"><i class="fas fa-flask"></i></div>
+            <div class="si-label">Choose Tests</div>
+        </div>
+        <div class="si-step" id="si3">
+            <div class="si-num"><i class="fas fa-check"></i></div>
+            <div class="si-label">Confirm Booking</div>
+        </div>
+    </div>
+
+    <!-- STEP 1: SELECT HOSPITAL -->
+    <div class="step-section active" id="step1">
+        <div class="section-title"><i class="fas fa-hospital" style="color:var(--purple)"></i> Step 1: Select a Hospital or Diagnostic Center</div>
+        <div class="section-sub">The tests available will be based on your selected facility. All facilities cover Bangladesh-wide.</div>
+
+        <div class="hospital-search">
+            <div class="h-search-row">
+                <div class="h-search-input">
+                    <i class="fas fa-search" style="color:var(--gray-500)"></i>
+                    <input type="text" placeholder="Search hospitals by name or area..." oninput="filterHospitals(this.value)">
+                </div>
+                <select class="h-select" onchange="filterByDiv(this.value)">
+                    <option value="all">All Divisions</option>
+                    <option value="Dhaka">Dhaka Division</option>
+                    <option value="Chittagong">Chittagong Division</option>
+                    <option value="Rajshahi">Rajshahi Division</option>
+                    <option value="Khulna">Khulna Division</option>
+                    <option value="Sylhet">Sylhet Division</option>
+                    <option value="Barisal">Barisal Division</option>
+                    <option value="Rangpur">Rangpur Division</option>
+                </select>
+                <select class="h-select">
+                    <option>All Types</option>
+                    <option>Government Hospital</option>
+                    <option>Private Hospital</option>
+                    <option>Diagnostic Center</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="hospital-grid" id="hospitalGrid">
+            <!-- Rendered by JS -->
+        </div>
+    </div>
+
+    <!-- STEP 2: CHOOSE TESTS -->
+    <div class="step-section" id="step2">
+        <div class="selected-hospital-bar" id="selectedHospBar">
+            <div class="shb-left">
+                <i class="fas fa-hospital" style="font-size:1.5rem"></i>
+                <div>
+                    <h3 id="selectedHospName">Hospital Name</h3>
+                    <p id="selectedHospAddr">Hospital Address</p>
+                </div>
+            </div>
+            <button class="change-hosp-btn" onclick="goStep(1)"><i class="fas fa-exchange-alt"></i> Change Hospital</button>
+        </div>
+
+        <div class="section-title"><i class="fas fa-flask" style="color:var(--purple)"></i> Step 2: Choose Your Lab Tests</div>
+        <div class="section-sub">Select one or more tests. Your choices are added to the cart automatically.</div>
+
+        <div class="test-cat-bar">
+            <div class="tcat-pill active" onclick="filterTests('all',this)">All Tests</div>
+            <div class="tcat-pill" onclick="filterTests('blood',this)">Blood Tests</div>
+            <div class="tcat-pill" onclick="filterTests('urine',this)">Urine Tests</div>
+            <div class="tcat-pill" onclick="filterTests('imaging',this)">Imaging</div>
+            <div class="tcat-pill" onclick="filterTests('cardiac',this)">Cardiac</div>
+            <div class="tcat-pill" onclick="filterTests('hormone',this)">Hormones</div>
+            <div class="tcat-pill" onclick="filterTests('infection',this)">Infection</div>
+            <div class="tcat-pill" onclick="filterTests('cancer',this)">Cancer Markers</div>
+        </div>
+
+        <div class="test-grid" id="testGrid">
+            <!-- Rendered by JS -->
+        </div>
+    </div>
+
+    <!-- STEP 3: CONFIRM -->
+    <div class="step-section" id="step3">
+        <div class="section-title"><i class="fas fa-check-circle" style="color:var(--success)"></i> Step 3: Confirm Your Booking</div>
+        <div id="confirmSummary" style="background:var(--white);border-radius:16px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+            <!-- JS rendered -->
+        </div>
+    </div>
+</div>
+
+<!-- CART PANEL -->
+<div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+        <span class="cart-title"><i class="fas fa-shopping-cart"></i> Your Tests</span>
+        <span class="cart-count" id="cartCount">0</span>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-total"><span>Total</span><span id="cartTotal">৳0</span></div>
+    <button class="cart-book-btn" onclick="goStep(3)"><i class="fas fa-calendar-check"></i> Proceed to Book</button>
+</div>
+
+<button class="float-cart-btn" id="floatCartBtn" onclick="toggleCart()" style="display:none">
+    <i class="fas fa-flask"></i> <span id="floatCartText">0 Tests Selected</span>
+</button>
+
+<script>
+const hospitals = [
+    {id:1,name:'Dhaka Medical College Hospital',addr:'Bakshibazar, Dhaka',division:'Dhaka',rating:4.5,tests:35,type:'Government'},
+    {id:2,name:'BSMMU (PG Hospital)',addr:'Shahbagh, Dhaka',division:'Dhaka',rating:4.6,tests:40,type:'Government'},
+    {id:3,name:'Square Hospitals Ltd.',addr:'West Panthapath, Dhaka',division:'Dhaka',rating:4.8,tests:38,type:'Private'},
+    {id:4,name:'Popular Diagnostic Centre',addr:'Dhanmondi, Dhaka',division:'Dhaka',rating:4.7,tests:45,type:'Diagnostic'},
+    {id:5,name:'Labaid Diagnostic Centre',addr:'Dhanmondi, Dhaka',division:'Dhaka',rating:4.6,tests:42,type:'Diagnostic'},
+    {id:6,name:'Ibn Sina Hospital',addr:'Kallyanpur, Dhaka',division:'Dhaka',rating:4.5,tests:36,type:'Private'},
+    {id:7,name:'Evercare Hospital',addr:'Bashundhara, Dhaka',division:'Dhaka',rating:4.9,tests:50,type:'Private'},
+    {id:8,name:'Chittagong Medical College',addr:'Pahartali, Chittagong',division:'Chittagong',rating:4.3,tests:30,type:'Government'},
+    {id:9,name:'Rajshahi Medical College',addr:'Rajshahi 6000',division:'Rajshahi',rating:4.2,tests:28,type:'Government'},
+    {id:10,name:'Khulna Medical College',addr:'Khulna 9000',division:'Khulna',rating:4.1,tests:25,type:'Government'},
+];
+const hColors=['linear-gradient(135deg,#2563eb,#3b82f6)','linear-gradient(135deg,#7c3aed,#8b5cf6)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#0d9488,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)'];
+
+const tests = [
+    {id:1,name:'CBC (Complete Blood Count)',cat:'blood',price:350,time:'Same Day',desc:'Full blood analysis including RBC, WBC, platelets, hemoglobin'},
+    {id:2,name:'Blood Sugar Fasting (FBS)',cat:'blood',price:150,time:'2 Hours',desc:'Measures fasting blood glucose level for diabetes screening'},
+    {id:3,name:'Blood Sugar Random (RBS)',cat:'blood',price:100,time:'1 Hour',desc:'Random blood glucose test at any time of day'},
+    {id:4,name:'HbA1c (Glycated Hemoglobin)',cat:'blood',price:500,time:'Same Day',desc:'3-month average blood sugar level for diabetes monitoring'},
+    {id:5,name:'Lipid Profile (Full)',cat:'blood',price:700,time:'Same Day',desc:'Total cholesterol, LDL, HDL, triglycerides — cardiovascular risk'},
+    {id:6,name:'Liver Function Tests (LFT)',cat:'blood',price:900,time:'Same Day',desc:'SGPT, SGOT, bilirubin, albumin — liver health panel'},
+    {id:7,name:'Kidney Function Tests (KFT)',cat:'blood',price:800,time:'Same Day',desc:'Creatinine, urea, uric acid, eGFR — kidney health assessment'},
+    {id:8,name:'Serum Creatinine',cat:'blood',price:200,time:'Same Day',desc:'Kidney waste filtration marker, essential for CKD patients'},
+    {id:9,name:'Blood Grouping & Rh Factor',cat:'blood',price:200,time:'1 Hour',desc:'Determines ABO blood group and Rh compatibility'},
+    {id:10,name:'Thyroid Profile (T3, T4, TSH)',cat:'hormone',price:1100,time:'Same Day',desc:'Complete thyroid hormone panel for hypo/hyperthyroidism'},
+    {id:11,name:'Calcium (Serum)',cat:'blood',price:250,time:'Same Day',desc:'Blood calcium level for bone, nerve, and muscle health'},
+    {id:12,name:'Electrolyte Panel (Na, K, Cl)',cat:'blood',price:600,time:'Same Day',desc:'Sodium, potassium, chloride balance — critical for hydration'},
+    {id:13,name:'Vitamin D (25-OH)',cat:'hormone',price:1500,time:'1-2 Days',desc:'Vitamin D deficiency screening, essential for bone health'},
+    {id:14,name:'Vitamin B12',cat:'hormone',price:800,time:'Same Day',desc:'B12 deficiency test, important for nerve and blood cell health'},
+    {id:15,name:'Iron Studies (Serum Iron + TIBC)',cat:'blood',price:700,time:'Same Day',desc:'Anemia workup — serum iron, TIBC, ferritin screening'},
+    {id:16,name:'Dengue NS1 Antigen',cat:'infection',price:600,time:'4 Hours',desc:'Early dengue fever detection within first 5 days of illness'},
+    {id:17,name:'Dengue IgG/IgM Antibody',cat:'infection',price:700,time:'4 Hours',desc:'Dengue antibody test for secondary infection detection'},
+    {id:18,name:'Malaria (Rapid Test + Smear)',cat:'infection',price:400,time:'2 Hours',desc:'Detects Plasmodium falciparum and vivax malaria parasites'},
+    {id:19,name:'COVID-19 Antigen (Rapid)',cat:'infection',price:800,time:'30 Min',desc:'Fast COVID-19 antigen detection test'},
+    {id:20,name:'COVID-19 RT-PCR',cat:'infection',price:2000,time:'24 Hours',desc:'Gold-standard PCR test for SARS-CoV-2 detection'},
+    {id:21,name:'Typhoid (Widal Test)',cat:'infection',price:300,time:'Same Day',desc:'Detects antibodies against Salmonella Typhi'},
+    {id:22,name:'Hepatitis B Surface Antigen (HBsAg)',cat:'infection',price:400,time:'Same Day',desc:'Hepatitis B infection screening test'},
+    {id:23,name:'Pregnancy Test (β-hCG Serum)',cat:'hormone',price:500,time:'4 Hours',desc:'Highly sensitive quantitative pregnancy test'},
+    {id:24,name:'Urine Routine Examination (URE)',cat:'urine',price:150,time:'1 Hour',desc:'Full urinalysis including protein, glucose, cells, casts'},
+    {id:25,name:'Urine Culture & Sensitivity',cat:'urine',price:600,time:'3 Days',desc:'Identifies urinary tract infection bacteria and antibiotic sensitivity'},
+    {id:26,name:'24-Hour Urine Protein',cat:'urine',price:400,time:'Next Day',desc:'Kidney protein loss assessment over 24 hours'},
+    {id:27,name:'X-Ray (Chest PA View)',cat:'imaging',price:600,time:'1 Hour',desc:'Chest X-ray for lungs, heart, ribs evaluation'},
+    {id:28,name:'ECG (12-Lead)',cat:'cardiac',price:400,time:'30 Min',desc:'Heart electrical activity — arrhythmia, heart attack screening'},
+    {id:29,name:'Echocardiogram (Echo)',cat:'cardiac',price:3000,time:'Same Day',desc:'Ultrasound of the heart — structure, valves, function'},
+    {id:30,name:'Ultrasound Whole Abdomen',cat:'imaging',price:1500,time:'Same Day',desc:'Liver, gallbladder, kidneys, spleen, pancreas imaging'},
+    {id:31,name:'CT Scan (Abdomen/Head)',cat:'imaging',price:6000,time:'Same Day',desc:'Detailed cross-sectional imaging of internal organs'},
+    {id:32,name:'MRI Brain',cat:'imaging',price:8000,time:'Same Day',desc:'High-resolution brain imaging for neurological conditions'},
+    {id:33,name:'PSA (Prostate Specific Antigen)',cat:'cancer',price:800,time:'Same Day',desc:'Prostate cancer screening marker for men over 40'},
+    {id:34,name:'CA-125 (Ovarian Cancer Marker)',cat:'cancer',price:1200,time:'Same Day',desc:'Ovarian cancer marker, also used for endometriosis'},
+    {id:35,name:'CEA (Cancer Embryonic Antigen)',cat:'cancer',price:1000,time:'Same Day',desc:'Colorectal and other cancer monitoring marker'},
+];
+
+let selectedHospital = null;
+let cart = [];
+let currentTestCat = 'all';
+let filterDiv = 'all';
+let filterQuery = '';
+
+function renderHospitals() {
+    const grid = document.getElementById('hospitalGrid');
+    const filtered = hospitals.filter(h => {
+        const divMatch = filterDiv === 'all' || h.division === filterDiv;
+        const qMatch = !filterQuery || h.name.toLowerCase().includes(filterQuery) || h.addr.toLowerCase().includes(filterQuery);
+        return divMatch && qMatch;
+    });
+    grid.innerHTML = filtered.map((h,i) => `
+        <div class="hosp-card ${selectedHospital?.id===h.id?'selected':''}" onclick="selectHospital(${h.id})" id="hc-${h.id}">
+            <div class="hc-top">
+                <div class="hc-icon" style="background:${hColors[i%hColors.length]}"><i class="fas fa-hospital"></i></div>
+                <div class="hc-info">
+                    <h3>${h.name}</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> ${h.addr}</p>
+                    <p><i class="fas fa-star" style="color:#f59e0b"></i> ${h.rating}/5.0 · ${h.type}</p>
+                </div>
+            </div>
+            <div class="hc-tags">
+                <span class="hc-tag lab"><i class="fas fa-flask"></i> ${h.tests} Lab Tests Available</span>
+                <span class="hc-tag">${h.division} Division</span>
+                <span class="hc-tag">24/7</span>
+            </div>
+            <button class="hc-select-btn">${selectedHospital?.id===h.id?'<i class="fas fa-check"></i> Selected':'Select This Hospital'}</button>
+        </div>
+    `).join('');
+}
+
+function selectHospital(id) {
+    selectedHospital = hospitals.find(h => h.id === id);
+    renderHospitals();
+    setTimeout(() => {
+        document.getElementById('selectedHospName').textContent = selectedHospital.name;
+        document.getElementById('selectedHospAddr').textContent = selectedHospital.addr + ' · ' + selectedHospital.division + ' Division';
+        goStep(2);
+    }, 300);
+}
+
+function renderTests() {
+    const grid = document.getElementById('testGrid');
+    const filtered = tests.filter(t => currentTestCat === 'all' || t.cat === currentTestCat);
+    grid.innerHTML = filtered.map(t => `
+        <div class="test-card ${cart.find(c=>c.id===t.id)?'selected':''}" onclick="toggleTest(${t.id})" id="tc-${t.id}">
+            <div class="selected-check"><i class="fas fa-check"></i></div>
+            <div class="test-icon"><i class="fas ${getCatIcon(t.cat)}"></i></div>
+            <div class="test-name">${t.name}</div>
+            <div class="test-desc">${t.desc}</div>
+            <div class="test-footer">
+                <span class="test-price">৳${t.price.toLocaleString()}</span>
+                <span class="test-time"><i class="fas fa-clock"></i> ${t.time}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function getCatIcon(cat) {
+    const icons = {blood:'fa-tint',urine:'fa-flask',imaging:'fa-x-ray',cardiac:'fa-heartbeat',hormone:'fa-dna',infection:'fa-virus',cancer:'fa-ribbon'};
+    return icons[cat]||'fa-vial';
+}
+
+function toggleTest(id) {
+    const t = tests.find(x => x.id === id);
+    const idx = cart.findIndex(c => c.id === id);
+    if (idx === -1) cart.push(t); else cart.splice(idx, 1);
+    renderTests();
+    updateCart();
+}
+
+function updateCart() {
+    const total = cart.reduce((s,t) => s + t.price, 0);
+    document.getElementById('cartCount').textContent = cart.length;
+    document.getElementById('cartTotal').textContent = '৳' + total.toLocaleString();
+    document.getElementById('cartItems').innerHTML = cart.map(t => `
+        <div class="cart-item">
+            <span class="cart-item-name">${t.name}</span>
+            <div style="display:flex;align-items:center;gap:.3rem">
+                <span class="cart-item-price">৳${t.price}</span>
+                <button class="cart-remove" onclick="event.stopPropagation();removeFromCart(${t.id})"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    `).join('');
+    const floatBtn = document.getElementById('floatCartBtn');
+    if (cart.length > 0) {
+        floatBtn.style.display = 'flex';
+        document.getElementById('floatCartText').textContent = `${cart.length} Test${cart.length>1?'s':''} — ৳${total.toLocaleString()}`;
+    } else {
+        floatBtn.style.display = 'none';
+    }
+}
+
+function removeFromCart(id) {
+    cart = cart.filter(c => c.id !== id);
+    renderTests();
+    updateCart();
+}
+
+function toggleCart() {
+    const panel = document.getElementById('cartPanel');
+    panel.classList.toggle('show');
+}
+
+function filterTests(cat, el) {
+    currentTestCat = cat;
+    document.querySelectorAll('.tcat-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    renderTests();
+}
+
+function filterHospitals(q) { filterQuery = q; renderHospitals(); }
+function filterByDiv(div) { filterDiv = div; renderHospitals(); }
+
+function goStep(n) {
+    document.querySelectorAll('.step-section').forEach((s,i) => {
+        s.classList.toggle('active', i+1 === n);
+    });
+    [1,2,3].forEach(i => {
+        const si = document.getElementById('si'+i);
+        si.classList.remove('active','done');
+        if (i < n) si.classList.add('done');
+        if (i === n) si.classList.add('active');
+    });
+    if (n === 2) renderTests();
+    if (n === 3) renderConfirm();
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderConfirm() {
+    const total = cart.reduce((s,t) => s + t.price, 0);
+    document.getElementById('confirmSummary').innerHTML = `
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:1.25rem">Booking Summary</h3>
+        <div style="background:var(--gray-50);border-radius:12px;padding:1rem;margin-bottom:1rem">
+            <p style="font-size:.8rem;color:var(--gray-500);margin-bottom:.3rem">Selected Hospital</p>
+            <p style="font-weight:700;font-size:.95rem">${selectedHospital?.name}</p>
+            <p style="font-size:.85rem;color:var(--gray-600)">${selectedHospital?.addr}</p>
+        </div>
+        <div style="margin-bottom:1rem">
+            ${cart.map(t=>`
+            <div style="display:flex;justify-content:space-between;padding:.65rem 0;border-bottom:1px solid var(--gray-100)">
+                <div><span style="font-size:.9rem;font-weight:500">${t.name}</span><br><span style="font-size:.75rem;color:var(--gray-500)"><i class="fas fa-clock"></i> ${t.time}</span></div>
+                <span style="font-weight:700;color:var(--purple)">৳${t.price}</span>
+            </div>`).join('')}
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:1rem 0;font-size:1.1rem;font-weight:800;border-top:2px solid var(--gray-200)">
+            <span>Total Amount</span><span style="color:var(--purple)">৳${total.toLocaleString()}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;background:var(--gray-50);border-radius:12px;padding:1rem">
+            <div>
+                <label style="font-size:.78rem;font-weight:600;color:var(--gray-500);display:block;margin-bottom:.4rem">Preferred Date</label>
+                <input type="date" style="width:100%;padding:.5rem .75rem;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.875rem;outline:none">
+            </div>
+            <div>
+                <label style="font-size:.78rem;font-weight:600;color:var(--gray-500);display:block;margin-bottom:.4rem">Preferred Time</label>
+                <select style="width:100%;padding:.5rem .75rem;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.875rem;outline:none">
+                    <option>8:00 AM - 10:00 AM</option>
+                    <option>10:00 AM - 12:00 PM</option>
+                    <option>12:00 PM - 2:00 PM</option>
+                    <option>2:00 PM - 4:00 PM</option>
+                </select>
+            </div>
+        </div>
+        <div style="display:flex;gap:.75rem;margin-top:1.25rem">
+            <button onclick="goStep(2)" style="flex:1;padding:.8rem;border:1.5px solid var(--gray-300);border-radius:12px;background:var(--white);font-weight:600;cursor:pointer"><i class="fas fa-arrow-left"></i> Back to Tests</button>
+            <button onclick="confirmBooking()" style="flex:2;padding:.8rem;background:var(--purple);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer"><i class="fas fa-check-circle"></i> Confirm Booking — ৳${total.toLocaleString()}</button>
+        </div>
+    `;
+}
+
+function confirmBooking() {
+    // POST to /api/v1/labs/bookings/
+    const total = cart.reduce((s,t) => s + t.price, 0);
+    if(window.MFC) MFC.toast('Booking confirmed! ' + cart.length + ' test(s) — ৳' + total.toLocaleString() + '. SMS confirmation sent.', 'success', '✅ Booking Confirmed!', 6000);
+    else console.log('Booking confirmed');
+    cart = [];
+    updateCart();
+    goStep(1);
+}
+
+// INIT
+renderHospitals();
+</script>
+<script src="../../assets/js/components.js"></script>
+<script src="../../services/api.js"></script>
+
+<!-- MEDFIND FOOTER -->
+<footer style="background:#0f172a;border-top:1px solid rgba(255,255,255,.07);padding:2.5rem 2rem 1.5rem;margin-top:4rem;">
+  <div style="max-width:1160px;margin:0 auto;">
+    <div style="display:flex;flex-wrap:wrap;gap:2rem;justify-content:space-between;margin-bottom:2rem;">
+      <div>
+        <img src="../../assets/medfind-logo.png" alt="MedFind Bangladesh" style="height:44px;width:auto;object-fit:contain;">
+        <p style="color:#64748b;font-size:.82rem;max-width:260px;line-height:1.6;">Bangladesh's digital healthcare platform. Connecting patients with doctors, donors, and AI health tools.</p>
+      </div>
+      <div style="display:flex;gap:3rem;flex-wrap:wrap;">
+        <div>
+          <div style="color:#f8fafc;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Platform</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="/pages/symptoms/index.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Symptom Checker</a>
+            <a href="/pages/drugs/index.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Drug Directory</a>
+            <a href="/pages/treatments/index.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Treatment Guide</a>
+            <a href="/pages/blood-donor/search.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Blood Donors</a>
+            <a href="/pages/doctors/search.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Find Doctors</a>
+            <a href="/pages/hospital/list.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Hospitals</a>
+          </div>
+        </div>
+        <div>
+          <div style="color:#f8fafc;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Legal</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="/pages/privacy.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Privacy Policy</a>
+            <a href="/pages/terms.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Terms of Service</a>
+            <a href="/pages/medical-disclaimer.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Medical Disclaimer</a>
+            <a href="/pages/consent-forms.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Consent Forms</a>
+            <a href="/pages/data-backup-policy.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Data & Security</a>
+            <a href="/pages/cookies.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Cookie Policy</a>
+          </div>
+        </div>
+        <div>
+          <div style="color:#f8fafc;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Emergency</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="tel:999" style="color:#fca5a5;font-size:.82rem;font-weight:700;text-decoration:none;">🚨 999 — National Emergency</a>
+            <a href="tel:+8801772172829" style="color:#fca5a5;font-size:.82rem;text-decoration:none;">📞 MedFind: 01772-172829</a>
+            <a href="tel:029667722" style="color:#94a3b8;font-size:.82rem;text-decoration:none;">🏥 Dhaka Medical: 02-9667722</a>
+            <a href="mailto:medfindbd2026@gmail.com" style="color:#94a3b8;font-size:.82rem;text-decoration:none;">✉️ medfindbd2026@gmail.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.07);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
+      <p style="color:#475569;font-size:.78rem;">© 2026 MedFind Bangladesh. All rights reserved. Not a substitute for professional medical advice.</p>
+      <p style="color:#475569;font-size:.78rem;">🇧🇩 Made for Bangladesh | DGHS Compliant</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

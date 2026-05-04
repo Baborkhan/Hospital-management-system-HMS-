@@ -1,340 +1,316 @@
 """
 Models for MEDFIND - Hospital Management System
-Using MongoEngine for MongoDB ORM
+Using Django ORM with SQLite
 """
 
-from mongoengine import (
-    Document, StringField, EmailField, IntField, ListField,
-    BooleanField, DateTimeField, FloatField, ReferenceField,
-    ImageField, URLField, DictField, EmbeddedDocument,
-    EmbeddedDocumentField, DynamicField, NotUniqueError, ValidationError
-)
-from datetime import datetime
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
+import json
 
 
-class Address(EmbeddedDocument):
-    """Embedded document for address"""
-    street = StringField(required=True)
-    city = StringField(required=True)
-    state = StringField()
-    country = StringField()
-    postal_code = StringField()
-    latitude = FloatField()
-    longitude = FloatField()
-
-
-class WorkingHours(EmbeddedDocument):
-    """Embedded document for working hours"""
-    day = StringField(required=True)
-    opening_time = StringField()  # Format: HH:MM
-    closing_time = StringField()  # Format: HH:MM
-    is_closed = BooleanField(default=False)
-
-
-class Hospital(Document):
+class Hospital(models.Model):
     """Hospital Model"""
-    name = StringField(required=True, unique=True)
-    email = EmailField(required=True)
-    phone = StringField(required=True)
-    description = StringField()
-    address = EmbeddedDocumentField(Address, required=True)
-    logo = URLField()
-    website = URLField()
-    license_number = StringField(unique=True)
+    name = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=20)
+    description = models.TextField(blank=True)
+    address = models.JSONField()  # Store address as JSON
+    logo = models.URLField(blank=True)
+    website = models.URLField(blank=True)
+    license_number = models.CharField(max_length=100, unique=True)
     
     # Features and facilities
-    specialties = ListField(StringField())  # e.g., ['Cardiology', 'Neurology']
-    bed_count = IntField()
-    ambulance_available = BooleanField(default=True)
-    emergency_services = BooleanField(default=True)
+    specialties = models.JSONField(default=list)  # List of specialties
+    bed_count = models.IntegerField(null=True)
+    ambulance_available = models.BooleanField(default=True)
+    emergency_services = models.BooleanField(default=True)
     
     # Rating and reviews
-    rating = FloatField(default=0.0)
-    review_count = IntField(default=0)
+    rating = models.FloatField(default=0.0)
+    review_count = models.IntegerField(default=0)
     
     # Operating hours
-    working_hours = ListField(EmbeddedDocumentField(WorkingHours))
+    working_hours = models.JSONField(default=list)  # List of working hours
     
     # Metadata
-    created_at = DateTimeField(default=datetime.utcnow)
-    updated_at = DateTimeField(default=datetime.utcnow)
-    is_active = BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
     
-    meta = {
-        'collection': 'hospitals',
-        'indexes': [
-            'name',
-            'city',
-            'email',
-            ('address.city', 'specialties'),  # Compound index
+    class Meta:
+        indexes = [
+            models.Index(fields=['name']),
+            models.Index(fields=['email']),
         ]
-    }
 
     def __str__(self):
         return self.name
 
 
-class Doctor(Document):
+class Doctor(models.Model):
     """Doctor Model"""
-    first_name = StringField(required=True)
-    last_name = StringField(required=True)
-    email = EmailField(unique=True, required=True)
-    phone = StringField(required=True)
-    specialization = StringField(required=True)
-    qualifications = ListField(StringField())
-    experience_years = IntField()
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=20)
+    specialization = models.CharField(max_length=100)
+    qualifications = models.JSONField(default=list)
+    experience_years = models.IntegerField(null=True)
     
     # Hospital association
-    hospital = ReferenceField(Hospital, required=True)
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     
     # Availability and schedule
-    consultation_fee = FloatField(required=True)
-    available_days = ListField(StringField())  # e.g., ['Monday', 'Tuesday']
-    working_hours = EmbeddedDocumentField(WorkingHours)
+    consultation_fee = models.FloatField()
+    available_days = models.JSONField(default=list)  # List of days
+    working_hours = models.JSONField(null=True)  # Working hours as JSON
     
     # Rating
-    rating = FloatField(default=0.0)
-    review_count = IntField(default=0)
+    rating = models.FloatField(default=0.0)
+    review_count = models.IntegerField(default=0)
     
     # Additional info
-    bio = StringField()
-    profile_image = URLField()
-    license_number = StringField(unique=True)
+    bio = models.TextField(blank=True)
+    profile_image = models.URLField(blank=True)
+    license_number = models.CharField(max_length=100, unique=True)
     
     # Metadata
-    created_at = DateTimeField(default=datetime.utcnow)
-    updated_at = DateTimeField(default=datetime.utcnow)
-    is_active = BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
     
-    meta = {
-        'collection': 'doctors',
-        'indexes': [
-            'email',
-            'specialization',
-            ('hospital', 'specialization'),  # Compound index
+    class Meta:
+        indexes = [
+            models.Index(fields=['email']),
+            models.Index(fields=['specialization']),
+            models.Index(fields=['hospital', 'specialization']),
         ]
-    }
 
     def __str__(self):
         return f"Dr. {self.first_name} {self.last_name}"
 
 
-class Patient(Document):
+class Patient(models.Model):
     """Patient Model"""
-    first_name = StringField(required=True)
-    last_name = StringField(required=True)
-    email = EmailField(unique=True, required=True)
-    phone = StringField(required=True)
-    password_hash = StringField()  # Store hashed password
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=20)
+    password_hash = models.CharField(max_length=255, blank=True)
     
     # Personal info
-    date_of_birth = DateTimeField()
-    gender = StringField(choices=['Male', 'Female', 'Other'])
-    blood_group = StringField(choices=['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+    date_of_birth = models.DateField(null=True)
+    gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')])
+    blood_group = models.CharField(max_length=5, choices=[
+        ('A+', 'A+'), ('A-', 'A-'), ('B+', 'B+'), ('B-', 'B-'),
+        ('AB+', 'AB+'), ('AB-', 'AB-'), ('O+', 'O+'), ('O-', 'O-')
+    ])
     
     # Contact details
-    address = EmbeddedDocumentField(Address)
-    emergency_contact = StringField()
-    emergency_contact_phone = StringField()
+    address = models.JSONField(null=True)
+    emergency_contact = models.CharField(max_length=100, blank=True)
+    emergency_contact_phone = models.CharField(max_length=20, blank=True)
     
     # Medical history
-    medical_conditions = ListField(StringField())
-    allergies = ListField(StringField())
-    medications = ListField(StringField())
+    medical_conditions = models.JSONField(default=list)
+    allergies = models.JSONField(default=list)
+    medications = models.JSONField(default=list)
     
     # Account info
-    created_at = DateTimeField(default=datetime.utcnow)
-    updated_at = DateTimeField(default=datetime.utcnow)
-    is_active = BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
     
-    meta = {
-        'collection': 'patients',
-        'indexes': [
-            'email',
-            'phone',
+    class Meta:
+        indexes = [
+            models.Index(fields=['email']),
+            models.Index(fields=['phone']),
         ]
-    }
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
 
-class Appointment(Document):
+class Appointment(models.Model):
     """Appointment Model"""
-    patient = ReferenceField(Patient, required=True)
-    doctor = ReferenceField(Doctor, required=True)
-    hospital = ReferenceField(Hospital, required=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     
-    appointment_date = DateTimeField(required=True)
-    appointment_type = StringField(required=True, choices=['In-Person', 'Online', 'Phone'])
+    appointment_date = models.DateTimeField()
+    appointment_type = models.CharField(max_length=20, choices=[
+        ('In-Person', 'In-Person'), ('Online', 'Online'), ('Phone', 'Phone')
+    ])
     
-    reason_for_visit = StringField()
-    status = StringField(required=True, choices=['Scheduled', 'Completed', 'Cancelled', 'No-Show'])
+    reason_for_visit = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=[
+        ('Scheduled', 'Scheduled'), ('Completed', 'Completed'), ('Cancelled', 'Cancelled'), ('No-Show', 'No-Show')
+    ])
     
-    notes = StringField()
-    prescription = StringField()
+    notes = models.TextField(blank=True)
+    prescription = models.TextField(blank=True)
     
-    created_at = DateTimeField(default=datetime.utcnow)
-    updated_at = DateTimeField(default=datetime.utcnow)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
-    meta = {
-        'collection': 'appointments',
-        'indexes': [
-            ('patient', 'appointment_date'),
-            ('doctor', 'appointment_date'),
-            'status',
+    class Meta:
+        indexes = [
+            models.Index(fields=['patient', 'appointment_date']),
+            models.Index(fields=['doctor', 'appointment_date']),
+            models.Index(fields=['status']),
         ]
-    }
 
     def __str__(self):
-        return f"Appointment: {self.patient.first_name} with Dr. {self.doctor.first_name}"
+        return f"Appointment: {self.patient} with {self.doctor}"
 
 
-class LabTest(Document):
+class LabTest(models.Model):
     """Laboratory Test Model"""
-    patient = ReferenceField(Patient, required=True)
-    hospital = ReferenceField(Hospital, required=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     
-    test_name = StringField(required=True)
-    test_code = StringField(unique=True, required=True)
-    description = StringField()
-    category = StringField(required=True)  # e.g., 'Blood', 'X-Ray', 'Ultrasound'
-    cost = FloatField(required=True)
+    test_name = models.CharField(max_length=100)
+    test_code = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+    category = models.CharField(max_length=50)  # e.g., 'Blood', 'X-Ray', 'Ultrasound'
+    cost = models.FloatField()
     
-    test_date = DateTimeField()
-    result_date = DateTimeField()
-    status = StringField(required=True, choices=['Pending', 'Completed', 'Cancelled'])
+    test_date = models.DateField(null=True)
+    result_date = models.DateField(null=True)
+    status = models.CharField(max_length=20, choices=[
+        ('Pending', 'Pending'), ('Completed', 'Completed'), ('Cancelled', 'Cancelled')
+    ])
     
-    result = DictField()  # Store test results as dictionary
-    report_file = URLField()
+    result = models.JSONField(null=True)  # Store test results as JSON
+    report_file = models.URLField(blank=True)
     
-    created_at = DateTimeField(default=datetime.utcnow)
-    updated_at = DateTimeField(default=datetime.utcnow)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
-    meta = {
-        'collection': 'lab_tests',
-        'indexes': [
-            ('patient', 'test_date'),
-            'status',
+    class Meta:
+        indexes = [
+            models.Index(fields=['patient', 'test_date']),
+            models.Index(fields=['status']),
         ]
-    }
 
     def __str__(self):
-        return f"{self.test_name} - {self.patient.first_name}"
+        return f"{self.test_name} - {self.patient}"
 
 
-class Billing(Document):
+class Billing(models.Model):
     """Billing/Invoice Model"""
-    patient = ReferenceField(Patient, required=True)
-    hospital = ReferenceField(Hospital, required=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     
-    invoice_number = StringField(unique=True, required=True)
-    invoice_date = DateTimeField(default=datetime.utcnow)
+    invoice_number = models.CharField(max_length=50, unique=True)
+    invoice_date = models.DateField(auto_now_add=True)
     
     # Line items
-    services = ListField(DictField())  # List of services with cost
-    total_amount = FloatField(required=True)
-    discount = FloatField(default=0.0)
-    tax = FloatField(default=0.0)
-    payable_amount = FloatField(required=True)
+    services = models.JSONField(default=list)  # List of services with cost
+    total_amount = models.FloatField()
+    discount = models.FloatField(default=0.0)
+    tax = models.FloatField(default=0.0)
+    payable_amount = models.FloatField()
     
     # Payment info
-    payment_method = StringField(choices=['Cash', 'Card', 'Cheque', 'Online Transfer'])
-    payment_status = StringField(required=True, choices=['Pending', 'Paid', 'Failed', 'Refunded'])
-    paid_date = DateTimeField()
+    payment_method = models.CharField(max_length=20, choices=[
+        ('Cash', 'Cash'), ('Card', 'Card'), ('Cheque', 'Cheque'), ('Online Transfer', 'Online Transfer')
+    ], blank=True)
+    payment_status = models.CharField(max_length=20, choices=[
+        ('Pending', 'Pending'), ('Paid', 'Paid'), ('Failed', 'Failed'), ('Refunded', 'Refunded')
+    ])
+    paid_date = models.DateField(null=True)
     
-    description = StringField()
-    notes = StringField()
+    description = models.TextField(blank=True)
+    notes = models.TextField(blank=True)
     
-    created_at = DateTimeField(default=datetime.utcnow)
-    updated_at = DateTimeField(default=datetime.utcnow)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
-    meta = {
-        'collection': 'billing',
-        'indexes': [
-            'invoice_number',
-            ('patient', 'invoice_date'),
-            'payment_status',
+    class Meta:
+        indexes = [
+            models.Index(fields=['invoice_number']),
+            models.Index(fields=['patient', 'invoice_date']),
+            models.Index(fields=['payment_status']),
         ]
-    }
 
     def __str__(self):
         return f"Invoice: {self.invoice_number}"
 
 
-class Pharmacy(Document):
+class Pharmacy(models.Model):
     """Medicine/Pharmacy Model"""
-    medicine_name = StringField(required=True, unique=True)
-    medicine_code = StringField(unique=True, required=True)
-    description = StringField()
+    medicine_name = models.CharField(max_length=100, unique=True)
+    medicine_code = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
     
     # Medical details
-    generic_name = StringField()
-    strength = StringField()  # e.g., '500mg'
-    form = StringField(choices=['Tablet', 'Capsule', 'Liquid', 'Injection', 'Cream', 'Other'])
+    generic_name = models.CharField(max_length=100, blank=True)
+    strength = models.CharField(max_length=50, blank=True)  # e.g., '500mg'
+    form = models.CharField(max_length=20, choices=[
+        ('Tablet', 'Tablet'), ('Capsule', 'Capsule'), ('Liquid', 'Liquid'),
+        ('Injection', 'Injection'), ('Cream', 'Cream'), ('Other', 'Other')
+    ])
     
     # Inventory
-    quantity_in_stock = IntField(default=0)
-    reorder_level = IntField()
-    price = FloatField(required=True)
+    quantity_in_stock = models.IntegerField(default=0)
+    reorder_level = models.IntegerField(null=True)
+    price = models.FloatField()
     
     # Supplier info
-    supplier_name = StringField()
-    manufacturer = StringField()
-    batch_number = StringField()
-    expiry_date = DateTimeField()
+    supplier_name = models.CharField(max_length=100, blank=True)
+    manufacturer = models.CharField(max_length=100, blank=True)
+    batch_number = models.CharField(max_length=50, blank=True)
+    expiry_date = models.DateField(null=True)
     
     # Hospital association
-    hospital = ReferenceField(Hospital, required=True)
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     
-    created_at = DateTimeField(default=datetime.utcnow)
-    updated_at = DateTimeField(default=datetime.utcnow)
-    is_active = BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
     
-    meta = {
-        'collection': 'pharmacy',
-        'indexes': [
-            'medicine_name',
-            'medicine_code',
-            ('hospital', 'medicine_name'),
+    class Meta:
+        indexes = [
+            models.Index(fields=['medicine_name']),
+            models.Index(fields=['medicine_code']),
+            models.Index(fields=['hospital', 'medicine_name']),
         ]
-    }
 
     def __str__(self):
         return self.medicine_name
 
 
-class MedicalHistory(Document):
+class MedicalHistory(models.Model):
     """Medical History Record Model"""
-    patient = ReferenceField(Patient, required=True)
-    doctor = ReferenceField(Doctor)
-    hospital = ReferenceField(Hospital, required=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True)
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     
-    record_date = DateTimeField(default=datetime.utcnow)
-    visit_type = StringField()  # e.g., 'Check-up', 'Follow-up', 'Emergency'
+    record_date = models.DateField(auto_now_add=True)
+    visit_type = models.CharField(max_length=50, blank=True)  # e.g., 'Check-up', 'Follow-up', 'Emergency'
     
-    symptoms = ListField(StringField())
-    diagnosis = StringField()
-    prescription = StringField()
-    notes = StringField()
+    symptoms = models.JSONField(default=list)
+    diagnosis = models.TextField(blank=True)
+    prescription = models.TextField(blank=True)
+    notes = models.TextField(blank=True)
     
     # Vital signs
-    vital_signs = DictField()  # e.g., {'blood_pressure': '120/80', 'temperature': '98.6'}
+    vital_signs = models.JSONField(null=True)  # e.g., {'blood_pressure': '120/80', 'temperature': '98.6'}
     
     # Follow-up
-    follow_up_date = DateTimeField()
-    follow_up_notes = StringField()
+    follow_up_date = models.DateField(null=True)
+    follow_up_notes = models.TextField(blank=True)
     
-    created_at = DateTimeField(default=datetime.utcnow)
-    updated_at = DateTimeField(default=datetime.utcnow)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
-    meta = {
-        'collection': 'medical_history',
-        'indexes': [
-            ('patient', 'record_date'),
-            ('hospital', 'record_date'),
+    class Meta:
+        indexes = [
+            models.Index(fields=['patient', 'record_date']),
+            models.Index(fields=['hospital', 'record_date']),
         ]
-    }
 
     def __str__(self):
-        return f"Medical Record: {self.patient.first_name} - {self.record_date}"
+        return f"Medical Record: {self.patient} - {self.record_date}"
