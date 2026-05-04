@@ -1,24 +1,11 @@
-from rest_framework.permissions import BasePermission
+"""
+MedFind Telemedicine — WebSocket URL routing
+Used by ASGI for WebRTC signaling (offer/answer/ICE exchange)
+"""
+from django.urls import re_path
+from . import consumers
 
-class IsOwnerOrAdmin(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        if hasattr(obj, 'user'):
-            return obj.user == request.user or request.user.is_staff
-        return request.user.is_staff
-
-class IsHospitalAdmin(BasePermission):
-    def has_permission(self, request, view):
-        return (request.user.is_authenticated and
-                request.user.role in ('hospital_admin', 'superadmin'))
-
-class IsSuperAdmin(BasePermission):
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == 'superadmin'
-
-class IsDoctor(BasePermission):
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == 'doctor'
-
-class IsPatient(BasePermission):
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == 'patient'
+websocket_urlpatterns = [
+    # ws://domain/ws/session/<room_id>/
+    re_path(r"^ws/session/(?P<room_id>[^/]+)/$", consumers.VideoSignalingConsumer.as_asgi()),
+]

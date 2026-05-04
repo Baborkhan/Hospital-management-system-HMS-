@@ -1,16 +1,10 @@
 from django.contrib import admin
-from .models import Notification
+from .models import VideoSession
 
-@admin.register(Notification)
-class NotificationAdmin(admin.ModelAdmin):
-    list_display = ("user", "notification_type", "title", "is_read", "created_at")
-    list_filter = ("notification_type", "is_read")
-    search_fields = ("user__email", "title")
-    list_editable = ("is_read",)
-    ordering = ("-created_at",)
-    actions = ["mark_all_read"]
-
-    @admin.action(description="Mark selected notifications as read")
-    def mark_all_read(self, request, queryset):
-        updated = queryset.update(is_read=True)
-        self.message_user(request, f"{updated} notification(s) marked as read.")
+@admin.register(VideoSession)
+class VideoSessionAdmin(admin.ModelAdmin):
+    list_display = ("room_id", "appointment", "status", "started_at", "ended_at", "duration_minutes")
+    list_filter = ("status",)
+    search_fields = ("room_id",)
+    readonly_fields = ("room_id", "started_at", "ended_at")
+    ordering = ("-started_at",)
