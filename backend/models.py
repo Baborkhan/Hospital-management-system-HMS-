@@ -9,24 +9,30 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('appointments', '0001_initial'),
+        ('doctors', '0001_initial'),
+        ('hospitals', '0001_initial'),
+        ('patients', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='VideoSession',
+            name='MedicalRecord',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('room_id', models.CharField(max_length=100, unique=True)),
-                ('status', models.CharField(choices=[('scheduled', 'Scheduled'), ('live', 'Live'), ('ended', 'Ended'), ('missed', 'Missed')], default='scheduled', max_length=15)),
-                ('started_at', models.DateTimeField(blank=True, null=True)),
-                ('ended_at', models.DateTimeField(blank=True, null=True)),
-                ('duration_minutes', models.PositiveIntegerField(default=0)),
-                ('recording_url', models.URLField(blank=True)),
-                ('appointment', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='video_session', to='appointments.appointment')),
+                ('record_type', models.CharField(choices=[('prescription', 'Prescription'), ('report', 'Lab Report'), ('imaging', 'Imaging/Scan'), ('discharge', 'Discharge Summary'), ('vaccination', 'Vaccination'), ('other', 'Other')], max_length=20)),
+                ('title', models.CharField(max_length=300)),
+                ('description', models.TextField(blank=True)),
+                ('file', models.FileField(blank=True, null=True, upload_to='records/%Y/%m/')),
+                ('date', models.DateField()),
+                ('is_private', models.BooleanField(default=False)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('doctor', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='doctors.doctor')),
+                ('hospital', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='hospitals.hospital')),
+                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='medical_records', to='patients.patient')),
             ],
             options={
-                'db_table': 'mf_video_sessions',
+                'db_table': 'mf_medical_records',
+                'ordering': ['-date'],
             },
         ),
     ]

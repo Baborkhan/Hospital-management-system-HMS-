@@ -1,5 +1,28 @@
-from config.settings.base import MONGODB_NAME, MONGODB_URI
-from mongoengine import connect
+"""Health Records Vault"""
+from django.db import models
 
-def init_mongo():
-    return connect(db=MONGODB_NAME, host=MONGODB_URI)
+
+class MedicalRecord(models.Model):
+    TYPES = [
+        ("prescription","Prescription"),("report","Lab Report"),
+        ("imaging","Imaging/Scan"),("discharge","Discharge Summary"),
+        ("vaccination","Vaccination"),("other","Other"),
+    ]
+
+    patient = models.ForeignKey("patients.Patient", on_delete=models.CASCADE, related_name="medical_records")
+    doctor = models.ForeignKey("doctors.Doctor", on_delete=models.SET_NULL, null=True, blank=True)
+    hospital = models.ForeignKey("hospitals.Hospital", on_delete=models.SET_NULL, null=True, blank=True)
+    record_type = models.CharField(max_length=20, choices=TYPES)
+    title = models.CharField(max_length=300)
+    description = models.TextField(blank=True)
+    file = models.FileField(upload_to="records/%Y/%m/", null=True, blank=True)
+    date = models.DateField()
+    is_private = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "mf_medical_records"
+        ordering = ["-date"]
+
+    def __str__(self):
+        return f"{self.patient} - {self.title} ({self.date})"
