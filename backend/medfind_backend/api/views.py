@@ -1,371 +1,99 @@
-"""
-Views/ViewSets for API
-Handles HTTP requests and returns responses
-"""
+# medfind/ai/utils.py
+import re, anthropic
+from django.conf import settings
 
-from rest_framework import viewsets, status, filters
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
-from django.shortcuts import get_object_or_404
-from .models import (
-    Hospital, Doctor, Patient, Appointment, LabTest,
-    Billing, Pharmacy, MedicalHistory
-)
-from .serializers import (
-    HospitalSerializer, DoctorSerializer, PatientSerializer,
-    AppointmentSerializer, LabTestSerializer, BillingSerializer,
-    PharmacySerializer, MedicalHistorySerializer
-)
+SYSTEM_PROMPT = """You are MedFind AI — a highly accurate medical guidance assistant for Bangladesh.
+Developer: Ahsanul Yamin Babor (medfindbd2026@gmail.com) | BAUET 2026
 
+LANGUAGE: Detect user's language. Bengali → respond fully in Bengali. English → respond in English.
 
-class CustomPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 100
+ACCURACY PROTOCOL (90%+ target):
+1. Ask clarifying questions if symptoms are vague (age, duration, severity 1-10)
+2. Differential diagnosis: top 3 with probability %
+3. Red flag emergency screening always
+4. WHO / DGHS Bangladesh / BIRDEM guidelines
+5. Use web_search for: drug interactions, outbreaks, latest protocols
+6. Never fabricate — if uncertain, ask more
 
+RESPONSE STRUCTURE:
+🔍 Symptom Analysis
+🎯 Possible Conditions (X% probability)
+⚡ Urgency: EMERGENCY 🔴 / Urgent 🟠 / Moderate 🟡 / Mild 🟢
+👨‍⚕️ Recommended Specialist + Bangladesh hospital
+💡 Do This Now (numbered steps)
+⚠️ Go to hospital if: [red flags]
+---
+*AI suggestion only — consult a qualified doctor*
 
-class HospitalViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for Hospital operations
-    """
-    serializer_class = HospitalSerializer
-    pagination_class = CustomPagination
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['name', 'city', 'specialties']
-    ordering_fields = ['name', 'rating', 'created_at']
+EMERGENCY TRIGGERS (flag immediately):
+chest pain + sweat/arm pain, unconscious, can't breathe, stroke (FAST),
+severe bleeding, seizure, severe burn, poisoning, dengue shock, eclampsia
 
-    def get_queryset(self):
-        queryset = Hospital.objects(is_active=True)
-        
-        # Filter by city
-        city = self.request.query_params.get('city', None)
-        if city:
-            queryset = queryset(address__city=city)
-        
-        # Filter by specialty
-        specialty = self.request.query_params.get('specialty', None)
-        if specialty:
-            queryset = queryset(specialties=specialty)
-        
-        return queryset
+BANGLADESH NUMBERS: 999 | 16167 (DGHS) | 01969-000911 (Ambulance) | 01401-184551 (IEDCR)
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+NEVER: prescribe controlled medicines, say "definitely", ignore emergency symptoms."""
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+EMERGENCY_PATTERNS = [
+    r'chest pain', r'heart attack', r'unconscious', r'হার্ট অ্যাটাক', r'অজ্ঞান',
+    r'শ্বাস নিতে পারছি না', r'stroke', r'seizure', r'severe bleeding',
+    r'EMERGENCY 🔴', r'choking', r'not breathing', r'dengue shock', r'poisoning',
+    r'বুকে ব্যথা.*শ্বাস', r'বিষ', r'রক্তপাত.*বন্ধ হচ্ছে না',
+]
 
-    def retrieve(self, request, *args, **kwargs):
-        hospital = Hospital.objects(pk=kwargs['pk']).first()
-        if not hospital:
-            return Response(
-                {'error': 'Hospital not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        serializer = self.get_serializer(hospital)
-        return Response(serializer.data)
+SPECIALIST_MAP = {
+    'Cardiologist':          r'cardiolog|cardiac|heart|হার্ট',
+    'Neurologist':           r'neurolog|stroke|epilep|migraine|মাথা ঘোরা',
+    'Pediatrician':          r'pediatric|child|শিশু|বাচ্চা|baby',
+    'Dermatologist':         r'dermatolog|skin|rash|চর্ম|ত্বক',
+    'Gastroenterologist':    r'gastro|liver|stomach|পেট|যকৃত',
+    'Pulmonologist':         r'pulmo|respirat|lung|ফুসফুস|শ্বাসকষ্ট',
+    'Gynecologist':          r'gynecolog|obstet|pregnancy|গর্ভ|মহিলা',
+    'Orthopedist':           r'orthop|bone|joint|হাড়|জয়েন্ট',
+    'Psychiatrist':          r'psychiatr|mental|depress|anxiety|মানসিক',
+    'General Physician':     r'general|সাধারণ|fever|জ্বর',
+}
 
-    @action(detail=True, methods=['get'])
-    def doctors(self, request, pk=None):
-        """Get all doctors in this hospital"""
-        hospital = Hospital.objects(pk=pk).first()
-        if not hospital:
-            return Response(
-                {'error': 'Hospital not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        doctors = Doctor.objects(hospital=hospital, is_active=True)
-        serializer = DoctorSerializer(doctors, many=True)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['get'])
-    def services(self, request, pk=None):
-        """Get hospital services and specialties"""
-        hospital = Hospital.objects(pk=pk).first()
-        if not hospital:
-            return Response(
-                {'error': 'Hospital not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        return Response({
-            'specialties': hospital.specialties,
-            'bed_count': hospital.bed_count,
-            'ambulance_available': hospital.ambulance_available,
-            'emergency_services': hospital.emergency_services,
-        })
+URGENCY_MAP = {
+    'EMERGENCY': r'EMERGENCY 🔴|🔴',
+    'Urgent':    r'Urgent 🟠|🟠',
+    'Moderate':  r'Moderate 🟡|🟡',
+    'Mild':      r'Mild 🟢|🟢',
+}
 
 
-class DoctorViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for Doctor operations
-    """
-    serializer_class = DoctorSerializer
-    pagination_class = CustomPagination
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['first_name', 'last_name', 'specialization']
-    ordering_fields = ['first_name', 'rating', 'consultation_fee']
-
-    def get_queryset(self):
-        queryset = Doctor.objects(is_active=True)
-        
-        # Filter by specialization
-        specialization = self.request.query_params.get('specialization', None)
-        if specialization:
-            queryset = queryset(specialization=specialization)
-        
-        # Filter by hospital
-        hospital_id = self.request.query_params.get('hospital_id', None)
-        if hospital_id:
-            queryset = queryset(hospital__pk=hospital_id)
-        
-        return queryset
-
-    def retrieve(self, request, *args, **kwargs):
-        doctor = Doctor.objects(pk=kwargs['pk']).first()
-        if not doctor:
-            return Response(
-                {'error': 'Doctor not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        serializer = self.get_serializer(doctor)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['get'])
-    def availability(self, request, pk=None):
-        """Get doctor's availability"""
-        doctor = Doctor.objects(pk=pk).first()
-        if not doctor:
-            return Response(
-                {'error': 'Doctor not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        return Response({
-            'available_days': doctor.available_days,
-            'consultation_fee': doctor.consultation_fee,
-        })
+def detect_emergency(text: str) -> bool:
+    t = text.lower()
+    return any(re.search(p, t, re.IGNORECASE) for p in EMERGENCY_PATTERNS)
 
 
-class PatientViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for Patient operations
-    """
-    serializer_class = PatientSerializer
-    pagination_class = CustomPagination
+def extract_metadata(text: str) -> dict:
+    is_emerg  = detect_emergency(text)
+    urgency   = 'EMERGENCY' if is_emerg else 'Mild'
+    specialist = ''
 
-    def get_queryset(self):
-        return Patient.objects(is_active=True)
+    for u, pattern in URGENCY_MAP.items():
+        if re.search(pattern, text):
+            urgency = u
+            break
 
-    def retrieve(self, request, *args, **kwargs):
-        patient = Patient.objects(pk=kwargs['pk']).first()
-        if not patient:
-            return Response(
-                {'error': 'Patient not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        serializer = self.get_serializer(patient)
-        return Response(serializer.data)
+    for name, pattern in SPECIALIST_MAP.items():
+        if re.search(pattern, text, re.IGNORECASE):
+            specialist = name
+            break
 
-    @action(detail=True, methods=['get'])
-    def medical_history(self, request, pk=None):
-        """Get patient's medical history"""
-        patient = Patient.objects(pk=pk).first()
-        if not patient:
-            return Response(
-                {'error': 'Patient not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        history = MedicalHistory.objects(patient=patient)
-        serializer = MedicalHistorySerializer(history, many=True)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['get'])
-    def appointments(self, request, pk=None):
-        """Get patient's appointments"""
-        patient = Patient.objects(pk=pk).first()
-        if not patient:
-            return Response(
-                {'error': 'Patient not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        appointments = Appointment.objects(patient=patient)
-        serializer = AppointmentSerializer(appointments, many=True)
-        return Response(serializer.data)
+    return {'urgency': urgency, 'specialist': specialist, 'is_emergency': is_emerg}
 
 
-class AppointmentViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for Appointment operations
-    """
-    serializer_class = AppointmentSerializer
-    pagination_class = CustomPagination
+def call_claude(history: list) -> str:
+    client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
 
-    def get_queryset(self):
-        return Appointment.objects()
+    response = client.messages.create(
+        model=settings.ANTHROPIC_MODEL,
+        max_tokens=settings.AI_MAX_TOKENS,
+        system=SYSTEM_PROMPT,
+        tools=[{'type': 'web_search_20250305', 'name': 'web_search'}],
+        messages=history,
+    )
 
-    def retrieve(self, request, *args, **kwargs):
-        appointment = Appointment.objects(pk=kwargs['pk']).first()
-        if not appointment:
-            return Response(
-                {'error': 'Appointment not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        serializer = self.get_serializer(appointment)
-        return Response(serializer.data)
-
-    @action(detail=False, methods=['get'])
-    def by_patient(self, request):
-        """Get appointments for a specific patient"""
-        patient_id = request.query_params.get('patient_id')
-        if not patient_id:
-            return Response(
-                {'error': 'patient_id is required'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        appointments = Appointment.objects(patient__pk=patient_id)
-        serializer = self.get_serializer(appointments, many=True)
-        return Response(serializer.data)
-
-    @action(detail=False, methods=['get'])
-    def by_doctor(self, request):
-        """Get appointments for a specific doctor"""
-        doctor_id = request.query_params.get('doctor_id')
-        if not doctor_id:
-            return Response(
-                {'error': 'doctor_id is required'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        appointments = Appointment.objects(doctor__pk=doctor_id)
-        serializer = self.get_serializer(appointments, many=True)
-        return Response(serializer.data)
-
-
-class LabTestViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for Lab Test operations
-    """
-    serializer_class = LabTestSerializer
-    pagination_class = CustomPagination
-
-    def get_queryset(self):
-        return LabTest.objects()
-
-    def retrieve(self, request, *args, **kwargs):
-        lab_test = LabTest.objects(pk=kwargs['pk']).first()
-        if not lab_test:
-            return Response(
-                {'error': 'Lab test not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        serializer = self.get_serializer(lab_test)
-        return Response(serializer.data)
-
-    @action(detail=False, methods=['get'])
-    def by_patient(self, request):
-        """Get lab tests for a specific patient"""
-        patient_id = request.query_params.get('patient_id')
-        if not patient_id:
-            return Response(
-                {'error': 'patient_id is required'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        tests = LabTest.objects(patient__pk=patient_id)
-        serializer = self.get_serializer(tests, many=True)
-        return Response(serializer.data)
-
-
-class BillingViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for Billing operations
-    """
-    serializer_class = BillingSerializer
-    pagination_class = CustomPagination
-
-    def get_queryset(self):
-        return Billing.objects()
-
-    def retrieve(self, request, *args, **kwargs):
-        billing = Billing.objects(pk=kwargs['pk']).first()
-        if not billing:
-            return Response(
-                {'error': 'Billing record not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        serializer = self.get_serializer(billing)
-        return Response(serializer.data)
-
-    @action(detail=False, methods=['get'])
-    def by_patient(self, request):
-        """Get billing records for a specific patient"""
-        patient_id = request.query_params.get('patient_id')
-        if not patient_id:
-            return Response(
-                {'error': 'patient_id is required'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        bills = Billing.objects(patient__pk=patient_id)
-        serializer = self.get_serializer(bills, many=True)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['post'])
-    def mark_as_paid(self, request, pk=None):
-        """Mark a billing record as paid"""
-        billing = Billing.objects(pk=pk).first()
-        if not billing:
-            return Response(
-                {'error': 'Billing record not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        billing.payment_status = 'Paid'
-        billing.save()
-        serializer = self.get_serializer(billing)
-        return Response(serializer.data)
-
-
-class PharmacyViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for Pharmacy operations
-    """
-    serializer_class = PharmacySerializer
-    pagination_class = CustomPagination
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['medicine_name', 'medicine_code']
-
-    def get_queryset(self):
-        return Pharmacy.objects(is_active=True)
-
-    def retrieve(self, request, *args, **kwargs):
-        pharmacy = Pharmacy.objects(pk=kwargs['pk']).first()
-        if not pharmacy:
-            return Response(
-                {'error': 'Medicine not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        serializer = self.get_serializer(pharmacy)
-        return Response(serializer.data)
-
-
-class MedicalHistoryViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for Medical History operations
-    """
-    serializer_class = MedicalHistorySerializer
-    pagination_class = CustomPagination
-
-    def get_queryset(self):
-        return MedicalHistory.objects()
-
-    def retrieve(self, request, *args, **kwargs):
-        history = MedicalHistory.objects(pk=kwargs['pk']).first()
-        if not history:
-            return Response(
-                {'error': 'Medical history not found'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        serializer = self.get_serializer(history)
-        return Response(serializer.data)
+    parts = [b.text for b in response.content if hasattr(b, 'text') and b.text]
+    return '\n'.join(parts).strip() or 'দুঃখিত, একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।'
