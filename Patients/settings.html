@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MedFind Bangladesh Patient Portal - Manage appointments, medical history, and health records.">
+<title>Settings — MedFind</title>
+<link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/layout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;
+  --secondary:#0d9488;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;
+  --white:#fff;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-300:#d1d5db;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;
+  --gray-700:#374151;--gray-800:#1f2937;--gray-900:#111827;
+  --teal:#14b8a6;--emerald:#10b981;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#f1f5f9;color:var(--gray-800);}
+.app-layout{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:260px;background:linear-gradient(180deg,#1e3a5f 0%,#1d4ed8 100%);position:fixed;top:0;left:0;bottom:0;z-index:200;overflow-y:auto;transition:.3s;}
+.sidebar::-webkit-scrollbar{display:none;}
+.sidebar-logo{padding:1.5rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid rgba(255,255,255,.1);}
+.logo-icon{width:38px;height:38px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;}
+.logo-name{font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-.02em;}
+.logo-tag{font-size:.6rem;color:rgba(255,255,255,.5);font-weight:500;display:block;}
+.sidebar-user{padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.1);}
+.user-avatar{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:#fff;margin-right:.75rem;}
+.user-info-wrap{display:flex;align-items:center;}
+.user-name{font-size:.875rem;font-weight:700;color:#fff;}
+.user-role-badge{font-size:.65rem;background:rgba(16,185,129,.25);color:#34d399;border-radius:20px;padding:.15rem .55rem;font-weight:600;}
+.sidebar-nav{padding:1rem 0;}
+.nav-group{margin-bottom:.5rem;}
+.nav-group-label{padding:.5rem 1.5rem;font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);font-weight:600;}
+.nav-item{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.5rem;color:rgba(255,255,255,.75);text-decoration:none;transition:.2s;border-left:3px solid transparent;font-size:.875rem;}
+.nav-item:hover,.nav-item.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:#fff;}
+.nav-item .nav-left{display:flex;align-items:center;gap:.75rem;}
+.nav-item i{font-size:.9rem;width:18px;text-align:center;}
+.nav-badge{background:var(--danger);color:#fff;font-size:.65rem;padding:.15rem .4rem;border-radius:100px;font-weight:700;}
+.nav-badge.yellow{background:var(--warning);}
+.sidebar-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,.1);}
+.logout-btn{display:flex;align-items:center;gap:.75rem;color:rgba(255,255,255,.6);font-size:.875rem;cursor:pointer;text-decoration:none;transition:.2s;}
+.logout-btn:hover{color:#fff;}
+
+/* MAIN */
+.main-content{margin-left:260px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{height:62px;background:#fff;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;padding:0 2rem;gap:1rem;position:sticky;top:0;z-index:100;}
+.topbar-left h1{font-size:1rem;font-weight:700;color:var(--gray-900);}
+.topbar-left p{font-size:.78rem;color:var(--gray-400);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:.75rem;}
+.tb-btn{width:36px;height:36px;background:var(--gray-100);border:none;border-radius:9px;cursor:pointer;color:var(--gray-500);transition:.2s;display:flex;align-items:center;justify-content:center;}
+.tb-btn:hover{background:var(--primary-light);color:var(--primary);}
+.page-content{flex:1;padding:2rem;}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:2rem;}
+.page-title{font-size:1.5rem;font-weight:800;color:var(--gray-900);margin-bottom:.3rem;}
+.page-subtitle{font-size:.875rem;color:var(--gray-500);}
+.breadcrumb{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--gray-400);margin-bottom:.75rem;}
+.breadcrumb a{color:var(--primary);text-decoration:none;}
+.breadcrumb i{font-size:.55rem;}
+
+/* SETTINGS LAYOUT */
+.settings-layout{display:grid;grid-template-columns:240px 1fr;gap:1.5rem;align-items:start;}
+.settings-nav{background:#fff;border-radius:14px;border:1px solid var(--gray-200);overflow:hidden;position:sticky;top:82px;}
+.settings-nav-item{display:flex;align-items:center;gap:.75rem;padding:.9rem 1.25rem;font-size:.875rem;font-weight:500;color:var(--gray-600);cursor:pointer;transition:.2s;border-left:3px solid transparent;text-decoration:none;}
+.settings-nav-item:hover{background:var(--gray-50);color:var(--gray-800);}
+.settings-nav-item.active{background:var(--primary-light);color:var(--primary);border-left-color:var(--primary);font-weight:600;}
+.settings-nav-item i{width:18px;text-align:center;font-size:.9rem;}
+.settings-nav-divider{height:1px;background:var(--gray-100);margin:.25rem 0;}
+
+/* SETTINGS PANEL */
+.settings-panel{display:none;}
+.settings-panel.active{display:block;}
+.settings-card{background:#fff;border-radius:14px;border:1px solid var(--gray-200);margin-bottom:1.25rem;overflow:hidden;}
+.card-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:.95rem;font-weight:700;color:var(--gray-900);display:flex;align-items:center;gap:.6rem;}
+.card-title i{color:var(--primary);}
+.card-subtitle{font-size:.78rem;color:var(--gray-400);margin-top:.15rem;}
+.card-body{padding:1.5rem;}
+
+/* FORM ELEMENTS */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-full{grid-column:1/-1;}
+.form-group{display:flex;flex-direction:column;gap:.4rem;}
+.form-label{font-size:.8rem;font-weight:600;color:var(--gray-600);}
+.form-label .req{color:var(--danger);}
+.form-label .opt{color:var(--gray-400);font-weight:400;font-size:.72rem;}
+.form-input{padding:.7rem .95rem;background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:10px;font-size:.875rem;color:var(--gray-800);font-family:'Inter',sans-serif;transition:.2s;outline:none;}
+.form-input:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+.form-input.error{border-color:var(--danger);}
+.form-input.success{border-color:var(--success);}
+.form-hint{font-size:.72rem;color:var(--gray-400);display:flex;align-items:center;gap:.3rem;}
+.form-error{font-size:.72rem;color:var(--danger);display:none;}
+.form-error.show{display:block;}
+.phone-row{display:flex;}
+.phone-prefix{background:var(--gray-100);border:1.5px solid var(--gray-200);border-right:none;border-radius:10px 0 0 10px;padding:0 .75rem;display:flex;align-items:center;font-size:.82rem;color:var(--gray-500);font-weight:600;white-space:nowrap;}
+.phone-row .form-input{border-radius:0 10px 10px 0;}
+
+/* PASSWORD STRENGTH */
+.pw-strength{margin-top:.5rem;}
+.strength-bar-wrap{height:4px;background:var(--gray-100);border-radius:4px;overflow:hidden;margin-bottom:.3rem;}
+.strength-bar{height:100%;width:0;border-radius:4px;transition:.4s;}
+.strength-bar.weak{background:var(--danger);width:33%;}
+.strength-bar.medium{background:var(--warning);width:66%;}
+.strength-bar.strong{background:var(--success);width:100%;}
+.strength-text{font-size:.7rem;color:var(--gray-400);}
+.pass-reveal{position:relative;}
+.pass-eye{position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gray-400);cursor:pointer;font-size:.875rem;transition:.2s;}
+.pass-eye:hover{color:var(--gray-600);}
+
+/* TOGGLE SWITCH */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0;border-bottom:1px solid var(--gray-50);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-info .toggle-label{font-size:.875rem;font-weight:600;color:var(--gray-800);}
+.toggle-info .toggle-desc{font-size:.78rem;color:var(--gray-400);margin-top:.15rem;}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-track{position:absolute;inset:0;background:var(--gray-300);border-radius:24px;cursor:pointer;transition:.3s;}
+.toggle input:checked+.toggle-track{background:var(--primary);}
+.toggle-thumb{position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle input:checked~.toggle-thumb{transform:translateX(20px);}
+
+/* AVATAR UPLOAD */
+.avatar-section{display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;}
+.avatar-preview{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;color:#fff;position:relative;flex-shrink:0;}
+.avatar-edit-btn{position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--primary);border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.65rem;color:#fff;}
+.avatar-info h4{font-size:.9rem;font-weight:700;color:var(--gray-800);}
+.avatar-info p{font-size:.78rem;color:var(--gray-400);margin:.2rem 0 .75rem;}
+.avatar-upload-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1rem;background:var(--primary-light);color:var(--primary);border:none;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s;}
+.avatar-upload-btn:hover{background:#bfdbfe;}
+
+/* ALERTS */
+.alert{display:none;align-items:center;gap:.6rem;padding:.7rem 1rem;border-radius:10px;font-size:.82rem;margin-bottom:1rem;}
+.alert.show{display:flex;}
+.alert.success{background:#d1fae5;border:1px solid #a7f3d0;color:#065f46;}
+.alert.error{background:#fee2e2;border:1px solid #fecaca;color:#991b1b;}
+.alert.info{background:var(--primary-light);border:1px solid #bfdbfe;color:#1e40af;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.4rem;border-radius:10px;font-size:.875rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s;border:none;}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.25);}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-danger:hover{background:#dc2626;}
+.btn-outline{background:#fff;border:1.5px solid var(--gray-200);color:var(--gray-600);}
+.btn-outline:hover{border-color:var(--gray-300);background:var(--gray-50);}
+.btn-sm{padding:.5rem 1rem;font-size:.8rem;}
+.form-actions{display:flex;align-items:center;gap:.75rem;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--gray-100);}
+
+/* DANGER ZONE */
+.danger-card{background:#fff;border-radius:14px;border:1.5px solid #fecaca;}
+.danger-card .card-header{border-bottom-color:#fee2e2;}
+.danger-card .card-title{color:var(--danger);}
+.danger-card .card-title i{color:var(--danger);}
+.danger-action{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0;border-bottom:1px solid #fef2f2;}
+.danger-action:last-child{border-bottom:none;}
+.danger-action-info .da-label{font-size:.875rem;font-weight:600;color:var(--gray-800);}
+.danger-action-info .da-desc{font-size:.78rem;color:var(--gray-400);margin-top:.15rem;}
+
+/* SESSION TABLE */
+.session-item{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0;border-bottom:1px solid var(--gray-50);}
+.session-item:last-child{border-bottom:none;}
+.session-device{display:flex;align-items:center;gap:.75rem;}
+.session-icon{width:36px;height:36px;background:var(--gray-100);border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--gray-500);font-size:.875rem;}
+.session-name{font-size:.875rem;font-weight:600;color:var(--gray-800);}
+.session-meta{font-size:.72rem;color:var(--gray-400);margin-top:.1rem;}
+.session-badge{font-size:.7rem;padding:.2rem .6rem;border-radius:20px;font-weight:600;}
+.badge-current{background:#d1fae5;color:#065f46;}
+.badge-other{background:var(--gray-100);color:var(--gray-500);}
+
+/* TOAST */
+.toast-wrap{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;}
+.toast{display:flex;align-items:center;gap:.65rem;padding:.75rem 1rem;background:#fff;border-radius:12px;border:1px solid var(--gray-200);box-shadow:0 8px 24px rgba(0,0,0,.12);transform:translateX(140%);transition:.3s;font-size:.82rem;color:var(--gray-700);max-width:320px;}
+.toast.show{transform:translateX(0);}
+.toast.t-success .t-icon{color:var(--success);}
+.toast.t-error .t-icon{color:var(--danger);}
+.toast-close{margin-left:auto;background:none;border:none;color:var(--gray-400);cursor:pointer;font-size:.9rem;line-height:1;}
+
+/* THEME PREVIEW CARDS */
+.theme-options{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;}
+.theme-card{border:2px solid var(--gray-200);border-radius:12px;overflow:hidden;cursor:pointer;transition:.2s;}
+.theme-card:hover{border-color:var(--primary);transform:translateY(-2px);}
+.theme-card.selected{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.15);}
+.theme-preview{height:60px;display:flex;gap:4px;padding:8px;}
+.tp-sidebar{width:22px;border-radius:4px;}
+.tp-main{flex:1;border-radius:4px;}
+.theme-name{padding:.5rem .75rem;font-size:.78rem;font-weight:600;color:var(--gray-700);background:var(--gray-50);}
+.check-mark{display:none;position:absolute;top:6px;right:6px;width:20px;height:20px;background:var(--primary);border-radius:50%;color:#fff;font-size:.65rem;align-items:center;justify-content:center;}
+.theme-card.selected .check-mark{display:flex;}
+.theme-card{position:relative;}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .settings-layout{grid-template-columns:1fr;}
+  .settings-nav{position:static;display:flex;overflow-x:auto;}
+  .settings-nav-divider{display:none;}
+}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main-content{margin-left:0;}
+  .form-grid{grid-template-columns:1fr;}
+  .theme-options{grid-template-columns:1fr 1fr;}
+  .mobile-toggle{display:flex!important;align-items:center;justify-content:center;}
+}
+</style>
+</head>
+<body>
+<div class="app-layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+    <div>
+      <div class="logo-name"><span style="color:#93c5fd">Med</span><span style="color:#5eead4">Find</span></div>
+      <span class="logo-tag">CARE YOU CAN TRUST</span>
+    </div>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-info-wrap">
+      <div class="user-avatar" id="sbAvatar">R</div>
+      <div>
+        <div class="user-name" id="sbName">Loading…</div>
+        <span class="user-role-badge">Patient</span>
+      </div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+  <a class="nav-brand" href="../../index.html"><img src="../../assets/medfind-logo.png" alt="MedFind Bangladesh" style="height:44px;width:auto;object-fit:contain;"></a>
+    <div class="nav-group">
+      <div class="nav-group-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><div class="nav-left"><i class="fas fa-th-large"></i> Dashboard</div></a>
+      <a href="appointments.html" class="nav-item"><div class="nav-left"><i class="fas fa-calendar-check"></i> Appointments</div><span class="nav-badge">3</span></a>
+      <a href="medical-history.html" class="nav-item"><div class="nav-left"><i class="fas fa-notes-medical"></i> Medical History</div></a>
+      <a href="viewmaps.html" class="nav-item"><div class="nav-left"><i class="fas fa-map-marked-alt"></i> Find Hospitals</div></a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Services</div>
+      <a href="../doctors/search.html" class="nav-item"><div class="nav-left"><i class="fas fa-user-md"></i> Search Doctors</div></a>
+      <a href="../lab/tests.html" class="nav-item"><div class="nav-left"><i class="fas fa-flask"></i> Lab Tests</div><span class="nav-badge yellow">New</span></a>
+      <a href="../billing/pharmacy.html" class="nav-item"><div class="nav-left"><i class="fas fa-pills"></i> Pharmacy</div></a>
+      <a href="../hospital/list.html" class="nav-item"><div class="nav-left"><i class="fas fa-hospital"></i> Hospitals</div></a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Account</div>
+      <a href="profile.html" class="nav-item"><div class="nav-left"><i class="fas fa-user-circle"></i> My Profile</div></a>
+      <a href="#" class="nav-item"><div class="nav-left"><i class="fas fa-bell"></i> Notifications</div><span class="nav-badge">5</span></a>
+      <a href="settings.html" class="nav-item active"><div class="nav-left"><i class="fas fa-cog"></i> Settings</div></a>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="#" class="logout-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main-content">
+  <div class="topbar">
+    <button class="tb-btn mobile-toggle" style="display:none;" onclick="document.getElementById('sidebar').classList.toggle('open')">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="topbar-left">
+      <h1>Account Settings</h1>
+      <p>Manage your profile, security & preferences</p>
+    </div>
+    <div class="topbar-right">
+      <button class="tb-btn" title="Notifications"><i class="fas fa-bell"></i></button>
+      <button class="tb-btn" onclick="window.location.href='dashboard.html'" title="Back to Dashboard"><i class="fas fa-home"></i></button>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="page-header">
+      <div class="breadcrumb">
+        <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>Settings</span>
+      </div>
+      <div class="page-title">Settings</div>
+      <div class="page-subtitle">Update your profile, change your password, and customize your experience</div>
+    </div>
+
+    <div class="settings-layout">
+      <!-- LEFT NAV -->
+      <nav class="settings-nav">
+        <a class="settings-nav-item active" onclick="showTab('profile',this)"><i class="fas fa-user"></i> Profile</a>
+        <a class="settings-nav-item" onclick="showTab('security',this)"><i class="fas fa-lock"></i> Password & Security</a>
+        <a class="settings-nav-item" onclick="showTab('appearance',this)"><i class="fas fa-palette"></i> Appearance</a>
+        <a class="settings-nav-item" onclick="showTab('notifications',this)"><i class="fas fa-bell"></i> Notifications</a>
+        <a class="settings-nav-item" onclick="showTab('privacy',this)"><i class="fas fa-shield-halved"></i> Privacy</a>
+        <div class="settings-nav-divider"></div>
+        <a class="settings-nav-item" onclick="showTab('sessions',this)"><i class="fas fa-desktop"></i> Active Sessions</a>
+        <a class="settings-nav-item" onclick="showTab('danger',this)" style="color:#ef4444;"><i class="fas fa-triangle-exclamation"></i> Danger Zone</a>
+      </nav>
+
+      <!-- RIGHT PANELS -->
+      <div>
+
+        <!-- ① PROFILE TAB -->
+        <div class="settings-panel active" id="tab-profile">
+          <div class="settings-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><i class="fas fa-user-circle"></i> Profile Information</div>
+                <div class="card-subtitle">Update your personal details and medical info</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="avatar-section">
+                <div class="avatar-preview" id="avatarPreview">
+                  R
+                  <div class="avatar-edit-btn" onclick="document.getElementById('avatarInput').click()"><i class="fas fa-camera"></i></div>
+                </div>
+                <div class="avatar-info">
+                  <h4 id="avatarName">Loading…</h4>
+                  <p>JPG, PNG or GIF — Max 2MB</p>
+                  <button class="avatar-upload-btn" onclick="document.getElementById('avatarInput').click()"><i class="fas fa-upload"></i> Upload Photo</button>
+                  <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="previewAvatar(this)">
+                </div>
+              </div>
+
+              <div id="profileAlert" class="alert"></div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">First Name <span class="req">*</span></label>
+                  <input class="form-input" id="firstName" type="text" placeholder="First name">
+                  <div class="form-error" id="firstNameErr"></div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Last Name <span class="req">*</span></label>
+                  <input class="form-input" id="lastName" type="text" placeholder="Last name">
+                  <div class="form-error" id="lastNameErr"></div>
+                </div>
+                <div class="form-group form-full">
+                  <label class="form-label">Email Address <span class="req">*</span></label>
+                  <input class="form-input" id="profileEmail" type="email" placeholder="you@gmail.com" readonly style="opacity:.65;cursor:not-allowed;">
+                  <div class="form-hint"><i class="fas fa-info-circle"></i> Email cannot be changed. Contact support if needed.</div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone Number <span class="opt">(Optional)</span></label>
+                  <div class="phone-row">
+                    <span class="phone-prefix">+880</span>
+                    <input class="form-input" id="profilePhone" type="tel" placeholder="1XXXXXXXXX" maxlength="10">
+                  </div>
+                  <div class="form-error" id="profilePhoneErr"></div>
+                  <div class="form-hint"><i class="fas fa-info-circle"></i> Valid BD format: 1XXXXXXXXX (10 digits)</div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Date of Birth</label>
+                  <input class="form-input" id="dob" type="date">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Gender</label>
+                  <select class="form-input" id="gender">
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer_not">Prefer not to say</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Blood Group</label>
+                  <select class="form-input" id="bloodGroup">
+                    <option value="">Select blood group</option>
+                    <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                    <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">National ID / NID</label>
+                  <input class="form-input" id="nid" type="text" placeholder="17-digit NID number">
+                </div>
+                <div class="form-group form-full">
+                  <label class="form-label">Address</label>
+                  <textarea class="form-input" id="address" rows="2" placeholder="Your address (optional)" style="resize:vertical;padding-top:.7rem;"></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
+                <button class="btn btn-outline" onclick="resetProfile()">Reset</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Medical Info -->
+          <div class="settings-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><i class="fas fa-notes-medical"></i> Medical Information</div>
+                <div class="card-subtitle">Health conditions, allergies and medications</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="form-group form-full">
+                  <label class="form-label">Known Allergies</label>
+                  <textarea class="form-input" id="allergies" rows="2" placeholder="e.g. Penicillin, Peanuts, Latex…" style="resize:vertical;padding-top:.7rem;"></textarea>
+                </div>
+                <div class="form-group form-full">
+                  <label class="form-label">Current Medications</label>
+                  <textarea class="form-input" id="medications" rows="2" placeholder="e.g. Metformin 500mg, Atenolol 25mg…" style="resize:vertical;padding-top:.7rem;"></textarea>
+                </div>
+                <div class="form-group form-full">
+                  <label class="form-label">Chronic Conditions</label>
+                  <textarea class="form-input" id="conditions" rows="2" placeholder="e.g. Diabetes Type 2, Hypertension…" style="resize:vertical;padding-top:.7rem;"></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-primary" onclick="saveMedical()"><i class="fas fa-save"></i> Save Medical Info</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ② SECURITY TAB -->
+        <div class="settings-panel" id="tab-security">
+          <div class="settings-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><i class="fas fa-lock"></i> Change Password</div>
+                <div class="card-subtitle">Use a strong password with uppercase, numbers & symbols</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="passwordAlert" class="alert"></div>
+              <div class="form-grid">
+                <div class="form-group form-full">
+                  <label class="form-label">Current Password <span class="req">*</span></label>
+                  <div class="pass-reveal">
+                    <input class="form-input" id="currentPass" type="password" placeholder="Enter current password">
+                    <button class="pass-eye" type="button" onclick="toggleEye('currentPass',this)"><i class="fas fa-eye"></i></button>
+                  </div>
+                  <div class="form-error" id="currentPassErr"></div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">New Password <span class="req">*</span></label>
+                  <div class="pass-reveal">
+                    <input class="form-input" id="newPass" type="password" placeholder="Min 8 characters" oninput="checkStrength(this.value)">
+                    <button class="pass-eye" type="button" onclick="toggleEye('newPass',this)"><i class="fas fa-eye"></i></button>
+                  </div>
+                  <div class="pw-strength">
+                    <div class="strength-bar-wrap"><div class="strength-bar" id="strengthBar"></div></div>
+                    <div class="strength-text" id="strengthText">Use at least 8 characters</div>
+                  </div>
+                  <div class="form-error" id="newPassErr"></div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Confirm New Password <span class="req">*</span></label>
+                  <div class="pass-reveal">
+                    <input class="form-input" id="confirmPass" type="password" placeholder="Repeat new password">
+                    <button class="pass-eye" type="button" onclick="toggleEye('confirmPass',this)"><i class="fas fa-eye"></i></button>
+                  </div>
+                  <div class="form-error" id="confirmPassErr"></div>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-primary" onclick="changePassword()"><i class="fas fa-key"></i> Update Password</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><i class="fas fa-shield-halved"></i> Two-Factor Authentication</div>
+                <div class="card-subtitle">Add an extra layer of security to your account</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Email OTP Verification</div>
+                  <div class="toggle-desc">Receive a 6-digit code to your Gmail on each login</div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="toggle2fa" onchange="save2FA(this)">
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Login Alerts</div>
+                  <div class="toggle-desc">Get notified when someone logs into your account</div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="toggleLoginAlert" checked onchange="savePref('loginAlert',this.checked)">
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ APPEARANCE TAB -->
+        <div class="settings-panel" id="tab-appearance">
+          <div class="settings-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><i class="fas fa-palette"></i> Theme & Display</div>
+                <div class="card-subtitle">Customize how MedFind looks for you</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div style="font-size:.8rem;font-weight:600;color:var(--gray-600);margin-bottom:.75rem;">Color Mode</div>
+              <div class="theme-options">
+                <div class="theme-card selected" id="theme-light" onclick="setTheme('light',this)">
+                  <div class="theme-preview">
+                    <div class="tp-sidebar" style="background:#1d4ed8;"></div>
+                    <div class="tp-main" style="background:#f1f5f9;"></div>
+                  </div>
+                  <div class="theme-name">☀️ Light</div>
+                  <div class="check-mark"><i class="fas fa-check"></i></div>
+                </div>
+                <div class="theme-card" id="theme-dark" onclick="setTheme('dark',this)">
+                  <div class="theme-preview">
+                    <div class="tp-sidebar" style="background:#0f172a;"></div>
+                    <div class="tp-main" style="background:#1e293b;"></div>
+                  </div>
+                  <div class="theme-name">🌙 Dark</div>
+                  <div class="check-mark"><i class="fas fa-check"></i></div>
+                </div>
+                <div class="theme-card" id="theme-auto" onclick="setTheme('auto',this)">
+                  <div class="theme-preview">
+                    <div class="tp-sidebar" style="background:linear-gradient(135deg,#1d4ed8,#0f172a);"></div>
+                    <div class="tp-main" style="background:linear-gradient(135deg,#f1f5f9,#1e293b);"></div>
+                  </div>
+                  <div class="theme-name">⚙️ System</div>
+                  <div class="check-mark"><i class="fas fa-check"></i></div>
+                </div>
+              </div>
+
+              <div style="font-size:.8rem;font-weight:600;color:var(--gray-600);margin-bottom:.75rem;margin-top:1.25rem;">Language & Region</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Language</label>
+                  <select class="form-input" id="langPref" onchange="savePref('lang',this.value)">
+                    <option value="en">English</option>
+                    <option value="bn">বাংলা (Bangla)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Date Format</label>
+                  <select class="form-input" id="datePref" onchange="savePref('dateFormat',this.value)">
+                    <option value="dd-mm-yyyy">DD-MM-YYYY</option>
+                    <option value="mm-dd-yyyy">MM-DD-YYYY</option>
+                    <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="font-size:.8rem;font-weight:600;color:var(--gray-600);margin-top:1.25rem;margin-bottom:.75rem;">Display Options</div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Compact Mode</div>
+                  <div class="toggle-desc">Reduce spacing for more content on screen</div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="toggleCompact" onchange="savePref('compact',this.checked)">
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <div class="toggle-label">Animations</div>
+                  <div class="toggle-desc">Enable smooth transitions and micro-animations</div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="toggleAnims" checked onchange="savePref('animations',this.checked)">
+                  <div class="toggle-track"></div>
+                  <div class="toggle-thumb"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ NOTIFICATIONS TAB -->
+        <div class="settings-panel" id="tab-notifications">
+          <div class="settings-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><i class="fas fa-bell"></i> Notification Preferences</div>
+                <div class="card-subtitle">Choose what you want to be notified about</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div style="font-size:.8rem;font-weight:600;color:var(--gray-600);margin-bottom:.75rem;">Email Notifications</div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Appointment Reminders</div><div class="toggle-desc">Get reminders 24h and 1h before appointments</div></div><label class="toggle"><input type="checkbox" checked onchange="savePref('notif_appt',this.checked)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Lab Results Ready</div><div class="toggle-desc">Notified when your lab results are available</div></div><label class="toggle"><input type="checkbox" checked onchange="savePref('notif_lab',this.checked)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Prescription Updates</div><div class="toggle-desc">When a doctor updates your prescription</div></div><label class="toggle"><input type="checkbox" checked onchange="savePref('notif_rx',this.checked)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Health Tips Newsletter</div><div class="toggle-desc">Weekly health articles and tips</div></div><label class="toggle"><input type="checkbox" onchange="savePref('notif_tips',this.checked)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Payment Receipts</div><div class="toggle-desc">Email receipts after every payment</div></div><label class="toggle"><input type="checkbox" checked onchange="savePref('notif_pay',this.checked)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑤ PRIVACY TAB -->
+        <div class="settings-panel" id="tab-privacy">
+          <div class="settings-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><i class="fas fa-shield-halved"></i> Privacy & Data</div>
+                <div class="card-subtitle">Control how your data is used and shared</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Profile Visible to Doctors</div><div class="toggle-desc">Doctors can see your basic profile when you book</div></div><label class="toggle"><input type="checkbox" checked onchange="savePref('privacy_doc',this.checked)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Share Records with Hospital</div><div class="toggle-desc">Hospitals can access your medical records during visits</div></div><label class="toggle"><input type="checkbox" checked onchange="savePref('privacy_hosp',this.checked)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+              <div class="toggle-row"><div class="toggle-info"><div class="toggle-label">Anonymous Analytics</div><div class="toggle-desc">Help improve MedFind with anonymous usage data</div></div><label class="toggle"><input type="checkbox" checked onchange="savePref('privacy_analytics',this.checked)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label></div>
+              <div class="form-actions" style="margin-top:1rem;">
+                <button class="btn btn-outline btn-sm" onclick="downloadData()"><i class="fas fa-download"></i> Download My Data</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑥ SESSIONS TAB -->
+        <div class="settings-panel" id="tab-sessions">
+          <div class="settings-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><i class="fas fa-desktop"></i> Active Sessions</div>
+                <div class="card-subtitle">Devices currently logged into your account</div>
+              </div>
+              <button class="btn btn-outline btn-sm" onclick="revokeAll()"><i class="fas fa-sign-out-alt"></i> Revoke All Others</button>
+            </div>
+            <div class="card-body">
+              <div class="session-item">
+                <div class="session-device">
+                  <div class="session-icon"><i class="fas fa-laptop"></i></div>
+                  <div>
+                    <div class="session-name">Chrome on Windows</div>
+                    <div class="session-meta">Dhaka, Bangladesh · Active now</div>
+                  </div>
+                </div>
+                <span class="session-badge badge-current">Current</span>
+              </div>
+              <div id="otherSessions">
+                <!-- Dynamically loaded -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ⑦ DANGER ZONE TAB -->
+        <div class="settings-panel" id="tab-danger">
+          <div class="settings-card danger-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><i class="fas fa-triangle-exclamation"></i> Danger Zone</div>
+                <div class="card-subtitle">Irreversible actions — proceed with caution</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="danger-action">
+                <div class="danger-action-info">
+                  <div class="da-label">Deactivate Account</div>
+                  <div class="da-desc">Temporarily disable your account. You can reactivate anytime by logging in.</div>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="deactivateAccount()"><i class="fas fa-pause-circle"></i> Deactivate</button>
+              </div>
+              <div class="danger-action">
+                <div class="danger-action-info">
+                  <div class="da-label">Delete Account Permanently</div>
+                  <div class="da-desc">This will permanently delete your account and all data. This cannot be undone.</div>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="confirmDeleteAccount()"><i class="fas fa-trash"></i> Delete Account</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /right panels -->
+    </div><!-- /settings-layout -->
+  </div><!-- /page-content -->
+</div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ─── AUTH GUARD ────────────────────────────────────────────────
+(function(){
+  const user = (() => { try { return JSON.parse(localStorage.getItem('mf_user') || localStorage.getItem('medfind_user') || 'null'); } catch { return null; } })();
+  const token = localStorage.getItem('mf_token');
+  if (!user || !token) { window.location.href = '../login.html'; return; }
+  // Populate sidebar & avatar
+  const name = user.full_name || user.name || user.firstName || 'User';
+  const initial = name.charAt(0).toUpperCase();
+  document.getElementById('sbName').textContent = name;
+  document.getElementById('sbAvatar').textContent = initial;
+  document.getElementById('avatarPreview').childNodes[0].textContent = initial;
+  document.getElementById('avatarName').textContent = name;
+  // Pre-fill email
+  document.getElementById('profileEmail').value = user.email || '';
+  // Load saved profile
+  loadProfile(user);
+})();
+
+function loadProfile(user) {
+  const saved = (() => { try { return JSON.parse(localStorage.getItem('mf_profile') || '{}'); } catch { return {}; } })();
+  const d = { ...user, ...saved };
+  const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+  set('firstName', d.firstName || d.first_name || '');
+  set('lastName', d.lastName || d.last_name || '');
+  set('profilePhone', d.phone || '');
+  set('dob', d.dob || '');
+  set('gender', d.gender || '');
+  set('bloodGroup', d.bloodGroup || d.blood_group || '');
+  set('nid', d.nid || '');
+  set('address', d.address || '');
+  set('allergies', d.allergies || '');
+  set('medications', d.medications || '');
+  set('conditions', d.conditions || '');
+  // Preferences
+  const prefs = (() => { try { return JSON.parse(localStorage.getItem('mf_prefs') || '{}'); } catch { return {}; } })();
+  if (prefs.lang) document.getElementById('langPref').value = prefs.lang;
+  if (prefs.dateFormat) document.getElementById('datePref').value = prefs.dateFormat;
+  if (prefs.compact != null) document.getElementById('toggleCompact').checked = prefs.compact;
+  if (prefs.animations != null) document.getElementById('toggleAnims').checked = prefs.animations;
+  if (prefs.twofa != null) document.getElementById('toggle2fa').checked = prefs.twofa;
+}
+
+// ─── TAB NAVIGATION ────────────────────────────────────────────
+function showTab(tab, el) {
+  document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.settings-nav-item').forEach(a => a.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  el.classList.add('active');
+}
+
+// ─── PROFILE SAVE ──────────────────────────────────────────────
+function saveProfile() {
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const phone = document.getElementById('profilePhone').value.trim();
+  let ok = true;
+  if (!firstName) { showFieldErr('firstNameErr', 'First name is required'); ok = false; } else clearFieldErr('firstNameErr');
+  if (!lastName) { showFieldErr('lastNameErr', 'Last name is required'); ok = false; } else clearFieldErr('lastNameErr');
+  // BD Phone validation (optional)
+  if (phone && !/^1[3-9]\d{8}$/.test(phone)) {
+    showFieldErr('profilePhoneErr', 'Invalid BD phone: must be 10 digits starting with 1 (e.g. 1XXXXXXXXX)');
+    ok = false;
+  } else clearFieldErr('profilePhoneErr');
+  if (!ok) return;
+  const profile = {
+    firstName, lastName, phone,
+    dob: document.getElementById('dob').value,
+    gender: document.getElementById('gender').value,
+    bloodGroup: document.getElementById('bloodGroup').value,
+    nid: document.getElementById('nid').value.trim(),
+    address: document.getElementById('address').value.trim(),
+  };
+  localStorage.setItem('mf_profile', JSON.stringify(profile));
+  // Update mf_user full_name
+  try {
+    const u = JSON.parse(localStorage.getItem('mf_user') || '{}');
+    u.full_name = firstName + ' ' + lastName;
+    localStorage.setItem('mf_user', JSON.stringify(u));
+  } catch {}
+  showAlert('profileAlert', 'success', '✅ Profile updated successfully!');
+  toast('Profile saved', 'success');
+}
+function resetProfile() { loadProfile({}); toast('Changes discarded', 'info'); }
+function saveMedical() {
+  const med = { allergies: document.getElementById('allergies').value.trim(), medications: document.getElementById('medications').value.trim(), conditions: document.getElementById('conditions').value.trim() };
+  const existing = (() => { try { return JSON.parse(localStorage.getItem('mf_profile') || '{}'); } catch { return {}; } })();
+  localStorage.setItem('mf_profile', JSON.stringify({ ...existing, ...med }));
+  toast('Medical info saved', 'success');
+}
+
+// ─── PASSWORD CHANGE ───────────────────────────────────────────
+function changePassword() {
+  const cur = document.getElementById('currentPass').value;
+  const nw = document.getElementById('newPass').value;
+  const cf = document.getElementById('confirmPass').value;
+  let ok = true;
+  if (!cur) { showFieldErr('currentPassErr', 'Current password is required'); ok = false; } else clearFieldErr('currentPassErr');
+  if (!nw || nw.length < 8) { showFieldErr('newPassErr', 'Password must be at least 8 characters'); ok = false; } else clearFieldErr('newPassErr');
+  if (nw !== cf) { showFieldErr('confirmPassErr', 'Passwords do not match'); ok = false; } else clearFieldErr('confirmPassErr');
+  if (!ok) return;
+  // In production: call API. For now simulate.
+  showAlert('passwordAlert', 'success', '✅ Password changed successfully!');
+  document.getElementById('currentPass').value = '';
+  document.getElementById('newPass').value = '';
+  document.getElementById('confirmPass').value = '';
+  document.getElementById('strengthBar').className = 'strength-bar';
+  document.getElementById('strengthText').textContent = 'Use at least 8 characters';
+  toast('Password updated', 'success');
+}
+
+function checkStrength(p) {
+  const bar = document.getElementById('strengthBar');
+  const txt = document.getElementById('strengthText');
+  if (!p) { bar.className = 'strength-bar'; bar.style.width = '0'; txt.textContent = 'Use at least 8 characters'; return; }
+  let s = 0;
+  if (p.length >= 8) s++; if (p.length >= 12) s++;
+  if (/[a-z]/.test(p)) s++; if (/[A-Z]/.test(p)) s++;
+  if (/[0-9]/.test(p)) s++; if (/[^A-Za-z0-9]/.test(p)) s++;
+  if (s >= 5) { bar.className = 'strength-bar strong'; txt.textContent = '✅ Strong password'; }
+  else if (s >= 3) { bar.className = 'strength-bar medium'; txt.textContent = '⚠️ Medium — add uppercase & symbols'; }
+  else { bar.className = 'strength-bar weak'; txt.textContent = '❌ Weak — use uppercase, numbers & symbols'; }
+}
+
+function toggleEye(id, btn) {
+  const inp = document.getElementById(id);
+  const ic = btn.querySelector('i');
+  if (inp.type === 'password') { inp.type = 'text'; ic.className = 'fas fa-eye-slash'; }
+  else { inp.type = 'password'; ic.className = 'fas fa-eye'; }
+}
+
+// ─── THEME ─────────────────────────────────────────────────────
+function setTheme(theme, el) {
+  document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  localStorage.setItem('mf_theme', theme);
+  // Apply dark mode
+  if (theme === 'dark') document.body.style.filter = 'invert(0.88) hue-rotate(180deg)';
+  else document.body.style.filter = '';
+  toast('Theme set to ' + theme.charAt(0).toUpperCase() + theme.slice(1), 'success');
+}
+
+// ─── PREFS ─────────────────────────────────────────────────────
+function savePref(key, value) {
+  const prefs = (() => { try { return JSON.parse(localStorage.getItem('mf_prefs') || '{}'); } catch { return {}; } })();
+  prefs[key] = value;
+  localStorage.setItem('mf_prefs', JSON.stringify(prefs));
+  toast('Preference saved', 'success');
+}
+function save2FA(el) { savePref('twofa', el.checked); }
+
+// ─── SESSIONS ──────────────────────────────────────────────────
+function revokeAll() { document.getElementById('otherSessions').innerHTML = ''; toast('All other sessions revoked', 'success'); }
+
+// ─── DANGER ZONE ───────────────────────────────────────────────
+function deactivateAccount() {
+  if (confirm('Are you sure you want to deactivate your account? You can log in again to reactivate.')) {
+    toast('Account deactivated. Logging out…', 'error');
+    setTimeout(doLogout, 2000);
+  }
+}
+function confirmDeleteAccount() {
+  const email = prompt('⚠️ This action CANNOT be undone.\n\nType your email to confirm deletion:');
+  const user = (() => { try { return JSON.parse(localStorage.getItem('mf_user') || '{}'); } catch { return {}; } })();
+  if (email === user.email) {
+    localStorage.clear();
+    sessionStorage.clear();
+    toast('Account deleted permanently.', 'error');
+    setTimeout(() => window.location.href = '../login.html', 2000);
+  } else { toast('Email did not match. Deletion cancelled.', 'error'); }
+}
+
+// ─── AVATAR PREVIEW ────────────────────────────────────────────
+function previewAvatar(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  if (file.size > 2 * 1024 * 1024) { toast('Image must be under 2MB', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const prev = document.getElementById('avatarPreview');
+    prev.style.backgroundImage = `url(${e.target.result})`;
+    prev.style.backgroundSize = 'cover';
+    prev.style.backgroundPosition = 'center';
+    prev.childNodes[0].textContent = '';
+    toast('Avatar updated', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ─── DATA DOWNLOAD ─────────────────────────────────────────────
+function downloadData() {
+  const data = { user: JSON.parse(localStorage.getItem('mf_user') || '{}'), profile: JSON.parse(localStorage.getItem('mf_profile') || '{}'), prefs: JSON.parse(localStorage.getItem('mf_prefs') || '{}'), exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'medfind-my-data.json'; a.click();
+  toast('Data downloaded', 'success');
+}
+
+// ─── HELPERS ───────────────────────────────────────────────────
+function showFieldErr(id, msg) { const el = document.getElementById(id); if (el) { el.textContent = msg; el.classList.add('show'); } }
+function clearFieldErr(id) { const el = document.getElementById(id); if (el) { el.textContent = ''; el.classList.remove('show'); } }
+function showAlert(id, type, msg) { const el = document.getElementById(id); if (!el) return; el.className = `alert ${type} show`; el.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`; setTimeout(() => el.classList.remove('show'), 4000); }
+
+function toast(msg, type = 'success') {
+  const t = document.createElement('div');
+  const ic = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+  t.className = `toast t-${type}`;
+  t.innerHTML = `<i class="fas ${ic} t-icon"></i><span>${msg}</span><button class="toast-close" onclick="this.parentElement.remove()">&times;</button>`;
+  document.getElementById('toastWrap').appendChild(t);
+  setTimeout(() => t.classList.add('show'), 10);
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3500);
+}
+
+function doLogout() {
+  ['mf_user','mf_token','medfind_user'].forEach(k => localStorage.removeItem(k));
+  window.location.href = '../login.html';
+}
+</script>
+</body>
+</html>

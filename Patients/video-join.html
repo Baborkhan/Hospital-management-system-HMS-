@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MedFind Bangladesh Patient Portal - Manage appointments, medical history, and health records.">
+<title>Join Video Consultation — MedFind</title>
+<link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script>window.API_BASE=location.hostname==="localhost"||location.hostname==="127.0.0.1"?"http://127.0.0.1:8000/api/v1":"https://api.medfind.app/api/v1";window.WS_BASE=(location.hostname==="localhost"||location.hostname==="127.0.0.1")?"ws://127.0.0.1:8001":"wss://"+location.hostname+":8001";</script>
+<script src="../../assets/js/webrtc.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pri:#1a56db;--teal:#0d9488;--em:#10b981;--danger:#ef4444;--warn:#f59e0b;--dark:#0f172a;--dark2:#1e293b;--dark3:#334155;--sub:#94a3b8;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--dark);color:#fff;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+
+/* ACCESS DENIED */
+.access-denied{position:fixed;inset:0;background:linear-gradient(135deg,#0f172a,#1e293b);z-index:3000;display:flex;align-items:center;justify-content:center;}
+.denied-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:24px;padding:3rem 2.5rem;max-width:420px;width:100%;text-align:center;}
+.denied-icon{font-size:3rem;margin-bottom:1.25rem;}
+.denied-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;margin-bottom:.6rem;}
+.denied-text{color:var(--sub);font-size:.88rem;line-height:1.7;margin-bottom:1.75rem;}
+.denied-btn{width:100%;padding:.8rem;background:var(--pri);color:#fff;border:none;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:.5rem;font-family:'DM Sans',sans-serif;}
+.denied-btn:hover{background:#1342b0;}
+.denied-btn.sec{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);margin-top:.6rem;}
+.denied-btn.sec:hover{background:rgba(255,255,255,.1);}
+
+/* WAITING ROOM */
+.waiting-room{position:fixed;inset:0;background:linear-gradient(135deg,var(--dark),var(--dark2));z-index:2000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;padding:2rem;}
+.waiting-room.show{display:flex;}
+.doc-pulse{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,var(--pri),var(--teal));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;color:#fff;animation:pulsing 2.5s ease infinite;border:4px solid rgba(255,255,255,.15);}
+@keyframes pulsing{0%,100%{box-shadow:0 0 0 0 rgba(26,86,219,.4)}50%{box-shadow:0 0 0 24px rgba(26,86,219,0)}}
+.wr-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;text-align:center;}
+.wr-sub{color:var(--sub);font-size:.9rem;text-align:center;}
+.wr-status{display:flex;align-items:center;gap:.5rem;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:#6ee7b7;padding:.4rem 1.25rem;border-radius:100px;font-size:.82rem;font-weight:600;}
+.blink-dot{width:7px;height:7px;border-radius:50%;background:#6ee7b7;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.wr-appt-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:1.25rem 1.75rem;text-align:center;max-width:360px;width:100%;}
+.wr-appt-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);margin-bottom:.25rem;}
+.wr-appt-val{font-weight:700;font-size:.92rem;}
+.wr-appt-note{font-size:.8rem;color:var(--sub);margin-top:.35rem;}
+.wr-actions{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;}
+.wr-btn{padding:.55rem 1.5rem;border-radius:100px;font-weight:700;font-size:.85rem;cursor:pointer;border:none;transition:.2s;}
+.wr-btn.cancel{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);}
+.wr-btn.cancel:hover{background:rgba(255,255,255,.15);}
+
+/* INCOMING CALL */
+.incoming-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);}
+.incoming-overlay.show{display:flex;}
+.incoming-card{background:var(--dark2);border:1.5px solid var(--dark3);border-radius:28px;padding:3rem 2.5rem;max-width:380px;width:100%;text-align:center;}
+.incoming-ring{font-size:3rem;animation:ring 1s ease infinite;}
+@keyframes ring{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(15deg)}}
+.incoming-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;margin:1rem 0 .35rem;}
+.incoming-sub{color:var(--sub);font-size:.88rem;margin-bottom:2rem;}
+.call-btns{display:flex;gap:1rem;justify-content:center;}
+.call-btn{width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;font-size:1.3rem;transition:.2s;}
+.call-btn.accept{background:var(--em);color:#fff;animation:glow 1.5s infinite;}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.5)}50%{box-shadow:0 0 0 12px rgba(16,185,129,0)}}
+.call-btn.accept:hover{background:#059669;}
+.call-btn.decline{background:var(--danger);color:#fff;}
+.call-btn.decline:hover{background:#b91c1c;}
+.call-btn-label{font-size:.72rem;color:var(--sub);margin-top:.35rem;}
+
+/* VIDEO AREA */
+.video-layout{flex:1;display:none;flex-direction:column;}
+.video-layout.show{display:flex;}
+.video-area{flex:1;position:relative;background:#000;overflow:hidden;}
+.remote-video-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a2a4a,#0d1f1f);}
+.remote-placeholder{display:flex;flex-direction:column;align-items:center;gap:1rem;}
+.remote-av{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--pri),var(--teal));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:2.4rem;color:#fff;border:4px solid rgba(255,255,255,.15);}
+.remote-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;}
+.remote-status{font-size:.85rem;color:var(--sub);}
+.remote-video-el{width:100%;height:100%;object-fit:cover;display:none;}
+/* PiP */
+.pip{position:absolute;bottom:5.5rem;right:1.5rem;width:160px;height:120px;border-radius:14px;overflow:hidden;border:2px solid rgba(255,255,255,.25);box-shadow:0 6px 24px rgba(0,0,0,.5);cursor:move;z-index:50;}
+.pip-video{width:100%;height:100%;background:linear-gradient(135deg,#1a3a6e,#1e293b);object-fit:cover;}
+.pip-label{position:absolute;bottom:.3rem;left:.45rem;font-size:.65rem;font-weight:700;color:rgba(255,255,255,.8);}
+/* TOP BAR */
+.vid-topbar{position:absolute;top:0;left:0;right:0;background:linear-gradient(180deg,rgba(0,0,0,.75),transparent);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;z-index:40;}
+.vt-left{display:flex;align-items:center;gap:.75rem;}
+.live-badge{display:flex;align-items:center;gap:.4rem;background:rgba(220,38,38,.85);color:#fff;padding:.3rem .85rem;border-radius:100px;font-size:.75rem;font-weight:700;}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1s infinite;}
+.vid-timer{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;}
+.enc-badge{display:flex;align-items:center;gap:.35rem;font-size:.75rem;color:rgba(255,255,255,.65);}
+.end-btn{background:rgba(220,38,38,.9);color:#fff;border:none;padding:.5rem 1.25rem;border-radius:100px;font-weight:700;font-size:.85rem;cursor:pointer;display:flex;align-items:center;gap:.4rem;transition:.2s;}
+.end-btn:hover{background:var(--danger);}
+/* CONTROLS */
+.vid-controls{background:var(--dark2);padding:1rem 2rem;display:flex;align-items:center;justify-content:center;gap:.75rem;position:relative;z-index:40;}
+.cc-btn{width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:.2s;position:relative;}
+.cc-btn.on{background:rgba(255,255,255,.15);color:#fff;}
+.cc-btn.on:hover{background:rgba(255,255,255,.25);}
+.cc-btn.off{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);}
+.cc-btn.red{background:var(--danger);color:#fff;}
+.cc-btn.red:hover{background:#b91c1c;}
+.cc-lbl{position:absolute;bottom:-18px;font-size:.62rem;font-weight:600;color:var(--sub);white-space:nowrap;}
+/* SIDE PANEL */
+.side-panel{width:0;overflow:hidden;background:var(--dark2);border-left:1px solid var(--dark3);transition:.3s;flex-shrink:0;}
+.side-panel.open{width:300px;}
+.sp-tabs{display:flex;border-bottom:1px solid var(--dark3);}
+.sp-tab{flex:1;padding:.65rem;font-size:.75rem;font-weight:700;text-align:center;cursor:pointer;color:var(--sub);border-bottom:2px solid transparent;transition:.2s;}
+.sp-tab.active{color:#fff;border-bottom-color:var(--pri);}
+.sp-panel{display:none;flex:1;flex-direction:column;overflow:hidden;}
+.sp-panel.active{display:flex;}
+/* Chat */
+.sp-msgs{flex:1;overflow-y:auto;padding:.75rem;display:flex;flex-direction:column;gap:.5rem;}
+.sp-msg{max-width:88%;}
+.sp-msg.mine{align-self:flex-end;}
+.sp-msg.theirs{align-self:flex-start;}
+.sp-bubble{padding:.5rem .75rem;border-radius:10px;font-size:.82rem;line-height:1.5;}
+.mine .sp-bubble{background:var(--pri);color:#fff;border-radius:10px 10px 0 10px;}
+.theirs .sp-bubble{background:var(--dark3);color:#e2e8f0;border-radius:10px 10px 10px 0;}
+.sp-meta{font-size:.65rem;color:var(--sub);margin-top:.2rem;text-align:right;}
+.theirs .sp-meta{text-align:left;}
+.sp-inp-row{padding:.6rem;border-top:1px solid var(--dark3);display:flex;gap:.4rem;}
+.sp-inp{flex:1;background:var(--dark);border:1.5px solid var(--dark3);border-radius:8px;padding:.45rem .65rem;color:#e2e8f0;font-size:.82rem;outline:none;}
+.sp-inp::placeholder{color:var(--sub);}
+.sp-inp:focus{border-color:var(--pri);}
+.sp-send{width:32px;height:32px;background:var(--pri);color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:.8rem;}
+/* Files panel */
+.sp-files{flex:1;padding:.75rem;display:flex;flex-direction:column;gap:.5rem;overflow-y:auto;}
+.sp-file-item{background:var(--dark3);border-radius:10px;padding:.6rem .75rem;display:flex;align-items:center;gap:.6rem;cursor:pointer;}
+.sp-file-item:hover{background:rgba(26,86,219,.2);}
+.sp-fi-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0;}
+.sp-fi-name{font-size:.78rem;color:#e2e8f0;font-weight:500;}
+.sp-fi-meta{font-size:.68rem;color:var(--sub);}
+.sp-fi-new{font-size:.6rem;font-weight:700;background:rgba(16,185,129,.2);color:#6ee7b7;padding:.1rem .35rem;border-radius:100px;}
+.upload-area{border:2px dashed var(--dark3);border-radius:10px;padding:1rem;text-align:center;cursor:pointer;margin-top:.25rem;}
+.upload-area:hover{border-color:rgba(26,86,219,.5);}
+/* Rx received */
+.rx-received{flex:1;padding:.75rem;display:flex;flex-direction:column;gap:.5rem;overflow-y:auto;}
+.rx-card{background:var(--dark3);border-radius:10px;padding:.75rem;}
+.rx-title{font-size:.78rem;font-weight:700;color:#e2e8f0;margin-bottom:.4rem;display:flex;align-items:center;justify-content:space-between;}
+.rx-med{font-size:.75rem;color:var(--sub);padding:.25rem 0;border-bottom:1px solid rgba(255,255,255,.06);}
+
+/* SCROLLBARS */
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-thumb{background:var(--dark3);border-radius:100px;}
+@media(max-width:768px){.vid-controls{padding:.6rem;gap:.5rem;}.cc-btn{width:44px;height:44px;}.pip{width:110px;height:85px;}.side-panel.open{width:100%;position:absolute;inset:0;z-index:60;}}
+</style>
+</head>
+<body>
+
+<!-- ACCESS DENIED (default view — will be replaced if auth passes) -->
+<div class="access-denied" id="accessDenied">
+  <div class="denied-card">
+    <div class="denied-icon" style="margin-bottom:.5rem;">
+    <img src="../../assets/medfind-logo.png" alt="MedFind Bangladesh" style="height:50px;width:auto;object-fit:contain;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;">
+    🔒
+  </div>
+    <div class="denied-title">Secure Video Consultation</div>
+    <div class="denied-text">This is a private medical consultation. Access is restricted to the patient with a confirmed appointment.<br><br>You must be logged in and have a <strong>confirmed booking</strong> to join this call. The doctor will initiate the call at the scheduled time.</div>
+    <button class="denied-btn" onclick="checkAuth()"><i class="fas fa-sign-in-alt"></i> Login to Access</button>
+    <button class="denied-btn sec" onclick="window.location='../patients/appointments.html'"><i class="fas fa-calendar-alt"></i> View My Appointments</button>
+    <div style="font-size:.72rem;color:var(--sub);margin-top:1.25rem;line-height:1.6;display:flex;gap:.4rem;align-items:flex-start"><i class="fas fa-shield-alt" style="color:var(--em);flex-shrink:0;margin-top:.15rem"></i> All sessions are end-to-end encrypted. Only the patient and assigned doctor can access this call.</div>
+  </div>
+</div>
+
+<!-- WAITING ROOM (after auth, before doctor calls) -->
+<div class="waiting-room" id="waitingRoom">
+  <div class="doc-pulse" id="docAv">KH</div>
+  <div class="wr-title">Waiting for <span id="wrDocName">Dr. Karimul Hasan</span></div>
+  <div class="wr-sub">Your appointment is confirmed. The doctor will call you at the scheduled time.</div>
+  <div class="wr-status"><div class="blink-dot"></div> Secure connection ready</div>
+  <div class="wr-appt-card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;text-align:left">
+      <div><div class="wr-appt-label">Date & Time</div><div class="wr-appt-val" id="wrApptTime">—</div></div>
+      <div><div class="wr-appt-label">Session ID</div><div class="wr-appt-val" id="wrSessionId" style="font-size:.78rem;color:var(--em)">—</div></div>
+      <div><div class="wr-appt-label">Doctor</div><div class="wr-appt-val" id="wrDocSpec">—</div></div>
+      <div><div class="wr-appt-label">Status</div><div class="wr-appt-val" style="color:var(--em)">✓ Verified</div></div>
+    </div>
+    <div class="wr-appt-note">⚕️ Only you and your doctor can access this call</div>
+  </div>
+  <div class="wr-actions">
+    <button class="wr-btn cancel" onclick="cancelWait()"><i class="fas fa-times"></i> Cancel</button>
+  </div>
+  <div style="font-size:.75rem;color:var(--sub);display:flex;align-items:center;gap:.4rem"><i class="fas fa-lock" style="color:var(--em)"></i> End-to-end encrypted · WebRTC · Session expires in 24h</div>
+</div>
+
+<!-- INCOMING CALL OVERLAY -->
+<div class="incoming-overlay" id="incomingOverlay">
+  <div class="incoming-card">
+    <div class="incoming-ring">📞</div>
+    <div class="incoming-title" id="incomingTitle">Dr. Karimul Hasan</div>
+    <div class="incoming-sub">is calling for your consultation</div>
+    <div style="display:flex;justify-content:center;gap:3rem;margin-bottom:1rem">
+      <div style="text-align:center">
+        <button class="call-btn accept" onclick="acceptCall()"><i class="fas fa-phone"></i></button>
+        <div class="call-btn-label">Accept</div>
+      </div>
+      <div style="text-align:center">
+        <button class="call-btn decline" onclick="declineCall()"><i class="fas fa-phone-slash"></i></button>
+        <div class="call-btn-label">Decline</div>
+      </div>
+    </div>
+    <div style="font-size:.75rem;color:var(--sub)"><i class="fas fa-shield-alt" style="color:var(--em)"></i> Encrypted · Private session</div>
+  </div>
+</div>
+
+<!-- ACTIVE VIDEO CALL -->
+<div class="video-layout" id="videoLayout">
+  <div style="display:flex;flex:1;overflow:hidden">
+    <div class="video-area" id="videoArea">
+      <div class="remote-video-wrap" id="remoteWrap">
+        <div class="remote-placeholder" id="remotePlaceholder">
+          <div class="remote-av" id="remoteAv">KH</div>
+          <div class="remote-name" id="remoteDocName">Dr. Karimul Hasan</div>
+          <div class="remote-status" id="remoteStatus"><i class="fas fa-circle-notch fa-spin"></i> Connecting...</div>
+        </div>
+        <video class="remote-video-el" id="remoteVideo" autoplay playsinline></video>
+      </div>
+      <!-- PiP -->
+      <div class="pip" id="pip">
+        <video class="pip-video" id="localVideo" autoplay muted playsinline></video>
+        <div class="pip-label" id="pipLabel">You</div>
+      </div>
+      <!-- Top bar -->
+      <div class="vid-topbar">
+        <div class="vt-left">
+          <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+          <div class="vid-timer" id="vidTimer">00:00</div>
+          <div class="enc-badge"><i class="fas fa-lock"></i> Encrypted</div>
+        </div>
+        <button class="end-btn" onclick="confirmEndCall()"><i class="fas fa-phone-slash"></i> End Call</button>
+      </div>
+    </div>
+    <!-- SIDE PANEL -->
+    <div class="side-panel" id="sidePanel">
+      <div class="sp-tabs">
+        <div class="sp-tab active" onclick="switchTab('chatPanelV',this)">Chat</div>
+        <div class="sp-tab" onclick="switchTab('filesPanelV',this)">Files</div>
+        <div class="sp-tab" onclick="switchTab('rxPanelV',this)">Rx</div>
+        <button onclick="closePanel()" style="background:none;border:none;color:var(--sub);padding:.5rem .6rem;cursor:pointer">×</button>
+      </div>
+      <!-- Chat -->
+      <div class="sp-panel active" id="chatPanelV">
+        <div class="sp-msgs" id="chatMsgs">
+          <div class="sp-msg theirs">
+            <div class="sp-bubble">Hello! I can see you clearly. How are you feeling today?</div>
+            <div class="sp-meta">Doctor · Now</div>
+          </div>
+        </div>
+        <div class="sp-inp-row">
+          <input class="sp-inp" id="chatInpV" placeholder="Type message..." onkeydown="if(event.key==='Enter')sendChatV()">
+          <button class="sp-send" onclick="sendChatV()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+      <!-- Files -->
+      <div class="sp-panel" id="filesPanelV">
+        <div class="sp-files">
+          <div style="font-size:.78rem;font-weight:700;color:#e2e8f0;margin-bottom:.25rem">Send files to your doctor</div>
+          <div class="upload-area" onclick="uploadPatientFile()">
+            <i class="fas fa-cloud-upload-alt" style="font-size:1.2rem;color:var(--sub);display:block;margin-bottom:.3rem"></i>
+            <div style="font-size:.75rem;color:var(--sub)">Upload test report, prescription, X-ray<br><small>PDF, JPG, PNG · Max 20MB</small></div>
+          </div>
+          <input type="file" id="patientFileInput" accept=".pdf,image/*" style="display:none" onchange="handlePatientFile(event)">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--sub);margin-top:.5rem">Files received from doctor</div>
+          <div id="doctorFilesReceived">
+            <div style="font-size:.78rem;color:var(--sub);font-style:italic;padding:.5rem 0">Files sent by doctor will appear here</div>
+          </div>
+          <div style="font-size:.68rem;color:var(--sub);display:flex;gap:.3rem;align-items:center;margin-top:.25rem"><i class="fas fa-shield-alt" style="color:var(--em)"></i> Private — only you and your doctor</div>
+        </div>
+      </div>
+      <!-- Rx Received -->
+      <div class="sp-panel" id="rxPanelV">
+        <div class="rx-received" id="rxReceived">
+          <div style="font-size:.78rem;font-weight:700;color:#e2e8f0;margin-bottom:.25rem">Prescriptions from Doctor</div>
+          <div style="font-size:.78rem;color:var(--sub);font-style:italic">Prescriptions sent by your doctor will appear here</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Controls -->
+  <div class="vid-controls">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:18px">
+      <button class="cc-btn on" id="micBtn" onclick="toggleMicV()"><i class="fas fa-microphone" id="micIconV"></i><span class="cc-lbl">Mic</span></button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:18px">
+      <button class="cc-btn on" id="camBtn" onclick="toggleCamV()"><i class="fas fa-video" id="camIconV"></i><span class="cc-lbl">Camera</span></button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:18px">
+      <button class="cc-btn on" onclick="togglePanelV('chatPanelV')"><i class="fas fa-comments"></i><span class="cc-lbl">Chat</span></button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:18px">
+      <button class="cc-btn on" onclick="togglePanelV('filesPanelV')"><i class="fas fa-file-medical"></i><span class="cc-lbl">Files</span></button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:18px">
+      <button class="cc-btn on" onclick="togglePanelV('rxPanelV')"><i class="fas fa-prescription-bottle-alt"></i><span class="cc-lbl">Rx</span></button>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:18px;margin-left:.5rem">
+      <button class="cc-btn red" onclick="confirmEndCall()"><i class="fas fa-phone-slash"></i><span class="cc-lbl">End</span></button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let micOn = true, camOn = true;
+let callTimer = null, callSec = 0;
+let localStream = null;
+let activePanelId = null;
+let isInCall = false;
+
+const urlParams = new URLSearchParams(location.search);
+const appointmentId = urlParams.get('appointment');
+const doctorId = urlParams.get('doctor');
+const sessionToken = urlParams.get('token'); // secure join token
+
+// Doctor data (in production: fetched from API)
+const DOCTORS = {
+  '1': {name:'Dr. Karimul Hasan',initials:'KH',specialty:'Cardiologist'},
+  '2': {name:'Dr. Sultana Begum',initials:'SB',specialty:'Neurologist'},
+  '3': {name:'Dr. Rahman Kabir',initials:'RK',specialty:'Internal Medicine'},
+  '4': {name:'Dr. Nadia Islam',initials:'NI',specialty:'Pediatrician'},
+  '5': {name:'Dr. Rina Akter',initials:'RA',specialty:'Gynecologist'},
+};
+
+// ============================================================
+// AUTH CHECK — Patient must be logged in + have this appointment
+// ============================================================
+function checkAuth() {
+  // Check localStorage for auth token
+  const token = localStorage.getItem('mf_token') || localStorage.getItem('medfind_token') || localStorage.getItem('access_token');
+  
+  if (!token) {
+    // Not logged in → redirect to login with return URL
+    const returnUrl = encodeURIComponent(location.href);
+    window.location.href = `../login.html?next=${returnUrl}`;
+    return;
+  }
+
+  // Verify appointment ownership via API
+  verifyAppointmentAccess(token);
+}
+
+async function verifyAppointmentAccess(token) {
+  // In production: verify with backend
+  // GET /api/v1/appointments/{appointmentId}/verify-access/
+  // Response: {allowed: true, appointment: {...}, patient_name: '...', doctor_id: '...'}
+  
+  try {
+    const res = await fetch(`${window.API_BASE}/appointments/${appointmentId || '1'}/verify-access/`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.allowed) {
+        showWaitingRoom(data);
+        return;
+      }
+    }
+  } catch(e) {
+    // Backend offline — demo mode with localStorage
+    console.log('[MedFind] API offline — checking localStorage bookings');
+  }
+
+  // Fallback: check localStorage for demo
+  const bookings = JSON.parse(localStorage.getItem('medfind_bookings') || '[]');
+  const booking = bookings.find(b => b.type === 'video') || bookings[0];
+  
+  if (booking || appointmentId) {
+    // Demo: show waiting room
+    showWaitingRoom({
+      patient_name: localStorage.getItem('mf_patient_name') || 'Patient',
+      doctor_id: doctorId || '1',
+      appointment_time: booking?.time || 'Scheduled',
+      session_id: 'MF-' + (appointmentId || Math.random().toString(36).slice(2,8).toUpperCase()),
+    });
+  } else {
+    // No appointment found — keep access denied
+    alert('No confirmed video appointment found. Please book a video consultation first.');
+    window.location.href = '../doctors/search.html';
+  }
+}
+
+// ── MedFindCall instance (real WebRTC) ──────────────────────────────────
+let medCall = null;
+
+function showWaitingRoom(appt) {
+  const doc = DOCTORS[appt.doctor_id || doctorId || '1'] || DOCTORS['1'];
+  const token = localStorage.getItem('mf_token') || localStorage.getItem('medfind_token');
+
+  document.getElementById('accessDenied').style.display = 'none';
+  document.getElementById('docAv').textContent        = doc.initials;
+  document.getElementById('wrDocName').textContent    = doc.name;
+  document.getElementById('wrDocSpec').textContent    = doc.specialty;
+  document.getElementById('wrApptTime').textContent   = appt.appointment_time || 'Confirmed';
+  document.getElementById('wrSessionId').textContent  = appt.session_id || 'MF-SECURE';
+  document.getElementById('incomingTitle').textContent = doc.name;
+  document.getElementById('remoteAv').textContent     = doc.initials;
+  document.getElementById('remoteDocName').textContent = doc.name;
+
+  document.getElementById('waitingRoom').classList.add('show');
+
+  // ── Real WebRTC — patient joins waiting room ──────────────────────────
+  medCall = new MedFindCall({
+    role:      'patient',
+    sessionId: appt.session_id,
+    token:     token,
+    callbacks: {
+      onWaiting: () => {
+        console.log('[MedFind] Waiting room joined — listening for doctor');
+      },
+      onDoctorJoined: (data) => {
+        // Doctor clicked JOIN SESSION → show incoming call screen
+        document.getElementById('incomingTitle').textContent = data.doctor_name || doc.name;
+        showIncomingCall();
+      },
+      onCallStarted: ({ remoteStream }) => {
+        // Attach remote stream to video element
+        const remoteVid = document.getElementById('remoteVideo');
+        if (remoteVid) { remoteVid.srcObject = remoteStream; remoteVid.play().catch(()=>{}); }
+        // Start call timer
+        callSec = 0;
+        callTimer = setInterval(() => {
+          callSec++;
+          const m = Math.floor(callSec/60).toString().padStart(2,'0');
+          const s = (callSec%60).toString().padStart(2,'0');
+          document.getElementById('vidTimer').textContent = m + ':' + s;
+        }, 1000);
+      },
+      onCallEnded: ({ reason }) => {
+        if (reason === 'peer_left') {
+          alert('The doctor has ended the session. Your prescription has been saved.');
+          window.location.href = '../patients/appointments.html';
+        }
+      },
+      onError: ({ message }) => {
+        console.error('[MedFind WebRTC Error]', message);
+        alert('Connection error: ' + message + '\nPlease check your internet and try again.');
+      },
+    }
+  });
+
+  medCall.joinWaitingRoom().then(() => {
+    // Attach local video preview
+    const localVid = document.getElementById('localVideo');
+    if (localVid) medCall.attachLocalVideo(localVid);
+  });
+}
+
+function showIncomingCall() {
+  document.getElementById('incomingOverlay').classList.add('show');
+  // Play ringtone (in production)
+  // audio.play();
+}
+
+function acceptCall() {
+  document.getElementById('incomingOverlay').classList.remove('show');
+  document.getElementById('waitingRoom').classList.remove('show');
+  document.getElementById('videoLayout').classList.add('show');
+  isInCall = true;
+
+  // Start timer
+  callSec = 0;
+  callTimer = setInterval(() => {
+    callSec++;
+    const m = Math.floor(callSec/60).toString().padStart(2,'0');
+    const s = (callSec%60).toString().padStart(2,'0');
+    document.getElementById('vidTimer').textContent = `${m}:${s}`;
+  }, 1000);
+
+  // Simulate doctor video connected
+  setTimeout(() => {
+    document.getElementById('remoteStatus').innerHTML = '<i class="fas fa-check-circle" style="color:#10b981"></i> Connected';
+  }, 2000);
+
+  // Log to API: PUT /api/v1/telemedicine/sessions/{id}/patient-joined/
+  console.log(`[MedFind] Patient joined session. POST /api/v1/telemedicine/sessions/join/ → {session_id: "${urlParams.get('session') || 'demo'}", patient_joined: true}`);
+}
+
+function declineCall() {
+  document.getElementById('incomingOverlay').classList.remove('show');
+  if(confirm('Decline this call? You can reschedule your appointment.')) {
+    window.location.href = '../patients/appointments.html';
+  } else {
+    document.getElementById('incomingOverlay').classList.add('show');
+  }
+}
+
+function cancelWait() {
+  if(confirm('Cancel waiting? Your appointment will remain confirmed.')) {
+    window.location.href = '../patients/appointments.html';
+  }
+}
+
+// CONTROLS
+function toggleMicV() {
+  micOn = !micOn;
+  document.getElementById('micBtn').className = `cc-btn ${micOn?'on':'off'}`;
+  document.getElementById('micIconV').className = `fas fa-microphone${micOn?'':'-slash'}`;
+  if(localStream) localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+}
+
+function toggleCamV() {
+  camOn = !camOn;
+  document.getElementById('camBtn').className = `cc-btn ${camOn?'on':'off'}`;
+  document.getElementById('camIconV').className = `fas fa-video${camOn?'':'-slash'}`;
+  if(localStream) localStream.getVideoTracks().forEach(t => t.enabled = camOn);
+}
+
+function togglePanelV(panelId) {
+  const sp = document.getElementById('sidePanel');
+  if (activePanelId === panelId && sp.classList.contains('open')) {
+    closePanel(); return;
+  }
+  sp.classList.add('open');
+  document.querySelectorAll('.sp-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+  document.querySelectorAll('.sp-tab').forEach(t => t.classList.remove('active'));
+  activePanelId = panelId;
+  const idx = {chatPanelV:0,filesPanelV:1,rxPanelV:2}[panelId];
+  if(idx !== undefined) document.querySelectorAll('.sp-tab')[idx].classList.add('active');
+}
+
+function switchTab(panelId, btn) {
+  document.querySelectorAll('.sp-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+  document.querySelectorAll('.sp-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  activePanelId = panelId;
+}
+
+function closePanel() {
+  document.getElementById('sidePanel').classList.remove('open');
+  activePanelId = null;
+}
+
+function sendChatV() {
+  const inp = document.getElementById('chatInpV');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  const area = document.getElementById('chatMsgs');
+  const now = new Date().toLocaleTimeString('en-BD',{hour:'2-digit',minute:'2-digit'});
+  area.innerHTML += `<div class="sp-msg mine"><div class="sp-bubble">${msg}</div><div class="sp-meta">You · ${now}</div></div>`;
+  area.scrollTop = area.scrollHeight;
+  inp.value = '';
+  // POST /api/v1/telemedicine/sessions/{id}/messages/ → {role:'patient', content: msg}
+}
+
+function uploadPatientFile() {
+  document.getElementById('patientFileInput').click();
+}
+
+function handlePatientFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const list = document.getElementById('filesPanelV').querySelector('#filesPanelV .sp-files');
+  const isImg = file.type.startsWith('image/');
+  const mb = (file.size/1048576).toFixed(1);
+  const el = document.createElement('div');
+  el.className = 'sp-file-item';
+  el.innerHTML = `
+    <div class="sp-fi-icon" style="background:${isImg?'rgba(26,86,219,.2)':'rgba(220,38,38,.2)'};color:${isImg?'#93c5fd':'#fca5a5'}"><i class="fas fa-${isImg?'image':'file-pdf'}"></i></div>
+    <div style="flex:1"><div class="sp-fi-name">${file.name}</div><div class="sp-fi-meta">${mb}MB · Just now</div></div>
+    <span class="sp-fi-new">SENT</span>`;
+  // Insert before upload area
+  const uploadArea = document.querySelector('.upload-area');
+  uploadArea.parentNode.insertBefore(el, uploadArea.nextSibling);
+  // POST /api/v1/records/upload/ with {appointment_id, file}
+  console.log(`[MedFind] File upload: POST /api/v1/records/upload/ → file: ${file.name}`);
+}
+
+// Simulate receiving prescription from doctor
+function receivePrescription(rxData) {
+  const rx = document.getElementById('rxReceived');
+  rx.innerHTML = `
+    <div style="font-size:.78rem;font-weight:700;color:#e2e8f0;margin-bottom:.5rem">Prescriptions from Doctor</div>
+    ${rxData.map(med => `
+      <div class="rx-card">
+        <div class="rx-title"><span>💊 ${med.name}</span><span style="font-size:.65rem;color:var(--em)">NEW</span></div>
+        <div class="rx-med">Dosage: ${med.dosage}</div>
+        <div class="rx-med">Duration: ${med.duration}</div>
+        ${med.note ? `<div class="rx-med" style="color:var(--warn)">⚠️ ${med.note}</div>`:''}
+      </div>
+    `).join('')}
+    <div style="font-size:.72rem;color:var(--sub);margin-top:.25rem">Full prescription sent to your phone & email</div>`;
+}
+
+// Simulate receiving doctor file
+function receiveDoctorFile(fileName, fileType) {
+  const el = document.createElement('div');
+  el.className = 'sp-file-item';
+  const isImg = fileType === 'image';
+  el.innerHTML = `
+    <div class="sp-fi-icon" style="background:${isImg?'rgba(26,86,219,.2)':'rgba(220,38,38,.2)'};color:${isImg?'#93c5fd':'#fca5a5'}"><i class="fas fa-${isImg?'image':'file-pdf'}"></i></div>
+    <div style="flex:1"><div class="sp-fi-name">${fileName}</div><div class="sp-fi-meta">From doctor · Just now</div></div>
+    <span class="sp-fi-new">NEW</span>`;
+  const received = document.getElementById('doctorFilesReceived');
+  received.innerHTML = '';
+  received.appendChild(el);
+}
+
+function confirmEndCall() {
+  if(!isInCall) return;
+  if(confirm('End this consultation?\n\nPrescription and session notes will be saved to your medical history.')) {
+    endCallV();
+  }
+}
+
+function endCallV() {
+  clearInterval(callTimer);
+  isInCall = false;
+  if (medCall) {
+    medCall.endCall().then(() => {
+      alert('Consultation ended. Your prescription and session notes have been saved.');
+      window.location.href = '../patients/appointments.html';
+    });
+  } else {
+    alert('Consultation ended.');
+    window.location.href = '../patients/appointments.html';
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = function() {
+  // If token present in URL (from appointment booking), auto-verify
+  const savedToken = localStorage.getItem('mf_token') || localStorage.getItem('medfind_token');
+  
+  if (sessionToken && savedToken) {
+    // Direct join from appointment page with token
+    verifyAppointmentAccess(savedToken);
+  } else if (savedToken && appointmentId) {
+    // Has auth token and appointment ID
+    verifyAppointmentAccess(savedToken);
+  } else if (savedToken) {
+    // Logged in but no appointment specified
+    verifyAppointmentAccess(savedToken);
+  }
+  // else: show access denied (default)
+};
+</script>
+</body>
+</html>
