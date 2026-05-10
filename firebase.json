@@ -1,0 +1,113 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": "frontend",
+<<<<<<< HEAD
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "cleanUrls": false,
+    "redirects": [
+      {
+        "source": "/login",
+        "destination": "/pages/login.html",
+        "type": 301
+      },
+      {
+        "source": "/register",
+        "destination": "/pages/register.html",
+        "type": 301
+      },
+      {
+        "source": "/donate",
+        "destination": "/pages/donate/index.html",
+        "type": 301
+      },
+      {
+        "source": "/doctors",
+        "destination": "/pages/doctors/search.html",
+        "type": 301
+      },
+      {
+        "source": "/blood",
+        "destination": "/pages/blood-donor/search.html",
+        "type": 301
+      },
+      {
+        "source": "/symptoms",
+        "destination": "/pages/symptoms/index.html",
+        "type": 301
+      }
+=======
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "cleanUrls": false,
+    "rewrites": [
+      { "source": "/api/**", "run": { "serviceId": "medfind-backend", "region": "asia-southeast1" } }
+    ],
+    "redirects": [
+      { "source": "/login", "destination": "/pages/login.html", "type": 301 },
+      { "source": "/register", "destination": "/pages/register.html", "type": 301 },
+      { "source": "/donate", "destination": "/pages/donate/index.html", "type": 301 },
+      { "source": "/doctors", "destination": "/pages/doctors/search.html", "type": 301 },
+      { "source": "/blood", "destination": "/pages/blood-donor/search.html", "type": 301 },
+      { "source": "/symptoms", "destination": "/pages/symptoms/index.html", "type": 301 }
+>>>>>>> 58c405af0447997e6cf8a412fa3573bac7007072
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(js|css)",
+<<<<<<< HEAD
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=604800"
+          }
+        ]
+      },
+      {
+        "source": "**/*.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+=======
+        "headers": [{ "key": "Cache-Control", "value": "max-age=604800" }]
+      },
+      {
+        "source": "**/*.html",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+>>>>>>> 58c405af0447997e6cf8a412fa3573bac7007072
+      },
+      {
+        "source": "**",
+        "headers": [
+<<<<<<< HEAD
+          {
+            "key": "X-Frame-Options",
+            "value": "SAMEORIGIN"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          }
+=======
+          { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+>>>>>>> 58c405af0447997e6cf8a412fa3573bac7007072
+        ]
+      }
+    ]
+  }
+}
