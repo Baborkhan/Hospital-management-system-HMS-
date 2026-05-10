@@ -1,0 +1,2 @@
+"""DRF serializers for locations."""
+

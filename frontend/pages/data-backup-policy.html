@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="MedFind Bangladesh data backup policy. Learn how we protect, back up, and recover your medical data."><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Backup Policy — MedFind Bangladesh</title>
+<link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0f1a;--bg2:#111827;--bg3:#1e293b;--pri:#2563eb;--teal:#0ea5e9;--em:#10b981;--warn:#f59e0b;--txt:#f8fafc;--sub:#94a3b8;--border:rgba(255,255,255,.08);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;}
+nav{background:rgba(10,15,26,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-brand img{height:42px;width:auto;object-fit:contain;}
+.nav-back{color:var(--sub);text-decoration:none;font-size:.875rem;display:flex;align-items:center;gap:.4rem;}
+.hero{background:linear-gradient(135deg,rgba(14,165,233,.06) 0%,transparent 60%);border-bottom:1px solid var(--border);padding:3rem 2rem;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.25);color:#7dd3fc;padding:.35rem 1rem;border-radius:100px;font-size:.78rem;font-weight:600;margin-bottom:1rem;text-transform:uppercase;letter-spacing:.05em;}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;margin-bottom:.75rem;}
+.hero p{color:var(--sub);font-size:.95rem;max-width:600px;margin:0 auto;}
+.container{max-width:900px;margin:0 auto;padding:3rem 2rem 5rem;}
+.backup-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:3rem;}
+.backup-stat{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.25rem;text-align:center;}
+.bs-icon{font-size:1.5rem;margin-bottom:.5rem;}
+.bs-val{font-size:1.4rem;font-weight:800;margin-bottom:.25rem;}
+.bs-val.blue{color:#7dd3fc;}
+.bs-val.green{color:#6ee7b7;}
+.bs-val.amber{color:#fcd34d;}
+.bs-val.purple{color:#c4b5fd;}
+.bs-lbl{font-size:.78rem;color:var(--sub);font-weight:500;}
+.section{margin-bottom:2.25rem;}
+.section h2{font-size:1.05rem;font-weight:800;margin-bottom:.75rem;color:var(--txt);display:flex;align-items:center;gap:.5rem;}
+.section h2 i{color:var(--teal);}
+.section p,.section li{color:var(--sub);font-size:.9rem;margin-bottom:.4rem;}
+.section ul,.section ol{padding-left:1.25rem;margin-bottom:.75rem;}
+.section li::marker{color:var(--pri);}
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border);}
+.tl-item:last-child{border-bottom:none;}
+.tl-dot{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:2px;}
+.tl-blue{background:rgba(37,99,235,.12);color:#93c5fd;}
+.tl-green{background:rgba(16,185,129,.12);color:#6ee7b7;}
+.tl-amber{background:rgba(245,158,11,.12);color:#fcd34d;}
+.tl-title{font-size:.92rem;font-weight:700;margin-bottom:.2rem;}
+.tl-desc{font-size:.84rem;color:var(--sub);}
+.tl-meta{font-size:.76rem;color:var(--sub);margin-top:.2rem;opacity:.7;}
+.rto-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.rto-card{background:var(--bg3);border-radius:12px;padding:1rem;text-align:center;}
+.rto-val{font-size:1.5rem;font-weight:800;margin-bottom:.2rem;}
+.rto-lbl{font-size:.75rem;color:var(--sub);}
+.hbox{background:rgba(37,99,235,.06);border:1px solid rgba(37,99,235,.18);border-radius:12px;padding:1rem 1.25rem;margin:1rem 0;}
+.hbox p{color:var(--sub);font-size:.87rem;margin:0;}
+.divider{height:1px;background:var(--border);margin:2rem 0;}
+@media(max-width:640px){.rto-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-brand" href="../../index.html"><img src="../assets/medfind-logo.png" alt="MedFind Bangladesh"></a>
+  <a class="nav-back" href="../../index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+</nav>
+<div class="hero">
+  <div class="hero-badge"><i class="fas fa-server"></i> Data Protection</div>
+  <h1>Data Backup Policy</h1>
+  <p>How MedFind protects, backs up, and recovers your medical data. Our commitment to data availability and security.</p>
+</div>
+<div class="container">
+
+  <div class="backup-grid">
+    <div class="backup-stat"><div class="bs-icon">⏰</div><div class="bs-val blue">Every 6h</div><div class="bs-lbl">Automated Backups</div></div>
+    <div class="backup-stat"><div class="bs-icon">🔐</div><div class="bs-val green">AES-256</div><div class="bs-lbl">Backup Encryption</div></div>
+    <div class="backup-stat"><div class="bs-icon">📍</div><div class="bs-val amber">3 Sites</div><div class="bs-lbl">Geographic Redundancy</div></div>
+    <div class="backup-stat"><div class="bs-icon">⚡</div><div class="bs-val purple">< 4 Hours</div><div class="bs-lbl">Recovery Time Objective</div></div>
+  </div>
+
+  <div class="section">
+    <h2><i class="fas fa-shield-halved"></i> Backup Overview</h2>
+    <p>MedFind maintains comprehensive automated backup systems to protect all user data, including medical records, appointment history, and account information. Our backup strategy follows the 3-2-1 rule: 3 copies, on 2 different media types, with 1 offsite copy.</p>
+  </div>
+
+  <div class="section">
+    <h2><i class="fas fa-clock-rotate-left"></i> Backup Schedule</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot tl-blue"><i class="fas fa-bolt"></i></div>
+        <div><div class="tl-title">Real-Time Transaction Logs</div><div class="tl-desc">Every database write operation is logged to a redundant transaction log in real time. This captures every change the moment it happens.</div><div class="tl-meta">Retention: 30 days | Type: PostgreSQL WAL + MongoDB Oplog</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot tl-green"><i class="fas fa-database"></i></div>
+        <div><div class="tl-title">Incremental Backups</div><div class="tl-desc">Changed data since the last backup is captured every 6 hours. This minimizes data loss to a maximum of 6 hours in a worst-case scenario.</div><div class="tl-meta">Retention: 14 days | Schedule: 00:00, 06:00, 12:00, 18:00 BST</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot tl-amber"><i class="fas fa-hard-drive"></i></div>
+        <div><div class="tl-title">Full Daily Backups</div><div class="tl-desc">Complete snapshot of all databases, user files, and configuration. Includes PostgreSQL, MongoDB, Redis snapshots, and all uploaded medical files.</div><div class="tl-meta">Retention: 30 days | Schedule: 02:00 BST daily</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot tl-blue"><i class="fas fa-calendar-week"></i></div>
+        <div><div class="tl-title">Weekly Consolidated Backups</div><div class="tl-desc">Weekly full backup exported to cold storage. These are the primary backups used for long-term data retention and compliance.</div><div class="tl-meta">Retention: 1 year | Schedule: Sunday 03:00 BST</div></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot tl-green"><i class="fas fa-archive"></i></div>
+        <div><div class="tl-title">Monthly Compliance Archives</div><div class="tl-desc">Complete monthly archive to comply with Bangladesh healthcare data retention regulations. Medical records are retained for 10 years minimum.</div><div class="tl-meta">Retention: 10 years (medical) / 7 years (financial) | Encrypted cold storage</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2><i class="fas fa-map-marker-alt"></i> Storage Locations</h2>
+    <ul>
+      <li><strong>Primary:</strong> AWS ap-southeast-1 (Singapore) — Live database servers</li>
+      <li><strong>Secondary:</strong> AWS ap-south-1 (Mumbai) — Hot standby with &lt;5 minute replication lag</li>
+      <li><strong>Tertiary:</strong> AWS S3 Glacier (Bangladesh-compliant region) — Cold storage archives</li>
+      <li><strong>Local:</strong> On-premise encrypted drives at Dhaka data center for critical medical records</li>
+    </ul>
+    <div class="hbox">
+      <p><strong>Data Sovereignty Note:</strong> Patient medical records are stored in compliance with Bangladesh ICT Act 2006 and Digital Security Act 2018. Sensitive health data is replicated only to servers that meet Bangladesh data protection requirements.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2><i class="fas fa-lock"></i> Backup Security</h2>
+    <ul>
+      <li>All backups are encrypted using AES-256 before being written to storage</li>
+      <li>Encryption keys are managed using AWS KMS with hardware security modules (HSM)</li>
+      <li>Backup access requires multi-factor authentication and is logged to immutable audit trails</li>
+      <li>Backup integrity is verified automatically with cryptographic checksums after every backup</li>
+      <li>Restore tests are performed monthly to verify backup integrity and recovery procedures</li>
+      <li>Backup storage locations are separate from production systems to prevent ransomware propagation</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2><i class="fas fa-rotate-right"></i> Recovery Objectives</h2>
+    <div class="rto-grid">
+      <div class="rto-card"><div class="rto-val" style="color:#6ee7b7">1 Hour</div><div class="rto-lbl">Recovery Point Objective (RPO)<br>Maximum data loss</div></div>
+      <div class="rto-card"><div class="rto-val" style="color:#93c5fd">4 Hours</div><div class="rto-lbl">Recovery Time Objective (RTO)<br>Maximum downtime</div></div>
+    </div>
+    <p>In the event of a catastrophic failure, we can restore all data to within 1 hour of the failure with full service restoration within 4 hours.</p>
+  </div>
+
+  <div class="section">
+    <h2><i class="fas fa-user-shield"></i> Your Data Export Rights</h2>
+    <p>As a MedFind user, you have the right to request a full export of your personal data at any time:</p>
+    <ul>
+      <li>Request via: Account Settings &gt; Privacy &gt; Export My Data</li>
+      <li>Or email: medfindbd2026@gmail.com with subject "Data Export Request"</li>
+      <li>Delivery: Your data will be provided within 14 business days in JSON and PDF format</li>
+      <li>Includes: All appointments, medical records, prescriptions, payment history, and account data</li>
+      <li>Free of charge: Data exports are provided at no cost</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2><i class="fas fa-triangle-exclamation"></i> Disaster Recovery Plan</h2>
+    <p>MedFind maintains a formal Disaster Recovery Plan (DRP) that covers:</p>
+    <ol>
+      <li><strong>Detection (0-15 min):</strong> Automated monitoring alerts trigger within minutes of system failure</li>
+      <li><strong>Assessment (15-30 min):</strong> On-call engineers assess scope and severity</li>
+      <li><strong>Failover (30-60 min):</strong> Automatic or manual failover to secondary region</li>
+      <li><strong>Recovery (1-4 hours):</strong> Full restoration from backup with data integrity verification</li>
+      <li><strong>Communication:</strong> Registered users notified via SMS/email within 2 hours of incident</li>
+      <li><strong>Post-Incident Review:</strong> Full root cause analysis and remediation within 7 days</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2><i class="fas fa-bell"></i> Breach Notification</h2>
+    <p>In the event of a data breach affecting personal or medical data:</p>
+    <ul>
+      <li>Affected users will be notified within 72 hours of breach discovery</li>
+      <li>Notification will include: what data was affected, steps taken, and recommended user actions</li>
+      <li>Bangladesh Computer Council (BCC) and relevant authorities will be notified as required by law</li>
+      <li>Forensic investigation will be conducted and a report provided to affected users</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+  <p style="color:#64748b;font-size:.8rem;text-align:center">Data backup policy last reviewed: April 2026. For questions: <a href="mailto:medfindbd2026@gmail.com" style="color:#93c5fd">medfindbd2026@gmail.com</a></p>
+</div>
+<script src="../assets/js/config.js"></script>
+  <script src="../assets/js/components.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+# Google Cloud Run Service Definition
+# Deploy: gcloud run services replace deployment/gcp/cloudrun-service.yaml --region=asia-southeast1
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: medfind-backend
+  annotations:
+    run.googleapis.com/ingress: all
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/execution-environment: gen2
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "10"
+        run.googleapis.com/cloudsql-instances: "PROJECT_ID:asia-southeast1:medfind-db"
+    spec:
+      serviceAccountName: medfind-sa@PROJECT_ID.iam.gserviceaccount.com
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      containers:
+        - image: asia-southeast1-docker.pkg.dev/PROJECT_ID/medfind/backend:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: "1"
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: config.settings.prod
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: medfind-secret-key
+                  key: latest
+            - name: DB_NAME
+              value: medfind
+            - name: DB_USER
+              value: medfind_user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: medfind-db-password
+                  key: latest
+            - name: DB_HOST
+              value: "/cloudsql/PROJECT_ID:asia-southeast1:medfind-db"
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: medfind-redis-url
+                  key: latest
+            - name: ANTHROPIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: medfind-anthropic-key
+                  key: latest
+            - name: SSLCOMMERZ_STORE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: medfind-ssl-store-id
+                  key: latest
+            - name: SSLCOMMERZ_STORE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: medfind-ssl-store-pass
+                  key: latest
+            - name: ALLOWED_HOSTS
+              value: "medfind-backend-HASH-uc.a.run.app,medfind.com.bd,www.medfind.com.bd"
+            - name: CORS_ALLOWED_ORIGINS
+              value: "https://medfind.com.bd,https://www.medfind.com.bd"
+            - name: CSRF_TRUSTED_ORIGINS
+              value: "https://medfind.com.bd,https://www.medfind.com.bd"

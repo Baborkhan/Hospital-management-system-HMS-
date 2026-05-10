@@ -1,0 +1,127 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuth() {
+      return request.auth != null;
+    }
+    function uid() {
+      return request.auth.uid;
+    }
+    function isOwner(docUid) {
+      return isAuth() && uid() == docUid;
+    }
+    function userRole() {
+      return isAuth()
+        ? get(/databases/$(database)/documents/users/$(uid())).data.get('role', 'patient')
+        : null;
+    }
+    function isAdmin() {
+      return isAuth() && (userRole() == 'admin' || userRole() == 'superadmin');
+    }
+    function isDoctor() {
+      return isAuth() && userRole() == 'doctor';
+    }
+    function isHospitalAdmin() {
+      return isAuth() && userRole() == 'hospital_admin';
+    }
+
+    // ── users ─────────────────────────────────────────────
+    match /users/{uid} {
+      allow read:   if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── pending_registrations ─────────────────────────────
+    // Anyone authenticated can submit; only admins can read/approve/reject
+    match /pending_registrations/{docId} {
+      allow create: if isAuth();
+      allow read:   if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── appointments ──────────────────────────────────────
+    match /appointments/{apptId} {
+      allow read:   if isAuth() && (
+        resource.data.patientId == uid() ||
+        resource.data.doctorId  == uid() ||
+        isAdmin() || isHospitalAdmin()
+      );
+      allow create: if isAuth();
+      allow update: if isAuth() && (
+        resource.data.patientId == uid() ||
+        resource.data.doctorId  == uid() ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+    }
+
+    // ── doctors ───────────────────────────────────────────
+    match /doctors/{uid} {
+      allow read:   if true;
+      allow write:  if isOwner(uid) || isAdmin();
+    }
+
+    // ── hospitals ─────────────────────────────────────────
+    match /hospitals/{hospitalId} {
+      allow read:   if true;
+      allow write:  if isHospitalAdmin() || isAdmin();
+    }
+
+    // ── organ_donors ──────────────────────────────────────
+    match /organ_donors/{donorId} {
+      allow read:   if isAuth();
+      allow create: if isAuth();
+      allow update: if isAuth() && (resource.data.userId == uid() || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // ── blood_requests ────────────────────────────────────
+    match /blood_requests/{reqId} {
+      allow read:   if true;
+      allow create: if isAuth();
+      allow update: if isAuth() && (resource.data.userId == uid() || isAdmin());
+      allow delete: if isAuth() && (resource.data.userId == uid() || isAdmin());
+    }
+
+    // ── lab_tests ─────────────────────────────────────────
+    match /lab_tests/{testId} {
+      allow read:   if isAuth() && (resource.data.patientId == uid() || isAdmin());
+      allow create: if isAuth();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── notifications ─────────────────────────────────────
+    match /notifications/{uid}/items/{notifId} {
+      allow read, write: if isOwner(uid) || isAdmin();
+    }
+
+    // ── commission_transactions ───────────────────────────
+    match /commission_transactions/{txId} {
+      allow read:  if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ── advertisements ────────────────────────────────────
+    match /advertisements/{adId} {
+      allow read:  if true;
+      allow write: if isAdmin() || isHospitalAdmin();
+    }
+
+    // ── login_activity ────────────────────────────────────
+    match /login_activity/{logId} {
+      allow read:  if isAdmin();
+      allow create: if isAuth();
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Deny everything else ──────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

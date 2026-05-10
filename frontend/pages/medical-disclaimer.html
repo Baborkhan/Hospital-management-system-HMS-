@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Medical Disclaimer — MedFind Bangladesh. Please read before using any health information, AI tools, blood donor services, or organ donation features on this platform.">
+<title>Medical Disclaimer — MedFind Bangladesh</title>
+<link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060c18;--bg2:#0d1426;--bg3:#111d35;
+  --pri:#dc2626;--pri-l:rgba(220,38,38,.12);--pri-b:rgba(220,38,38,.28);
+  --blue:#2563eb;--teal:#0d9488;--green:#10b981;--amber:#f59e0b;--purple:#7c3aed;
+  --txt:#f1f5f9;--sub:#94a3b8;--muted:#475569;--border:rgba(255,255,255,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);line-height:1.75;}
+
+/* NAV */
+nav{background:rgba(6,12,24,.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);
+  padding:0 2rem;height:66px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;}
+.nav-brand{display:flex;align-items:center;gap:.65rem;text-decoration:none;}
+.nav-brand img{height:40px;width:auto;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(13,148,136,.4));}
+.nav-brand-name{font-size:1.15rem;font-weight:900;letter-spacing:-.02em;}
+.nav-brand-name .med{color:#fff;} .nav-brand-name .find{color:#5eead4;}
+.nav-back{color:var(--sub);text-decoration:none;font-size:.84rem;font-weight:500;
+  display:flex;align-items:center;gap:.45rem;padding:.42rem .9rem;border:1px solid var(--border);
+  border-radius:9px;transition:.2s;}
+.nav-back:hover{color:var(--txt);border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.04);}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,rgba(220,38,38,.07) 0%,rgba(6,12,24,0) 55%),
+  radial-gradient(ellipse 70% 60% at 80% 20%,rgba(37,99,235,.06),transparent);
+  border-bottom:1px solid var(--border);padding:4rem 2rem 3.5rem;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:44px 44px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);}
+.hero-badge{display:inline-flex;align-items:center;gap:.45rem;background:rgba(220,38,38,.11);
+  border:1px solid rgba(220,38,38,.28);color:#fca5a5;padding:.38rem 1.05rem;border-radius:100px;
+  font-size:.76rem;font-weight:700;margin-bottom:1.25rem;text-transform:uppercase;letter-spacing:.06em;position:relative;}
+.hero h1{font-size:clamp(1.9rem,4.5vw,3rem);font-weight:900;margin-bottom:.75rem;letter-spacing:-.03em;position:relative;}
+.hero p{color:var(--sub);font-size:.96rem;max-width:580px;margin:0 auto 1.5rem;position:relative;line-height:1.7;}
+.hero-updated{display:inline-flex;align-items:center;gap:.4rem;font-size:.74rem;color:var(--muted);
+  background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.3rem .75rem;position:relative;}
+
+/* TOC */
+.toc-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:.6rem 2rem;overflow-x:auto;white-space:nowrap;}
+.toc-bar a{color:var(--muted);font-size:.75rem;font-weight:600;text-decoration:none;margin-right:1.4rem;
+  padding:.25rem 0;border-bottom:2px solid transparent;transition:.2s;display:inline-block;}
+.toc-bar a:hover{color:var(--txt);border-color:var(--pri);}
+
+/* LAYOUT */
+.container{max-width:900px;margin:0 auto;padding:3rem 2rem 5rem;}
+
+/* CRITICAL BOX */
+.crit-box{background:linear-gradient(135deg,rgba(220,38,38,.1),rgba(220,38,38,.04));
+  border:2px solid rgba(220,38,38,.35);border-radius:18px;padding:1.75rem 1.75rem 1.75rem 1.5rem;
+  margin-bottom:2.5rem;display:flex;gap:1.1rem;align-items:flex-start;}
+.crit-icon{font-size:2.1rem;flex-shrink:0;margin-top:.1rem;}
+.crit-box h3{font-size:1.05rem;font-weight:800;color:#f87171;margin-bottom:.55rem;}
+.crit-box p{color:var(--sub);font-size:.9rem;line-height:1.7;}
+
+/* SECTION CARD */
+.sec-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;
+  padding:1.75rem;margin-bottom:1.5rem;scroll-margin-top:80px;transition:.2s;}
+.sec-card:hover{border-color:rgba(255,255,255,.12);}
+.sec-title{display:flex;align-items:center;gap:.75rem;margin-bottom:1.1rem;}
+.sec-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-size:.95rem;flex-shrink:0;}
+.sec-heading{font-size:1.02rem;font-weight:800;color:#e2e8f0;}
+.sec-sub{font-size:.75rem;color:var(--muted);font-weight:500;margin-top:1px;}
+
+ul.dlist{list-style:none;padding:0;display:flex;flex-direction:column;gap:.5rem;}
+ul.dlist li{display:flex;align-items:flex-start;gap:.65rem;font-size:.88rem;color:var(--sub);line-height:1.65;}
+ul.dlist li::before{content:'›';color:var(--pri);font-weight:800;font-size:1rem;flex-shrink:0;margin-top:.05rem;}
+ul.dlist li strong{color:#cbd5e1;}
+
+/* ORGAN DONATION — SPECIAL CARD */
+.organ-card{background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(13,148,136,.06));
+  border:1px solid rgba(124,58,237,.3);border-radius:18px;padding:1.75rem;margin-bottom:1.5rem;scroll-margin-top:80px;}
+.organ-title{display:flex;align-items:center;gap:.75rem;margin-bottom:.65rem;}
+.organ-icon{width:44px;height:44px;background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(13,148,136,.2));
+  border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.organ-heading{font-size:1.05rem;font-weight:800;color:#c4b5fd;}
+.organ-sub-heading{font-size:.78rem;color:var(--muted);margin-top:2px;}
+.organ-intro{font-size:.88rem;color:var(--sub);line-height:1.7;margin-bottom:1.25rem;padding:.85rem 1rem;
+  background:rgba(124,58,237,.06);border-left:3px solid rgba(124,58,237,.5);border-radius:0 10px 10px 0;}
+
+.organ-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+@media(max-width:600px){.organ-grid{grid-template-columns:1fr;}}
+.organ-block{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;padding:1rem;}
+.ob-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  margin-bottom:.55rem;display:flex;align-items:center;gap:.4rem;}
+.ob-label.purple{color:#a78bfa;} .ob-label.teal{color:#5eead4;}
+.ob-label.amber{color:#fbbf24;} .ob-label.green{color:#6ee7b7;}
+
+/* IMPORTANT NOTICE INSET */
+.inset-notice{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);
+  border-radius:12px;padding:.9rem 1.1rem;margin-top:1.1rem;display:flex;gap:.7rem;align-items:flex-start;}
+.inset-notice i{color:#fbbf24;margin-top:.15rem;flex-shrink:0;}
+.inset-notice p{font-size:.82rem;color:#fde68a;line-height:1.65;}
+
+/* EMERGENCY CARD */
+.emergency-card{background:linear-gradient(135deg,#b91c1c,#991b1b);border-radius:18px;
+  padding:1.75rem;margin:2rem 0;text-align:center;box-shadow:0 12px 40px rgba(185,28,28,.25);}
+.emergency-card h3{font-size:1.2rem;font-weight:800;margin-bottom:.5rem;color:#fff;}
+.emergency-card p{font-size:.88rem;color:rgba(255,255,255,.8);margin-bottom:1.25rem;}
+.emer-nums{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;}
+.emer-num{background:rgba(255,255,255,.18);border-radius:12px;padding:.55rem 1.25rem;
+  font-size:1.05rem;font-weight:800;color:#fff;border:1px solid rgba(255,255,255,.2);}
+.emer-label{font-size:.68rem;font-weight:500;color:rgba(255,255,255,.6);margin-top:.2rem;}
+
+/* LIABILITY */
+.liability-box{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-top:1.5rem;}
+.liability-box p{font-size:.87rem;color:var(--sub);line-height:1.75;margin-bottom:.8rem;}
+.liability-box p:last-child{margin-bottom:0;}
+
+.divider{height:1px;background:var(--border);margin:2.5rem 0;}
+.footer-note{color:#334155;font-size:.78rem;text-align:center;line-height:1.8;}
+.footer-note a{color:#4f6eb0;text-decoration:none;}
+.footer-note a:hover{color:#93c5fd;}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-brand" href="../../index.html">
+    <img src="../assets/medfind-logo.png" alt="MedFind Bangladesh">
+    <span class="nav-brand-name"><span class="med">Med</span><span class="find">Find</span></span>
+  </a>
+  <a class="nav-back" href="../../index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+</nav>
+
+<div class="toc-bar">
+  <a href="#sec-general">General Info</a>
+  <a href="#sec-doctors">Consultations</a>
+  <a href="#sec-drugs">Medications</a>
+  <a href="#sec-ai">MedFind AI</a>
+  <a href="#sec-blood">Blood Donation</a>
+  <a href="#sec-organ">Organ Donation</a>
+  <a href="#sec-privacy">Privacy</a>
+  <a href="#sec-emergency">Emergency</a>
+  <a href="#sec-liability">Liability</a>
+</div>
+
+<div class="hero">
+  <div class="hero-badge"><i class="fas fa-triangle-exclamation"></i> Legal & Medical Notice</div>
+  <h1>Medical Disclaimer</h1>
+  <p>Please read this disclaimer carefully before using any health information, AI tools, blood donor services, or organ donation features available on MedFind Bangladesh.</p>
+  <div class="hero-updated"><i class="fas fa-calendar-check"></i> Last Updated: April 30, 2026 &nbsp;·&nbsp; Effective immediately</div>
+</div>
+
+<div class="container">
+
+  <div class="crit-box">
+    <div class="crit-icon">⚠️</div>
+    <div>
+      <h3>MedFind is NOT a Medical Provider</h3>
+      <p>MedFind Bangladesh is a <strong>digital healthcare connection platform</strong> — we facilitate access to licensed doctors, hospitals, labs, pharmacies, and health information. We do not provide medical advice, diagnoses, prescriptions, or treatments directly. All clinical decisions must be made exclusively by qualified, BMDC-registered healthcare professionals. No content on this platform — including AI-generated responses — constitutes professional medical advice.</p>
+    </div>
+  </div>
+
+  <!-- 1. GENERAL INFO -->
+  <div class="sec-card" id="sec-general">
+    <div class="sec-title">
+      <div class="sec-icon" style="background:rgba(37,99,235,.15);color:#93c5fd;"><i class="fas fa-info-circle"></i></div>
+      <div><div class="sec-heading">About Information on This Platform</div>
+      <div class="sec-sub">Scope, accuracy, and educational intent</div></div>
+    </div>
+    <ul class="dlist">
+      <li>All health articles, symptom guides, drug information, and treatment descriptions are provided for <strong>general educational purposes only</strong> and do not constitute clinical guidance</li>
+      <li>Medical knowledge evolves continuously — content may not always reflect the most current clinical research, DGHS guidelines, or WHO recommendations</li>
+      <li>Individual medical situations vary significantly; information suitable for one person may be inappropriate or harmful to another</li>
+      <li>This platform does not establish a doctor-patient relationship between users and MedFind or its staff</li>
+      <li>Always consult a licensed healthcare professional before making any decision about your health, medications, or treatment plans</li>
+      <li>Content contributed by third-party providers (hospitals, labs, pharmacies) is their own responsibility — MedFind cannot guarantee its accuracy</li>
+    </ul>
+  </div>
+
+  <!-- 2. DOCTOR CONSULTATIONS -->
+  <div class="sec-card" id="sec-doctors">
+    <div class="sec-title">
+      <div class="sec-icon" style="background:rgba(13,148,136,.15);color:#5eead4;"><i class="fas fa-stethoscope"></i></div>
+      <div><div class="sec-heading">Doctor Consultations & Telemedicine</div>
+      <div class="sec-sub">In-person visits and virtual appointments</div></div>
+    </div>
+    <ul class="dlist">
+      <li>All doctors listed on MedFind are independent, self-employed licensed professionals holding valid <strong>BMDC registration</strong> — MedFind does not employ them directly</li>
+      <li>MedFind verifies BMDC credentials at the time of onboarding but cannot continuously monitor ongoing license validity</li>
+      <li>Telemedicine consultations have inherent limitations — many conditions require physical examination, laboratory tests, or imaging that cannot be conducted remotely</li>
+      <li>MedFind does not supervise, control, or take responsibility for individual doctor-patient clinical decisions or communications</li>
+      <li>Always follow your treating doctor's advice; seek second opinions for serious, complex, or life-altering diagnoses</li>
+      <li>Report concerns about a doctor's conduct to <a href="mailto:medfindbd2026@gmail.com" style="color:#5eead4;">medfindbd2026@gmail.com</a> and to the Bangladesh Medical and Dental Council (BMDC) at bmdc.org.bd</li>
+    </ul>
+  </div>
+
+  <!-- 3. MEDICATIONS -->
+  <div class="sec-card" id="sec-drugs">
+    <div class="sec-title">
+      <div class="sec-icon" style="background:rgba(245,158,11,.13);color:#fcd34d;"><i class="fas fa-pills"></i></div>
+      <div><div class="sec-heading">Drug & Medication Information</div>
+      <div class="sec-sub">Drug Directory, dosage guides, and interaction data</div></div>
+    </div>
+    <ul class="dlist">
+      <li>Drug information on MedFind is sourced from standard pharmacological references and the Directorate General of Drug Administration (DGDA) Bangladesh</li>
+      <li><strong>Never start, stop, or alter any medication</strong> solely based on information found on this platform</li>
+      <li>Drug interactions, contraindications, dosing regimens, and pregnancy/breastfeeding safety must always be confirmed with your prescribing doctor or a registered pharmacist</li>
+      <li>Medications listed on MedFind reflect the Bangladeshi market — formulations, brand names, and availability may differ from international standards</li>
+      <li>Generic equivalence does not imply interchangeability without professional guidance — consult your pharmacist</li>
+      <li>Report adverse drug reactions (ADR) to the DGDA Pharmacovigilance Programme: <strong>dgda.gov.bd</strong> or call 16167</li>
+    </ul>
+  </div>
+
+  <!-- 4. AI -->
+  <div class="sec-card" id="sec-ai">
+    <div class="sec-title">
+      <div class="sec-icon" style="background:rgba(124,58,237,.15);color:#c4b5fd;"><i class="fas fa-robot"></i></div>
+      <div><div class="sec-heading">MedFind AI — Symptom Checker & Assistant</div>
+      <div class="sec-sub">Powered by Claude AI (Anthropic)</div></div>
+    </div>
+    <ul class="dlist">
+      <li>The MedFind AI symptom checker and health assistant is powered by <strong>Claude AI (Anthropic)</strong> and is designed for informational pattern recognition — not clinical diagnosis</li>
+      <li>AI-generated outputs are <strong>NOT medical diagnoses, prescriptions, or treatment recommendations</strong> — treat them as a starting point for conversation with a qualified doctor</li>
+      <li>AI systems can produce incorrect, incomplete, or hallucinated information — they do not have access to your complete medical history, test results, or physical condition</li>
+      <li>Mental health, psychiatric, and crisis-related queries require qualified human mental health professionals — do not rely on AI for such matters</li>
+      <li>Never delay seeking emergency medical care because of an AI response — if in doubt, call emergency services</li>
+      <li>MedFind AI conversations are not confidential medical records and should not replace clinical documentation</li>
+    </ul>
+  </div>
+
+  <!-- 5. BLOOD DONATION -->
+  <div class="sec-card" id="sec-blood">
+    <div class="sec-title">
+      <div class="sec-icon" style="background:rgba(220,38,38,.15);color:#fca5a5;"><i class="fas fa-droplet"></i></div>
+      <div><div class="sec-heading">Blood Donor Services</div>
+      <div class="sec-sub">Donor registration, matching, and transfusion safety</div></div>
+    </div>
+    <ul class="dlist">
+      <li>MedFind facilitates donor-recipient connections and verifies self-reported registration information — we cannot verify a donor's current health eligibility or communicable disease status</li>
+      <li>All blood donation and collection procedures <strong>must</strong> be conducted at licensed blood banks, hospitals, or transfusion medicine centres under qualified medical supervision</li>
+      <li>Blood group compatibility and cross-matching must be verified by certified medical laboratory staff before any transfusion — MedFind data must not be used as the sole basis for transfusion decisions</li>
+      <li>Donors must fully disclose all medical conditions, recent travel, medications, and risk factors to the receiving institution</li>
+      <li>MedFind is not liable for complications arising from blood donation, blood product storage, or transfusion — these are the responsibility of the administering medical facility</li>
+      <li>For urgent blood requirements, contact the National Blood Transfusion Programme (NBTP) or your nearest tertiary hospital blood bank directly</li>
+    </ul>
+  </div>
+
+  <!-- 6. ORGAN DONATION — EXPANDED SPECIAL SECTION -->
+  <div class="organ-card" id="sec-organ">
+    <div class="organ-title">
+      <div class="organ-icon">🫀</div>
+      <div>
+        <div class="organ-heading">Organ & Tissue Donation</div>
+        <div class="organ-sub-heading">Registration, consent, legal framework, and medical limitations</div>
+      </div>
+    </div>
+
+    <div class="organ-intro">
+      Organ donation is a profound, voluntary act of humanity that can save up to <strong style="color:#c4b5fd;">8 lives</strong> and restore sight or function for up to <strong style="color:#c4b5fd;">10 additional individuals</strong> through tissue donation. MedFind supports organ donation awareness in alignment with Bangladesh's <em>Human Organ Transplantation Act, 1999 (amended 2018)</em> and the guidelines of the Directorate General of Health Services (DGHS). Please read the following carefully before registering or making any decisions regarding organ donation.
+    </div>
+
+    <div class="organ-grid">
+      <div class="organ-block">
+        <div class="ob-label purple"><i class="fas fa-heart-pulse"></i> Donatable Organs</div>
+        <ul class="dlist">
+          <li>Heart, lungs, liver, kidneys (both)</li>
+          <li>Pancreas, small intestine</li>
+          <li>Corneas, skin, bone, heart valves</li>
+          <li>Tendons, cartilage, blood vessels</li>
+        </ul>
+      </div>
+      <div class="organ-block">
+        <div class="ob-label teal"><i class="fas fa-user-check"></i> Who Can Register</div>
+        <ul class="dlist">
+          <li>Any person aged 18 years or older</li>
+          <li>Sound mental capacity at time of consent</li>
+          <li>No requirement of perfect health</li>
+          <li>Family notification is strongly recommended</li>
+        </ul>
+      </div>
+      <div class="organ-block">
+        <div class="ob-label amber"><i class="fas fa-triangle-exclamation"></i> Important Limitations</div>
+        <ul class="dlist">
+          <li>Most transplants require brain-death certification by a medical panel</li>
+          <li>Suitability of organs is determined at time of death — not at registration</li>
+          <li>Medical teams may not be able to honour all donor wishes</li>
+          <li>Living donation is only legally permitted between closely related kin</li>
+        </ul>
+      </div>
+      <div class="organ-block">
+        <div class="ob-label green"><i class="fas fa-scale-balanced"></i> Legal Framework (Bangladesh)</div>
+        <ul class="dlist">
+          <li>Human Organ Transplantation Act, 1999</li>
+          <li>Amendment Act, 2018 — expanded donor pool</li>
+          <li>DGHS-approved transplant hospitals only</li>
+          <li>Commercial organ trading is a criminal offence</li>
+        </ul>
+      </div>
+    </div>
+
+    <ul class="dlist" style="margin-bottom:1.1rem;">
+      <li>Registration on MedFind constitutes an <strong>expression of intent only</strong> — it is not a legally binding donor card under Bangladeshi law; always carry a signed donor consent and inform family members</li>
+      <li>MedFind does not coordinate actual organ retrieval, transplantation, or matching — these are exclusively managed by DGHS-approved transplant hospitals and the National Organ Transplant Programme</li>
+      <li>MedFind does not verify medical suitability of registered donors — final determination is made by the transplant medical team at the time of donation</li>
+      <li>Donors retain the full right to withdraw consent at any time by contacting us at <a href="mailto:medfindbd2026@gmail.com" style="color:#a78bfa;">medfindbd2026@gmail.com</a> or by updating their profile</li>
+      <li>Family members (next of kin) have legal authority to consent or refuse donation in Bangladesh regardless of the deceased's registered wishes — discussing your decision with family is critically important</li>
+      <li>No commercial benefit may be offered or received in connection with organ donation — MedFind strictly prohibits any such transactions on the platform</li>
+      <li>Religious and cultural beliefs are deeply personal — MedFind does not advocate any specific religious position on organ donation; we encourage users to seek guidance from their religious authority</li>
+      <li>Tissue donation (corneas, skin, bone) follows different protocols than organ donation — contact your nearest eye bank or tissue bank for specific guidance</li>
+    </ul>
+
+    <div class="inset-notice">
+      <i class="fas fa-circle-info fa-fw"></i>
+      <p>For official organ donor registration, transplant hospital listings, and the National Organ Transplant Programme, contact the <strong>Directorate General of Health Services (DGHS)</strong> at <strong>dghs.gov.bd</strong> or call the health helpline <strong>16167</strong>. MedFind's donor registry is supplementary and informational only.</p>
+    </div>
+  </div>
+
+  <!-- 7. PRIVACY & DATA -->
+  <div class="sec-card" id="sec-privacy">
+    <div class="sec-title">
+      <div class="sec-icon" style="background:rgba(16,185,129,.13);color:#6ee7b7;"><i class="fas fa-shield-halved"></i></div>
+      <div><div class="sec-heading">Health Data Privacy & Security</div>
+      <div class="sec-sub">How your medical information is protected</div></div>
+    </div>
+    <ul class="dlist">
+      <li>All health information shared with MedFind is encrypted in transit (TLS 1.3) and at rest using industry-standard AES-256 encryption</li>
+      <li>Your medical and personal data is <strong>never sold</strong> to third parties, pharmaceutical companies, insurers, or advertisers — ever</li>
+      <li>Anonymised, aggregated statistical data may be used for platform improvement and public health research, never in a way that identifies individuals</li>
+      <li>You may request full export or permanent deletion of your data at any time by contacting <a href="mailto:medfindbd2026@gmail.com" style="color:#6ee7b7;">medfindbd2026@gmail.com</a></li>
+      <li>MedFind complies with Bangladesh's Digital Security Act, 2018 and applicable health data protection guidelines issued by DGHS</li>
+      <li>Third-party integrations (payment gateways, map services) have their own privacy policies — review them independently</li>
+    </ul>
+  </div>
+
+  <!-- EMERGENCY -->
+  <div class="emergency-card" id="sec-emergency">
+    <h3>🚨 Medical Emergency?</h3>
+    <p>If you or someone nearby is experiencing a medical emergency — DO NOT use MedFind.<br>Call emergency services immediately.</p>
+    <div class="emer-nums">
+      <div><div class="emer-num">999</div><div class="emer-label">National Emergency</div></div>
+      <div><div class="emer-num">16430</div><div class="emer-label">DGHS Hotline</div></div>
+      <div><div class="emer-num">16167</div><div class="emer-label">Health Helpline</div></div>
+      <div><div class="emer-num">01779-444444</div><div class="emer-label">IEDCR</div></div>
+    </div>
+  </div>
+
+  <!-- LIABILITY -->
+  <div class="sec-card" id="sec-liability">
+    <div class="sec-title">
+      <div class="sec-icon" style="background:rgba(220,38,38,.13);color:#fca5a5;"><i class="fas fa-gavel"></i></div>
+      <div><div class="sec-heading">Limitation of Liability & Governing Law</div>
+      <div class="sec-sub">Legal boundaries of MedFind's responsibility</div></div>
+    </div>
+    <div class="liability-box">
+      <p>To the fullest extent permitted under the laws of the People's Republic of Bangladesh, MedFind Bangladesh and its founders, directors, employees, agents, and technology partners expressly disclaim all liability for any direct, indirect, incidental, consequential, or punitive damages arising from reliance on any information, tool, AI response, or service provided through this platform.</p>
+      <p>This disclaimer encompasses but is not limited to: misdiagnosis, delayed or missed treatment, adverse drug reactions, surgical or procedural complications, blood transfusion reactions, organ transplant outcomes, mental health crises, or any other health-related harm.</p>
+      <p>By accessing and using MedFind Bangladesh, users expressly acknowledge that they do so at their own risk and discretion, and that MedFind's role is limited to that of a technology intermediary — not a healthcare provider.</p>
+      <p>Any disputes arising from the use of this platform shall be governed by the laws of Bangladesh and subject to the exclusive jurisdiction of the competent courts of Dhaka, Bangladesh.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="footer-note">
+    MedFind Bangladesh — Healthcare Platform &nbsp;·&nbsp;
+    Questions about this disclaimer: <a href="mailto:medfindbd2026@gmail.com">medfindbd2026@gmail.com</a><br>
+    Last Updated: April 30, 2026 &nbsp;·&nbsp; Version 2.0 &nbsp;·&nbsp;
+    <a href="privacy.html">Privacy Policy</a> &nbsp;·&nbsp;
+    <a href="terms.html">Terms of Service</a> &nbsp;·&nbsp;
+    <a href="cookies.html">Cookie Policy</a>
+  </div>
+</div>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/components.js"></script>
+</body>
+</html>

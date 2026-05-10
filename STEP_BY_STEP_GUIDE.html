@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MedFind — Step-by-Step Setup Guide</title>
+<style>
+:root{--bg:#0a0f1e;--card:#111827;--border:#1e2d45;--blue:#3b82f6;--teal:#14b8a6;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444;--text:#e2e8f0;--muted:#64748b;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:20px;}
+.container{max-width:900px;margin:0 auto;}
+.hero{text-align:center;padding:40px 20px;background:linear-gradient(135deg,#0d1b2e,#0f2942);border-radius:16px;margin-bottom:30px;border:1px solid var(--border);}
+.hero h1{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#38bdf8,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
+.hero p{color:var(--muted);font-size:1rem;}
+.phase{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden;}
+.phase-header{padding:16px 20px;background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(20,184,166,.1));border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.phase-num{background:var(--blue);color:#fff;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0;}
+.phase-title{font-size:1.1rem;font-weight:700;color:#fff;}
+.phase-body{padding:20px;}
+.step{margin-bottom:20px;padding:16px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;border-left:3px solid var(--teal);}
+.step-label{font-size:.7rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.step h3{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:8px;}
+.step p{font-size:.85rem;color:var(--muted);margin-bottom:8px;}
+pre{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:14px;overflow-x:auto;font-family:'Courier New',monospace;font-size:.82rem;color:#79c0ff;margin:8px 0;line-height:1.5;}
+.cmd{background:#0d1117;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:10px 14px;font-family:'Courier New',monospace;font-size:.85rem;color:#7ee787;margin:6px 0;}
+.note{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px;margin:8px 0;font-size:.82rem;color:#fbbf24;}
+.note strong{color:#f59e0b;}
+.success{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:10px 12px;font-size:.82rem;color:#86efac;margin:6px 0;}
+.error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 12px;font-size:.82rem;color:#fca5a5;margin:6px 0;}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.83rem;}
+th{background:rgba(59,130,246,.15);color:var(--blue);padding:8px 12px;text-align:left;font-weight:700;}
+td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--muted);}
+td:first-child{color:var(--text);font-family:'Courier New',monospace;font-size:.8rem;}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:700;}
+.badge-green{background:rgba(34,197,94,.15);color:#86efac;}
+.badge-blue{background:rgba(59,130,246,.15);color:#93c5fd;}
+.badge-red{background:rgba(239,68,68,.15);color:#fca5a5;}
+.checklist{list-style:none;margin:8px 0;}
+.checklist li{padding:5px 0;font-size:.85rem;color:var(--muted);}
+.checklist li::before{content:'✅ ';color:var(--green);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0;}
+@media(max-width:600px){.grid2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hero">
+  <h1>🏥 MedFind Bangladesh</h1>
+  <p>VS Code থেকে Live Production পর্যন্ত — সম্পূর্ণ Step-by-Step গাইড</p>
+  <p style="margin-top:8px;font-size:.8rem;color:#475569;">AI ✅ | OTP Email ✅ | Firestore Realtime ✅ | PostgreSQL ✅ | CI/CD ✅</p>
+</div>
+
+<!-- PHASE 0: Prerequisites -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num">0</div>
+    <div class="phase-title">⚡ প্রথমে Install করো</div>
+  </div>
+  <div class="phase-body">
+    <table>
+      <tr><th>Tool</th><th>Download</th><th>Status</th></tr>
+      <tr><td>VS Code</td><td>code.visualstudio.com</td><td><span class="badge badge-blue">Required</span></td></tr>
+      <tr><td>Git</td><td>git-scm.com/downloads</td><td><span class="badge badge-blue">Required</span></td></tr>
+      <tr><td>Python 3.11+</td><td>python.org/downloads</td><td><span class="badge badge-blue">Required</span></td></tr>
+      <tr><td>Node.js 20+</td><td>nodejs.org</td><td><span class="badge badge-blue">Required</span></td></tr>
+    </table>
+    <div class="note">⚠️ Install করার পরে PC restart দাও যাতে PATH update হয়</div>
+  </div>
+</div>
+
+<!-- PHASE 1: Project Setup -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num">1</div>
+    <div class="phase-title">📁 Project Setup</div>
+  </div>
+  <div class="phase-body">
+    <div class="step">
+      <div class="step-label">Step 1</div>
+      <h3>ZIP extract করো ও VS Code-এ open করো</h3>
+      <p>Download করা <strong>medfind_COMPLETE_v4.zip</strong> extract করো → VS Code → File → Open Folder → <code>medfind_FINAL_FIXED</code> folder select করো</p>
+      <p>তারপর: <kbd>Ctrl + `</kbd> চেপে Terminal খোলো</p>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 2: Backend -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num">2</div>
+    <div class="phase-title">🐍 Backend Setup (Django)</div>
+  </div>
+  <div class="phase-body">
+    <div class="step">
+      <div class="step-label">Step 2 — Virtual Environment</div>
+      <h3>Python venv তৈরি করো</h3>
+      <div class="cmd">cd backend</div>
+      <div class="cmd">python -m venv venv</div>
+      <div class="cmd">venv\Scripts\activate &nbsp;&nbsp;# Windows</div>
+      <div class="cmd">source venv/bin/activate &nbsp;&nbsp;# Mac/Linux</div>
+      <div class="success">✅ Terminal-এ (venv) দেখাবে</div>
+    </div>
+    <div class="step">
+      <div class="step-label">Step 3 — Dependencies</div>
+      <h3>Packages install করো</h3>
+      <div class="cmd">pip install -r requirements_render.txt</div>
+      <div class="success">✅ "Successfully installed" দেখাবে (2-3 মিনিট লাগবে)</div>
+    </div>
+    <div class="step">
+      <div class="step-label">Step 4 — .env Config ⚠️ IMPORTANT</div>
+      <h3><code>backend/.env</code> file already আছে — শুধু edit করো</h3>
+      <p>VS Code-এ <code>backend/.env</code> file খোলো এবং এই values দাও:</p>
+      <pre>GEMINI_API_KEY=AIzaSyAJGKkaMB4ixVPmd5r-cRR1e5ea4AxKmwQ
+EMAIL_HOST_USER=তোমার_gmail@gmail.com
+EMAIL_HOST_PASSWORD=xxxx-xxxx-xxxx-xxxx</pre>
+      <div class="note">⚠️ <strong>Gmail App Password:</strong> Gmail → Account → Security → 2-Step Verification → App Passwords → Create → Copy 16-digit code</div>
+    </div>
+    <div class="step">
+      <div class="step-label">Step 5 — Database</div>
+      <h3>Database migrate করো (OTP + AI tables তৈরি হবে)</h3>
+      <div class="cmd">python manage.py migrate --settings=medfind_project.settings</div>
+      <div class="success">✅ "Applying otp_auth.0001_initial... OK" দেখাবে</div>
+    </div>
+    <div class="step">
+      <div class="step-label">Step 6 — Run</div>
+      <h3>Backend চালু করো</h3>
+      <div class="cmd">python manage.py runserver --settings=medfind_project.settings</div>
+      <div class="success">✅ "Starting development server at http://127.0.0.1:8000/"</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 3: Test -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num">3</div>
+    <div class="phase-title">🧪 Local Test করো</div>
+  </div>
+  <div class="phase-body">
+    <p style="margin-bottom:12px;color:var(--muted);">নতুন Terminal tab খোলো (<kbd>Ctrl+Shift+`</kbd>) এবং test করো:</p>
+    <div class="grid2">
+      <div class="step">
+        <div class="step-label">Test 1 — Health</div>
+        <div class="cmd">curl http://127.0.0.1:8000/api/v1/health/</div>
+        <div class="success">✅ {"status":"ok","ai":"gemini"}</div>
+      </div>
+      <div class="step">
+        <div class="step-label">Test 2 — AI</div>
+        <div class="cmd">curl -X POST http://127.0.0.1:8000/api/v1/ai/chat/ -H "Content-Type: application/json" -d "{\"messages\":[{\"role\":\"user\",\"content\":\"fever test\"}]}"</div>
+        <div class="success">✅ AI response পাবে</div>
+      </div>
+      <div class="step">
+        <div class="step-label">Test 3 — OTP</div>
+        <div class="cmd">curl -X POST http://127.0.0.1:8000/api/v1/accounts/send-otp/ -H "Content-Type: application/json" -d "{\"email\":\"তোমার@gmail.com\"}"</div>
+        <div class="success">✅ Gmail-এ email আসবে</div>
+      </div>
+      <div class="step">
+        <div class="step-label">Test 4 — Frontend</div>
+        <div class="cmd">cd ../frontend && python -m http.server 5500</div>
+        <p>Browser: <strong>http://localhost:5500</strong></p>
+        <div class="success">✅ MedFind homepage দেখবে</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 4: GitHub -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num">4</div>
+    <div class="phase-title">🔥 GitHub Push করো</div>
+  </div>
+  <div class="phase-body">
+    <div class="step">
+      <div class="step-label">Step 7</div>
+      <h3>Git setup ও push</h3>
+      <div class="cmd">cd .. &nbsp;&nbsp;# root folder-এ যাও</div>
+      <div class="cmd">git init</div>
+      <div class="cmd">git branch -M main</div>
+      <div class="cmd">git remote add origin https://github.com/Baborkhan/MedFind-Bangladesh-AI-Healthcare-Platform.git</div>
+      <div class="cmd">git add -A</div>
+      <div class="cmd">git commit -m "MedFind v3.0 — Production Ready"</div>
+      <div class="cmd">git push -u origin main --force</div>
+      <div class="note">⚠️ GitHub password চাইলে: Personal Access Token দাও<br>
+      GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (classic) → Generate<br>
+      Scopes: ✅ repo ✅ workflow</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 5: Render -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num">5</div>
+    <div class="phase-title">☁️ Render Backend Deploy</div>
+  </div>
+  <div class="phase-body">
+    <div class="step">
+      <div class="step-label">Step 8 — Render Environment Variables</div>
+      <h3>dashboard.render.com → তোমার service → Environment → Add these:</h3>
+      <table>
+        <tr><th>Key</th><th>Value</th></tr>
+        <tr><td>DJANGO_SETTINGS_MODULE</td><td>medfind_project.settings_render</td></tr>
+        <tr><td>GEMINI_API_KEY</td><td style="color:#86efac;">AIzaSyAJGKkaMB4ixVPmd5r-cRR1e5ea4AxKmwQ</td></tr>
+        <tr><td>EMAIL_HOST_USER</td><td>তোমার@gmail.com</td></tr>
+        <tr><td>EMAIL_HOST_PASSWORD</td><td>16-digit App Password</td></tr>
+        <tr><td>SECRET_KEY</td><td>যেকোনো random 50+ char string</td></tr>
+        <tr><td>DEBUG</td><td>False</td></tr>
+      </table>
+      <div class="success">✅ Save করলে Render auto-redeploy করবে (2-3 মিনিট)</div>
+    </div>
+    <div class="step">
+      <div class="step-label">Step 9 — Verify</div>
+      <div class="cmd">curl https://medfind-bangladesh-ai-healthcare-platform.onrender.com/api/v1/health/</div>
+      <div class="success">✅ {"status":"ok","ai":"gemini"}</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 6: Firebase -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num">6</div>
+    <div class="phase-title">🌐 Firebase Frontend Deploy</div>
+  </div>
+  <div class="phase-body">
+    <div class="step">
+      <div class="step-label">Step 10</div>
+      <h3>Firebase CLI দিয়ে deploy করো</h3>
+      <div class="cmd">npm install -g firebase-tools</div>
+      <div class="cmd">firebase login</div>
+      <div class="cmd">firebase use medfind-bangladesh</div>
+      <div class="cmd">firebase deploy --only hosting</div>
+      <div class="success">✅ Hosting URL: https://medfind-bangladesh.web.app</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 7: CI/CD -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num">7</div>
+    <div class="phase-title">🤖 Auto-Deploy Setup (CI/CD)</div>
+  </div>
+  <div class="phase-body">
+    <div class="step">
+      <div class="step-label">Step 11 — GitHub Secrets</div>
+      <h3>github.com/Baborkhan/MedFind... → Settings → Secrets → Actions</h3>
+      <div class="cmd">firebase login:ci &nbsp;&nbsp;# এই token copy করো → FIREBASE_TOKEN secret হিসেবে দাও</div>
+      <table>
+        <tr><th>Secret Name</th><th>Value</th></tr>
+        <tr><td>FIREBASE_TOKEN</td><td>firebase login:ci থেকে পাওয়া token</td></tr>
+        <tr><td>RENDER_DEPLOY_HOOK_URL</td><td>Render → Service → Settings → Deploy Hook URL</td></tr>
+      </table>
+      <div class="success">✅ এরপর যেকোনো git push করলে automatically deploy হবে!</div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 8: Realtime DB Check -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num">8</div>
+    <div class="phase-title">🗄️ Real-Time Database Test</div>
+  </div>
+  <div class="phase-body">
+    <div class="grid2">
+      <div class="step">
+        <div class="step-label">Firestore (Hospital/Patient Data)</div>
+        <h3>Firebase Console → Firestore</h3>
+        <p>console.firebase.google.com → medfind-bangladesh → Firestore Database</p>
+        <ul class="checklist">
+          <li>hospitals/ — bed availability (realtime)</li>
+          <li>appointments/ — patient appointments</li>
+          <li>users/ — all profiles</li>
+          <li>notifications/ — realtime alerts</li>
+        </ul>
+        <div class="note">💡 hospitals collection-এ availBeds change করো — hospital list page-এ instantly update হবে!</div>
+      </div>
+      <div class="step">
+        <div class="step-label">PostgreSQL (OTP / AI Session)</div>
+        <h3>Render Database Logs</h3>
+        <p>Render → Service → Logs দেখো</p>
+        <ul class="checklist">
+          <li>OTP table (mf_email_otp)</li>
+          <li>AI session table</li>
+          <li>Donate/blood bank</li>
+        </ul>
+        <div class="note">💡 Local dev-এ SQLite ব্যবহার হয়। Production-এ Render-এর PostgreSQL।</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Common Errors -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num">⚠️</div>
+    <div class="phase-title">Common Errors ও Solutions</div>
+  </div>
+  <div class="phase-body">
+    <table>
+      <tr><th>Error</th><th>Solution</th></tr>
+      <tr><td>AI returns 503</td><td>Render-এ GEMINI_API_KEY set করো</td></tr>
+      <tr><td>OTP not received</td><td>Gmail → Spam folder দেখো। App Password সঠিক?</td></tr>
+      <tr><td>SMTP auth failed</td><td>Gmail 2FA on করো → App Password generate করো (not regular password)</td></tr>
+      <tr><td>git push rejected</td><td>git push -u origin main --force চালাও</td></tr>
+      <tr><td>Firebase deploy fail</td><td>firebase login করো আবার</td></tr>
+      <tr><td>Render cold start (30s)</td><td>স্বাভাবিক — free tier-এ প্রথম request slow হয়</td></tr>
+      <tr><td>ModuleNotFoundError</td><td>venv activate করো: venv\Scripts\activate</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Final Status -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num">✅</div>
+    <div class="phase-title">সব ঠিক হলে এই URLs কাজ করবে</div>
+  </div>
+  <div class="phase-body">
+    <table>
+      <tr><th>Service</th><th>URL</th><th>Test</th></tr>
+      <tr><td>🌐 Frontend</td><td>medfind-bangladesh.web.app</td><td><span class="badge badge-green">Live</span></td></tr>
+      <tr><td>⚙️ Backend Health</td><td>.../api/v1/health/</td><td><span class="badge badge-green">{"status":"ok"}</span></td></tr>
+      <tr><td>🤖 AI Chat</td><td>/pages/medfind-ai.html</td><td><span class="badge badge-green">Gemini</span></td></tr>
+      <tr><td>🔐 OTP Login</td><td>/pages/login.html → OTP tab</td><td><span class="badge badge-green">Gmail</span></td></tr>
+      <tr><td>🏥 Hospital Realtime</td><td>/pages/hospital/list.html</td><td><span class="badge badge-green">Firestore</span></td></tr>
+      <tr><td>📊 GitHub Actions</td><td>github.com/.../actions</td><td><span class="badge badge-green">Auto-Deploy</span></td></tr>
+    </table>
+    <div style="text-align:center;margin-top:20px;padding:16px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.2);border-radius:8px;">
+      <p style="font-size:1.1rem;font-weight:700;color:#86efac;">🎉 MedFind Bangladesh — 100% Production Ready!</p>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

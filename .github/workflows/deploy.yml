@@ -1,0 +1,286 @@
+<<<<<<< HEAD
+# ═══════════════════════════════════════════════════════════
+#  MedFind Bangladesh — GitHub Actions CI/CD Auto-Deploy
+#  Triggers: every push to main branch
+#  Jobs: test → deploy-backend → deploy-frontend
+# ═══════════════════════════════════════════════════════════
+name: 🚀 Deploy MedFind Bangladesh
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # Allow manual trigger from GitHub UI
+
+jobs:
+  # ── Job 1: Quick syntax check ────────────────────────────
+  lint-check:
+    name: 🔍 Lint & Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check Python syntax
+        run: |
+          cd backend
+          pip install pyflakes --quiet
+          python -m pyflakes medfind_project/settings_render.py || true
+          python -c "
+          import ast, os, sys
+          errors = []
+          for root, dirs, files in os.walk('.'):
+              dirs[:] = [d for d in dirs if d not in ['__pycache__','migrations','.git','venv','env']]
+              for f in files:
+                  if f.endswith('.py'):
+                      path = os.path.join(root, f)
+                      try:
+                          ast.parse(open(path).read())
+                      except SyntaxError as e:
+                          errors.append(f'{path}: {e}')
+          if errors:
+              print('SYNTAX ERRORS FOUND:')
+              for e in errors: print(e)
+              sys.exit(1)
+          else:
+              print('✅ All Python files syntax OK')
+          "
+          echo "✅ Lint check passed"
+
+  # ── Job 2: Deploy Backend to Render ─────────────────────
+  deploy-backend:
+    name: 🐍 Deploy Backend → Render
+    runs-on: ubuntu-latest
+    needs: lint-check
+    steps:
+      - name: Trigger Render Deploy Hook
+        run: |
+          if [ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}")
+            echo "Render API response: $HTTP_STATUS"
+            if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "201" ]; then
+              echo "✅ Render deploy triggered successfully"
+            else
+              echo "⚠️ Render returned HTTP $HTTP_STATUS — check Render dashboard"
+            fi
+          else
+            echo "ℹ️ No RENDER_DEPLOY_HOOK_URL secret set"
+            echo "ℹ️ Render auto-deploys when GitHub repo is connected"
+            echo "ℹ️ Go to: Render Dashboard → Your Service → Settings → Deploy Hook"
+          fi
+
+      - name: Wait for backend warmup
+        run: |
+          echo "⏳ Waiting 30s for Render to start deploy..."
+          sleep 30
+          # Health check the backend
+          for i in 1 2 3; do
+            HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
+              "https://medfind-bangladesh-ai-healthcare-platform.onrender.com/api/v1/health/" \
+              --max-time 15 2>/dev/null || echo "000")
+            echo "Health check attempt $i: HTTP $HTTP"
+            if [ "$HTTP" = "200" ]; then
+              echo "✅ Backend is healthy!"
+              break
+            fi
+            sleep 20
+          done
+
+  # ── Job 3: Deploy Frontend to Firebase Hosting ──────────
+  deploy-frontend:
+    name: 🔥 Deploy Frontend → Firebase
+    runs-on: ubuntu-latest
+    needs: lint-check
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+=======
+name: MedFind — Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  CLOUD_RUN_SERVICE: medfind-backend
+  REGION: asia-south1
+  IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/medfind-backend
+
+jobs:
+  # ── JOB 1: Test ──────────────────────────────────────────────────────
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: medfind
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: medfind_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements/dev.txt
+
+      - name: Run Django tests
+        env:
+          DATABASE_URL: postgresql://medfind:testpassword@localhost:5432/medfind_test
+          DJANGO_SECRET_KEY: ci-test-secret-key-not-for-production
+          DEBUG: 'True'
+        run: |
+          cd backend
+          python manage.py test --settings=config.settings.dev --verbosity=2
+
+  # ── JOB 2: Deploy Backend ────────────────────────────────────────────
+  deploy-backend:
+    name: Deploy Backend → Cloud Run
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker --quiet
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --tag ${{ env.IMAGE }}:${{ github.sha }} \
+            --tag ${{ env.IMAGE }}:latest \
+            --cache-from ${{ env.IMAGE }}:latest \
+            ./backend
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ env.IMAGE }}:${{ github.sha }}
+          docker push ${{ env.IMAGE }}:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.CLOUD_RUN_SERVICE }} \
+            --image ${{ env.IMAGE }}:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --memory 1Gi \
+            --cpu 1 \
+            --min-instances 1 \
+            --max-instances 10 \
+            --set-secrets="SECRET_KEY=DJANGO_SECRET_KEY:latest,DATABASE_URL=DATABASE_URL:latest,MONGO_URI=MONGO_URI:latest,ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest,SENDGRID_API_KEY=SENDGRID_API_KEY:latest,SSLCOMMERZ_STORE_ID=SSLCOMMERZ_STORE_ID:latest,SSLCOMMERZ_STORE_PASSWORD=SSLCOMMERZ_STORE_PASSWORD:latest"
+
+      - name: Run database migrations
+        run: |
+          gcloud run jobs create migrate-job-${{ github.sha }} \
+            --image ${{ env.IMAGE }}:${{ github.sha }} \
+            --region ${{ env.REGION }} \
+            --command python,manage.py,migrate \
+            --set-secrets="SECRET_KEY=DJANGO_SECRET_KEY:latest,DATABASE_URL=DATABASE_URL:latest" \
+            --execute-now --wait || true
+
+  # ── JOB 3: Deploy Frontend ───────────────────────────────────────────
+  deploy-frontend:
+    name: Deploy Frontend → Firebase
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+>>>>>>> 58c405af0447997e6cf8a412fa3573bac7007072
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Deploy to Firebase Hosting
+<<<<<<< HEAD
+        run: |
+          if [ -n "${{ secrets.FIREBASE_TOKEN }}" ]; then
+            firebase deploy --only hosting \
+              --token "${{ secrets.FIREBASE_TOKEN }}" \
+              --non-interactive \
+              --project medfind-bangladesh
+            echo "✅ Firebase frontend deployed!"
+          else
+            echo "⚠️  FIREBASE_TOKEN secret not set"
+            echo "ℹ️  To get it: run 'firebase login:ci' locally"
+            echo "ℹ️  Then add FIREBASE_TOKEN to GitHub → Settings → Secrets → Actions"
+          fi
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+  # ── Job 4: Post-deploy summary ───────────────────────────
+  notify:
+    name: 📋 Deploy Summary
+    runs-on: ubuntu-latest
+    needs: [deploy-backend, deploy-frontend]
+    if: always()
+    steps:
+      - name: Print deployment summary
+        run: |
+          echo "════════════════════════════════════════"
+          echo "  MedFind Bangladesh — Deploy Summary"
+          echo "════════════════════════════════════════"
+          echo "🌐 Frontend: https://medfind-bangladesh.web.app"
+          echo "⚙️  Backend:  https://medfind-bangladesh-ai-healthcare-platform.onrender.com"
+          echo "🔑 API:       /api/v1/health/"
+          echo "📅 Time:      $(date -u '+%Y-%m-%d %H:%M UTC')"
+          echo "🔖 Commit:    ${{ github.sha }}"
+          echo "════════════════════════════════════════"
+=======
+        run: firebase deploy --only hosting --token ${{ secrets.FIREBASE_TOKEN }}
+
+  # ── JOB 4: Notify ────────────────────────────────────────────────────
+  notify:
+    name: Deployment Summary
+    needs: [deploy-backend, deploy-frontend]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Deployment complete
+        run: |
+          echo "✅ MedFind deployment pipeline complete"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Triggered by: ${{ github.actor }}"
+>>>>>>> 58c405af0447997e6cf8a412fa3573bac7007072

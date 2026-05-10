@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "medfind-bangladesh"
+  },
+  "targets": {
+    "project-497488341848": {
+      "hosting": {
+        "medfind-app": [
+          "medfind-app"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
