@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Treatment Guide Bangladesh - Evidence-based treatment protocols for all conditions, with local hospital and medicine information.">
+<title>Treatment Directory — MedFind Bangladesh</title>
+<link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pri:#1a56db;--pri-d:#1342b0;--pri-l:#dbeafe;--teal:#0d9488;--em:#10b981;--warn:#f59e0b;--danger:#ef4444;--purple:#7c3aed;--bg:#f0f4ff;--card:#fff;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;--subtle:#94a3b8;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);}
+.nav{background:#fff;border-bottom:1px solid var(--border);height:62px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.nav-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+.nav-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--pri),var(--teal));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;}
+.nav-name{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--pri);}
+.nav-links{display:flex;gap:.2rem;}
+.nav-links a{font-size:.84rem;color:var(--muted);text-decoration:none;font-weight:500;padding:.4rem .8rem;border-radius:8px;transition:.2s;}
+.nav-links a:hover,.nav-links a.active{background:var(--bg);color:var(--pri);}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:10px;font-weight:600;font-size:.84rem;cursor:pointer;border:none;text-decoration:none;transition:.2s;font-family:'DM Sans',sans-serif;}
+.btn-pri{background:var(--pri);color:#fff;}.btn-pri:hover{background:var(--pri-d);}
+.btn-out{border:1.5px solid var(--border);color:var(--muted);background:#fff;}.btn-out:hover{border-color:var(--pri);color:var(--pri);}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0f172a 0%,#1a2e5a 40%,#0a2f2f 100%);padding:3.5rem 2rem 5rem;color:#fff;text-align:center;position:relative;overflow:hidden;}
+.hero-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:28px 28px;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(16,185,129,.2);border:1px solid rgba(16,185,129,.4);color:#6ee7b7;padding:.35rem 1rem;border-radius:100px;font-size:.8rem;font-weight:600;margin-bottom:1rem;position:relative;}
+.hero h1{font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;line-height:1.15;margin-bottom:.6rem;position:relative;}
+.hero h1 em{background:linear-gradient(135deg,#a5b4fc,#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal;}
+.hero p{font-size:.95rem;color:rgba(255,255,255,.7);max-width:540px;margin:0 auto 2rem;position:relative;}
+.search-wrap{max-width:680px;margin:0 auto;position:relative;z-index:10;}
+.search-box{display:flex;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.3);}
+.search-input{flex:1;padding:1.1rem 1.5rem;border:none;outline:none;font-size:1rem;font-family:'DM Sans',sans-serif;color:var(--text);}
+.search-input::placeholder{color:var(--subtle);}
+.search-btn{background:var(--teal);color:#fff;border:none;padding:0 2rem;font-weight:700;font-size:.95rem;cursor:pointer;display:flex;align-items:center;gap:.5rem;transition:.2s;}
+.search-btn:hover{background:#0f766e;}
+.quick-pills{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;position:relative;}
+.qp{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);padding:.3rem .85rem;border-radius:100px;font-size:.78rem;font-weight:600;cursor:pointer;transition:.2s;}
+.qp:hover{background:rgba(255,255,255,.15);color:#fff;}
+
+/* MAIN */
+.main{max-width:1100px;margin:-3rem auto 0;padding:0 1.5rem 3rem;position:relative;z-index:10;}
+
+/* LOADING */
+.ai-loading{background:#fff;border-radius:20px;padding:2.5rem;text-align:center;display:none;margin-bottom:2rem;box-shadow:0 8px 40px rgba(0,0,0,.1);}
+.ai-loading.show{display:block;}
+.loading-dots{display:flex;justify-content:center;gap:.4rem;margin-bottom:.75rem;}
+.ld{width:10px;height:10px;border-radius:50%;animation:ldP 1.4s ease infinite;}
+.ld:nth-child(1){background:var(--pri);}.ld:nth-child(2){background:var(--teal);animation-delay:.2s;}.ld:nth-child(3){background:var(--em);animation-delay:.4s;}
+@keyframes ldP{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+/* TREATMENT RESULT */
+.treatment-result{background:#fff;border-radius:20px;box-shadow:0 8px 40px rgba(0,0,0,.1);margin-bottom:2rem;overflow:hidden;display:none;}
+.treatment-result.show{display:block;}
+.tr-header{background:linear-gradient(135deg,#0d9488,#1a56db);padding:1.5rem 2rem;color:#fff;}
+.tr-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.tr-icon{font-size:2.5rem;margin-right:.5rem;}
+.tr-name{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;display:flex;align-items:center;gap:.5rem;}
+.tr-alt{font-size:.85rem;opacity:.8;margin-top:.25rem;}
+.tr-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem;}
+.tr-tag{background:rgba(255,255,255,.2);color:#fff;font-size:.75rem;font-weight:700;padding:.25rem .7rem;border-radius:100px;}
+.urgency-pill{padding:.35rem .9rem;border-radius:100px;font-size:.8rem;font-weight:700;flex-shrink:0;}
+.urgency-pill.high{background:#fef2f2;color:#dc2626;}
+.urgency-pill.medium{background:#fffbeb;color:#d97706;}
+.urgency-pill.low{background:#f0fdf4;color:#16a34a;}
+.ai-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(255,255,255,.15);color:#fff;font-size:.72rem;font-weight:700;padding:.2rem .6rem;border-radius:100px;}
+
+/* CONTENT GRID */
+.tr-body{padding:2rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.tr-section{background:var(--bg);border-radius:16px;padding:1.25rem;}
+.tr-section.full{grid-column:1/-1;}
+.tr-section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;display:flex;align-items:center;gap:.4rem;}
+
+/* SYMPTOMS LIST */
+.sym-chips{display:flex;flex-wrap:wrap;gap:.4rem;}
+.sym-chip{background:#fff;border:1.5px solid var(--border);font-size:.78rem;font-weight:600;padding:.25rem .7rem;border-radius:100px;color:var(--text);}
+
+/* TREATMENT STEPS */
+.treatment-steps{display:flex;flex-direction:column;gap:1rem;}
+.step-item{display:flex;gap:1rem;align-items:flex-start;}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:.8rem;flex-shrink:0;margin-top:.1rem;}
+.step-content{flex:1;}
+.step-title{font-weight:700;font-size:.9rem;margin-bottom:.2rem;}
+.step-desc{font-size:.82rem;color:var(--muted);line-height:1.6;}
+
+/* MEDICINES TABLE */
+.med-table{width:100%;border-collapse:collapse;}
+.med-table th{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:.6rem .75rem;border-bottom:1.5px solid var(--border);text-align:left;}
+.med-table td{padding:.65rem .75rem;border-bottom:1px solid var(--bg);font-size:.83rem;}
+.med-table tr:hover td{background:var(--bg);}
+.med-type{font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:100px;}
+.med-type.first{background:var(--pri-l);color:var(--pri);}
+.med-type.second{background:#f3e8ff;color:var(--purple);}
+.med-type.supportive{background:#dcfce7;color:#166534;}
+
+/* DO DON'T */
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.dd-box{border-radius:12px;padding:1rem;}
+.dd-box.do{background:#f0fdf4;border:1.5px solid #bbf7d0;}
+.dd-box.dont{background:#fef2f2;border:1.5px solid #fecaca;}
+.dd-title{font-weight:700;font-size:.82rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem;}
+.dd-title.do{color:#166534;} .dd-title.dont{color:#dc2626;}
+.dd-list{display:flex;flex-direction:column;gap:.35rem;}
+.dd-item{font-size:.78rem;display:flex;gap:.4rem;align-items:flex-start;line-height:1.4;}
+.dd-item.do{color:#166534;} .dd-item.dont{color:#dc2626;}
+
+/* WHEN TO SEE DOCTOR */
+.red-flags{display:flex;flex-direction:column;gap:.5rem;}
+.rf-item{display:flex;gap:.6rem;align-items:flex-start;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:.65rem .85rem;}
+.rf-icon{color:#dc2626;flex-shrink:0;margin-top:.1rem;}
+.rf-text{font-size:.82rem;color:#991b1b;line-height:1.4;}
+
+/* DOCTOR TYPE CTA */
+.doc-cta{grid-column:1/-1;background:linear-gradient(135deg,rgba(26,86,219,.06),rgba(13,148,136,.06));border:1.5px solid rgba(26,86,219,.15);border-radius:16px;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.doc-cta-text{font-weight:700;font-size:.95rem;}
+.doc-cta-sub{font-size:.82rem;color:var(--muted);margin-top:.2rem;}
+.cta-btns{display:flex;gap:.6rem;flex-wrap:wrap;}
+.cta-btn{padding:.55rem 1.1rem;border-radius:10px;font-weight:700;font-size:.82rem;cursor:pointer;border:none;display:flex;align-items:center;gap:.4rem;transition:.2s;}
+.cta-btn.pri{background:var(--pri);color:#fff;}.cta-btn.pri:hover{background:var(--pri-d);}
+.cta-btn.video{background:#f3e8ff;color:var(--purple);}.cta-btn.video:hover{background:#e9d5ff;}
+
+/* CONDITION CARDS GRID */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+.section-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;}
+.cond-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+.cond-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:1.25rem;cursor:pointer;transition:.2s;text-decoration:none;color:inherit;}
+.cond-card:hover{border-color:var(--teal);box-shadow:0 4px 20px rgba(13,148,136,.1);transform:translateY(-2px);}
+.cc-icon-wrap{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:.75rem;}
+.cc-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;margin-bottom:.3rem;}
+.cc-desc{font-size:.78rem;color:var(--muted);line-height:1.5;margin-bottom:.75rem;}
+.cc-footer{display:flex;align-items:center;justify-content:space-between;}
+.cc-spec{font-size:.7rem;font-weight:600;background:var(--bg);color:var(--muted);padding:.2rem .6rem;border-radius:100px;}
+.cc-urg{font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:100px;}
+.cc-urg.high{background:#fee2e2;color:var(--danger);}
+.cc-urg.medium{background:#fef3c7;color:#92400e;}
+.cc-urg.low{background:#dcfce7;color:#166534;}
+
+/* FLOW SECTION */
+.flow-banner{background:#fff;border-radius:20px;padding:1.75rem;margin-bottom:2rem;border:1.5px solid var(--border);}
+.flow-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;margin-bottom:1.25rem;text-align:center;}
+.flow-steps{display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;}
+.fs{display:flex;flex-direction:column;align-items:center;gap:.4rem;text-align:center;}
+.fs-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.fs-label{font-size:.75rem;font-weight:700;color:var(--muted);}
+.fs-arrow{color:var(--subtle);font-size:.8rem;margin-top:-8px;}
+
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:100px;}
+@media(max-width:768px){.hero h1{font-size:1.9rem;}.tr-body{grid-template-columns:1fr;}.do-dont{grid-template-columns:1fr;}.nav-links{display:none;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="../../index.html"><img src="../../assets/medfind-logo.png" alt="MedFind Bangladesh" style="height:44px;width:auto;object-fit:contain;"></a>
+  <div class="nav-links">
+    <a href="../symptoms/index.html">Symptoms</a>
+    <a href="../doctors/search.html">Doctors</a>
+    <a href="index.html" class="active">Treatments</a>
+    <a href="../drugs/index.html">Drugs</a>
+  </div>
+  <div style="display:flex;gap:.5rem">
+    <a class="btn btn-out" href="../login.html">Login</a>
+    <a class="btn btn-pri" href="../doctors/search.html"><i class="fas fa-user-md"></i> Find Doctor</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-dots"></div>
+  <div class="hero-badge"><i class="fas fa-notes-medical"></i> AI Treatment Guide · Bangladesh Standard</div>
+  <h1>Complete <em>Treatment</em><br>Guides for Any Condition</h1>
+  <p>From diagnosis to recovery — AI-powered treatment plans, medicines, do's & don'ts, and when to see a doctor. Based on Bangladesh/WHO guidelines.</p>
+  <div class="search-wrap">
+    <div class="search-box">
+      <input type="text" class="search-input" id="treatSearch" placeholder="Search condition... e.g. Hypertension, Diabetes, Migraine" onkeydown="if(event.key==='Enter')searchTreatment()">
+      <button class="search-btn" onclick="searchTreatment()"><i class="fas fa-search"></i> Find Treatment</button>
+    </div>
+    <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin-top:.75rem;text-align:center;position:relative;">🔒 AI-generated · Based on WHO & DGHS Bangladesh guidelines · Always consult a doctor</div>
+    <div class="quick-pills">
+      <span class="qp" onclick="quickTreat('Hypertension')">❤️ Hypertension</span>
+      <span class="qp" onclick="quickTreat('Type 2 Diabetes')">🩸 Diabetes</span>
+      <span class="qp" onclick="quickTreat('Dengue Fever')">🦟 Dengue</span>
+      <span class="qp" onclick="quickTreat('Migraine')">🧠 Migraine</span>
+      <span class="qp" onclick="quickTreat('Asthma')">🫁 Asthma</span>
+      <span class="qp" onclick="quickTreat('Typhoid fever')">🌡️ Typhoid</span>
+      <span class="qp" onclick="quickTreat('Gastritis')">🫃 Gastritis</span>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <!-- LOADING -->
+  <div class="ai-loading" id="aiLoading">
+    <div class="loading-dots"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text)">MedFind AI is generating treatment guide...</div>
+    <div style="font-size:.82rem;color:var(--muted);margin-top:.35rem">Based on WHO, DGHS Bangladesh, and clinical guidelines</div>
+  </div>
+
+  <!-- TREATMENT RESULT -->
+  <div class="treatment-result" id="treatmentResult">
+    <div class="tr-header">
+      <div class="tr-top">
+        <div>
+          <div class="tr-name"><span id="trIcon">🏥</span><span id="trName">Condition Name</span></div>
+          <div class="tr-alt" id="trAlt">Alternative names</div>
+          <div class="tr-tags" id="trTags"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.5rem">
+          <span class="urgency-pill medium" id="urgencyPill">Medium Urgency</span>
+          <span class="ai-badge"><i class="fas fa-brain"></i> Claude AI · DGHS Guidelines</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tr-body">
+      <!-- OVERVIEW -->
+      <div class="tr-section full">
+        <div class="tr-section-title"><i class="fas fa-info-circle" style="color:var(--pri)"></i> Overview</div>
+        <p id="trOverview" style="font-size:.88rem;line-height:1.7;color:var(--text)"></p>
+      </div>
+
+      <!-- SYMPTOMS -->
+      <div class="tr-section">
+        <div class="tr-section-title"><i class="fas fa-list-ul" style="color:var(--warn)"></i> Common Symptoms</div>
+        <div class="sym-chips" id="trSymptoms"></div>
+      </div>
+
+      <!-- CAUSES -->
+      <div class="tr-section">
+        <div class="tr-section-title"><i class="fas fa-search" style="color:var(--danger)"></i> Causes & Risk Factors</div>
+        <div id="trCauses" style="font-size:.83rem;color:var(--muted);line-height:1.7;"></div>
+      </div>
+
+      <!-- DIAGNOSIS -->
+      <div class="tr-section">
+        <div class="tr-section-title"><i class="fas fa-microscope" style="color:var(--teal)"></i> Diagnosis</div>
+        <div id="trDiagnosis" style="font-size:.83rem;color:var(--muted);line-height:1.7;"></div>
+      </div>
+
+      <!-- TREATMENT PLAN -->
+      <div class="tr-section">
+        <div class="tr-section-title"><i class="fas fa-clipboard-list" style="color:var(--em)"></i> Treatment Steps</div>
+        <div class="treatment-steps" id="trSteps"></div>
+      </div>
+
+      <!-- MEDICINES -->
+      <div class="tr-section full">
+        <div class="tr-section-title"><i class="fas fa-pills" style="color:var(--purple)"></i> Commonly Used Medicines</div>
+        <table class="med-table" id="trMedTable">
+          <thead><tr><th>Medicine</th><th>Type</th><th>Role</th><th>Note</th></tr></thead>
+          <tbody id="trMeds"></tbody>
+        </table>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:.6rem">⚕️ All medicines require prescription. Do not self-medicate.</div>
+      </div>
+
+      <!-- DO & DON'T -->
+      <div class="tr-section full">
+        <div class="tr-section-title"><i class="fas fa-check-circle" style="color:var(--em)"></i> Do's & Don'ts</div>
+        <div class="do-dont" id="trDoDont"></div>
+      </div>
+
+      <!-- RED FLAGS -->
+      <div class="tr-section">
+        <div class="tr-section-title"><i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i> When to Go to Emergency</div>
+        <div class="red-flags" id="trRedFlags"></div>
+      </div>
+
+      <!-- RECOVERY -->
+      <div class="tr-section">
+        <div class="tr-section-title"><i class="fas fa-heart" style="color:var(--teal)"></i> Recovery & Prognosis</div>
+        <div id="trRecovery" style="font-size:.83rem;color:var(--muted);line-height:1.7;"></div>
+      </div>
+
+      <!-- CTA -->
+      <div class="doc-cta">
+        <div>
+          <div class="doc-cta-text" id="trSpecialty">See a Specialist</div>
+          <div class="doc-cta-sub">Get proper diagnosis and treatment plan from a licensed doctor</div>
+        </div>
+        <div class="cta-btns">
+          <button class="cta-btn pri" onclick="window.location='../doctors/search.html'"><i class="fas fa-user-md"></i> Find Doctor</button>
+          <button class="cta-btn video" onclick="window.location='../../telemedicine.html'"><i class="fas fa-video"></i> Video Consult</button>
+          <button class="cta-btn pri" style="background:var(--teal)" id="trDrugBtn"><i class="fas fa-pills"></i> View Medicines</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW BANNER -->
+  <div class="flow-banner">
+    <div class="flow-title">🎯 MedFind — Complete Patient Journey</div>
+    <div class="flow-steps">
+      <div class="fs"><div class="fs-icon" style="background:#dbeafe"><i class="fas fa-list-ul" style="color:var(--pri)"></i></div><div class="fs-label">Symptoms</div></div>
+      <div class="fs-arrow"><i class="fas fa-arrow-right"></i></div>
+      <div class="fs"><div class="fs-icon" style="background:#dcfce7"><i class="fas fa-brain" style="color:var(--em)"></i></div><div class="fs-label">AI Analysis</div></div>
+      <div class="fs-arrow"><i class="fas fa-arrow-right"></i></div>
+      <div class="fs"><div class="fs-icon" style="background:#ccfbf1"><i class="fas fa-stethoscope" style="color:var(--teal)"></i></div><div class="fs-label">Treatment Guide</div></div>
+      <div class="fs-arrow"><i class="fas fa-arrow-right"></i></div>
+      <div class="fs"><div class="fs-icon" style="background:#fef3c7"><i class="fas fa-user-md" style="color:var(--warn)"></i></div><div class="fs-label">Doctor Match</div></div>
+      <div class="fs-arrow"><i class="fas fa-arrow-right"></i></div>
+      <div class="fs"><div class="fs-icon" style="background:#f3e8ff"><i class="fas fa-video" style="color:var(--purple)"></i></div><div class="fs-label">Video Consult</div></div>
+      <div class="fs-arrow"><i class="fas fa-arrow-right"></i></div>
+      <div class="fs"><div class="fs-icon" style="background:#dcfce7"><i class="fas fa-pills" style="color:var(--em)"></i></div><div class="fs-label">Medicines</div></div>
+      <div class="fs-arrow"><i class="fas fa-arrow-right"></i></div>
+      <div class="fs"><div class="fs-icon" style="background:#fee2e2"><i class="fas fa-heartbeat" style="color:var(--danger)"></i></div><div class="fs-label">Recovery</div></div>
+    </div>
+  </div>
+
+  <!-- BROWSE CONDITIONS -->
+  <div class="section-head">
+    <span class="section-title">Browse All Conditions</span>
+    <a href="../symptoms/index.html" class="btn btn-out">Symptom Checker <i class="fas fa-arrow-right"></i></a>
+  </div>
+  <div class="cond-grid" id="condGrid"></div>
+</div>
+
+<script>
+const ANTHROPIC_API = 'https://api.anthropic.com/v1/messages';
+const conditions = [
+  {id:'hypertension',name:'Hypertension',icon:'❤️',color:'#fee2e2',iconColor:'#dc2626',desc:'High blood pressure causing strain on heart and vessels',specialty:'Cardiology',urgency:'medium'},
+  {id:'diabetes2',name:'Type 2 Diabetes',icon:'🩸',color:'#fef3c7',iconColor:'#d97706',desc:'Metabolic disease with insulin resistance and high blood sugar',specialty:'Endocrinology',urgency:'medium'},
+  {id:'dengue',name:'Dengue Fever',icon:'🦟',color:'#dcfce7',iconColor:'#059669',desc:'Mosquito-borne viral fever common in Bangladesh',specialty:'Internal Medicine',urgency:'high'},
+  {id:'typhoid',name:'Typhoid Fever',icon:'🌡️',color:'#fef3c7',iconColor:'#d97706',desc:'Bacterial infection from contaminated food/water',specialty:'Internal Medicine',urgency:'high'},
+  {id:'asthma',name:'Bronchial Asthma',icon:'🫁',color:'#dbeafe',iconColor:'#1a56db',desc:'Chronic airway inflammation causing breathing difficulty',specialty:'Pulmonology',urgency:'medium'},
+  {id:'migraine',name:'Migraine',icon:'🧠',color:'#f3e8ff',iconColor:'#7c3aed',desc:'Severe recurring headaches with nausea and light sensitivity',specialty:'Neurology',urgency:'low'},
+  {id:'gastritis',name:'Gastritis & Peptic Ulcer',icon:'🫃',color:'#dcfce7',iconColor:'#059669',desc:'Inflammation of stomach lining causing pain and acidity',specialty:'Gastroenterology',urgency:'low'},
+  {id:'pneumonia',name:'Pneumonia',icon:'😮‍💨',color:'#dbeafe',iconColor:'#1a56db',desc:'Lung infection causing fever, cough and breathing difficulty',specialty:'Pulmonology',urgency:'high'},
+  {id:'anemia',name:'Iron Deficiency Anemia',icon:'💉',color:'#fee2e2',iconColor:'#dc2626',desc:'Low red blood cells due to iron deficiency — common in BD',specialty:'Hematology',urgency:'medium'},
+  {id:'ckd',name:'Chronic Kidney Disease',icon:'🫘',color:'#fef3c7',iconColor:'#d97706',desc:'Progressive loss of kidney function over months or years',specialty:'Nephrology',urgency:'high'},
+  {id:'thyroid',name:'Thyroid Disorders',icon:'🦋',color:'#f3e8ff',iconColor:'#7c3aed',desc:'Hypo/hyperthyroidism affecting metabolism and energy',specialty:'Endocrinology',urgency:'low'},
+  {id:'appendicitis',name:'Appendicitis',icon:'🚨',color:'#fee2e2',iconColor:'#dc2626',desc:'Inflamed appendix requiring urgent surgical intervention',specialty:'General Surgery',urgency:'high'},
+];
+
+function renderCondGrid() {
+  document.getElementById('condGrid').innerHTML = conditions.map(c => `
+    <div class="cond-card" onclick="quickTreat('${c.name}')">
+      <div class="cc-icon-wrap" style="background:${c.color};color:${c.iconColor}">${c.icon}</div>
+      <div class="cc-name">${c.name}</div>
+      <div class="cc-desc">${c.desc}</div>
+      <div class="cc-footer">
+        <span class="cc-spec">🏥 ${c.specialty}</span>
+        <span class="cc-urg ${c.urgency}">${c.urgency === 'high' ? '⚠️ Urgent' : c.urgency === 'medium' ? '📅 See Doctor' : '🩺 Routine'}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function searchTreatment() {
+  const q = document.getElementById('treatSearch').value.trim();
+  if (!q) return;
+  await fetchTreatment(q);
+}
+
+async function quickTreat(q) {
+  document.getElementById('treatSearch').value = q;
+  await fetchTreatment(q);
+}
+
+async function fetchTreatment(query) {
+  const loading = document.getElementById('aiLoading');
+  const result = document.getElementById('treatmentResult');
+  loading.classList.add('show');
+  result.classList.remove('show');
+  window.scrollTo({top: document.querySelector('.main').offsetTop - 80, behavior:'smooth'});
+
+    const sys = `You are a consultant physician and clinical specialist in Bangladesh, trained at BSMMU (Bangabandhu Sheikh Mujib Medical University) with expertise in Bangladesh National Standard Treatment Guidelines (NSTG), WHO protocols, and Bangladesh-prevalent diseases (dengue, typhoid, TB, cholera, malaria, diabetes, hypertension, liver disease, cardiac conditions).
+
+Respond ONLY in valid JSON (no markdown, no backticks, no extra text). Be medically authoritative and Bangladesh-specific.
+
+{
+  "name": "Official medical condition name",
+  "alt": "Bengali name or local common name if applicable",
+  "icon": "single relevant emoji",
+  "urgency": "emergency|high|medium|low",
+  "urgencyExplain": "One sentence explaining why this urgency level",
+  "specialty": "Primary medical specialty (e.g. Cardiology, Gastroenterology)",
+  "subSpecialty": "Sub-specialty if applicable",
+  "icdCode": "ICD-10 code if known (e.g. J18.9)",
+  "prevalenceInBD": "How common is this in Bangladesh — Very common / Common / Uncommon / Rare and why",
+  "overview": "Comprehensive 3-4 sentence clinical overview of the condition",
+  "pathophysiology": "Plain-language explanation of what's happening in the body (2 sentences)",
+  "symptoms": ["Primary symptom 1 (most common)", "Symptom 2", "Symptom 3", "Symptom 4", "Symptom 5", "Symptom 6"],
+  "warningSymptoms": ["RED FLAG: symptom requiring emergency care", "RED FLAG 2", "RED FLAG 3"],
+  "causes": "Causes, risk factors, and Bangladesh-specific triggers (e.g. contaminated water, monsoon season, malnutrition, overcrowding). 3-4 sentences.",
+  "riskFactors": ["Risk factor 1", "Risk factor 2", "Risk factor 3", "Risk factor 4"],
+  "diagnosis": {
+    "clinical": "Physical examination findings that suggest this diagnosis",
+    "tests": [
+      {"name": "Test name", "why": "What it shows", "urgency": "Immediate|Within 24h|Routine", "costBDT": "Approx cost in BDT", "availableBD": "All labs / Major cities / Specialized centers"}
+    ]
+  },
+  "treatment": {
+    "emergency": "Emergency first steps if urgency is emergency/high",
+    "pharmacological": [
+      {"drug": "Generic drug name", "brandsBD": ["BD Brand 1", "Brand 2"], "dose": "Dose and frequency", "duration": "Treatment duration", "note": "Important prescribing note", "costBDT": "Approx cost"}
+    ],
+    "nonPharmacological": ["Rest, fluids, specific positioning, dietary measures, physiotherapy, etc."],
+    "surgical": "Surgical options if applicable, or 'Not typically required'",
+    "traditional": "Any widely practiced traditional/herbal remedies used in Bangladesh and their evidence status"
+  },
+  "steps": [
+    {"step": 1, "title": "Step title", "desc": "Detailed action — what to do, when, and how", "priority": "Immediate|Soon|Later"},
+    {"step": 2, "title": "Step title", "desc": "Detailed action", "priority": "Immediate|Soon|Later"},
+    {"step": 3, "title": "Step title", "desc": "Detailed action", "priority": "Immediate|Soon|Later"},
+    {"step": 4, "title": "Step title", "desc": "Detailed action", "priority": "Later"},
+    {"step": 5, "title": "Follow-up", "desc": "Follow-up care and monitoring", "priority": "Later"}
+  ],
+  "whereToBD": {
+    "emergency": "Which hospitals to go to for emergency care in Bangladesh (DMCH, BSMMU, CMH etc.)",
+    "specialist": "Where to find specialists in Bangladesh for this condition",
+    "publicOptions": "Government/public hospitals with good care for this condition and approx fees",
+    "privateOptions": "Private hospitals and clinics — Square, United, Labaid, Apollo, Ibn Sina"
+  },
+  "prognosis": "Expected outcome with proper treatment in Bangladesh context",
+  "complications": ["Complication 1 if untreated", "Complication 2", "Complication 3"],
+  "prevention": ["Prevention measure 1", "Prevention measure 2", "Prevention measure 3", "Prevention measure 4"],
+  "diet": {
+    "recommended": ["Food/drink 1", "Food 2", "Food 3"],
+    "avoid": ["Avoid 1", "Avoid 2", "Avoid 3"],
+    "special": "Any special dietary protocol (e.g. ORS for dehydration, low-salt for hypertension)"
+  },
+  "homeManagement": ["Safe home care step 1", "Step 2", "Step 3"],
+  "whenToGoToHospital": ["Must go immediately if: criterion 1", "Criterion 2", "Criterion 3"],
+  "followUp": "Follow-up schedule and what monitoring is needed long-term",
+  "relatedDrugs": ["Generic drug 1", "Generic drug 2", "Generic drug 3"],
+  "disclaimer": "This treatment guide follows Bangladesh NSTG and WHO guidelines. Always consult a qualified physician before starting treatment."
+}
+
+Rules:
+- Be Bangladesh-specific: use BSMMU, DMCH, Square Hospital, IBN Sina, CRP (for rehab), NIDCH (chest), BIRDEM (diabetes), NICRH (cancer)
+- Costs must be realistic 2024-2025 BDT prices (lab tests, medicines, hospitalization estimates)
+- For emergency conditions (MI, stroke, dengue shock, eclampsia), be very specific about emergency steps
+- Mention monsoon-related diseases, waterborne diseases, air pollution effects where relevant
+- Drug names should include popular Bangladeshi brands (Square, Beximco, ACI, Eskayef, Renata, Incepta brands)
+- If a condition is very rare or complex, recommend specialist referral clearly
+- The "steps" array should have 5 practical, actionable steps a patient can follow`;
+
+  try {
+    const res = await fetch(ANTHROPIC_API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:2000,
+        system:sys,
+        messages:[{role:'user',content:`Treatment guide for: ${query} — Bangladesh context, WHO/DGHS guidelines`}]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content.map(c=>c.text||'').join('');
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const d = JSON.parse(clean);
+    renderTreatment(d);
+  } catch(e) {
+    loading.classList.remove('show');
+    renderFallbackTreatment(query);
+  }
+}
+
+function renderTreatment(d) {
+  document.getElementById('trIcon').textContent = d.icon || '🏥';
+  document.getElementById('trName').textContent = d.name;
+  document.getElementById('trAlt').textContent = d.alt || '';
+  document.getElementById('trOverview').textContent = d.overview;
+  document.getElementById('trCauses').textContent = d.causes;
+  document.getElementById('trDiagnosis').textContent = d.diagnosis;
+  document.getElementById('trRecovery').textContent = d.recovery;
+
+  // Urgency pill
+  const up = document.getElementById('urgencyPill');
+  up.className = 'urgency-pill ' + (d.urgency || 'medium');
+  up.textContent = d.urgency === 'high' ? '🚨 Urgent' : d.urgency === 'medium' ? '⚠️ Moderate' : '✅ Manageable';
+
+  // Tags
+  document.getElementById('trTags').innerHTML = [d.specialty,'Bangladesh Guideline','Evidence-Based'].map(t=>`<span class="tr-tag">${t}</span>`).join('');
+
+  // Symptoms
+  document.getElementById('trSymptoms').innerHTML = (d.symptoms||[]).map(s=>`<span class="sym-chip">• ${s}</span>`).join('');
+
+  // Steps
+  document.getElementById('trSteps').innerHTML = (d.steps||[]).map((s,i)=>`
+    <div class="step-item">
+      <div class="step-num">${i+1}</div>
+      <div class="step-content"><div class="step-title">${s.title}</div><div class="step-desc">${s.desc}</div></div>
+    </div>`).join('');
+
+  // Medicines
+  const typeClass = {'First-line':'first','Second-line':'second','Supportive':'supportive'};
+  document.getElementById('trMeds').innerHTML = (d.medicines||[]).map(m=>`
+    <tr><td><strong>${m.name}</strong></td>
+    <td><span class="med-type ${typeClass[m.type]||'supportive'}">${m.type}</span></td>
+    <td>${m.role}</td><td style="color:var(--muted);font-size:.78rem">${m.note}</td></tr>`).join('');
+
+  // Dos and Donts
+  document.getElementById('trDoDont').innerHTML = `
+    <div class="dd-box do"><div class="dd-title do">✅ Do's</div><div class="dd-list">${(d.dos||[]).map(i=>`<div class="dd-item do"><span>✓</span><span>${i}</span></div>`).join('')}</div></div>
+    <div class="dd-box dont"><div class="dd-title dont">❌ Don'ts</div><div class="dd-list">${(d.donts||[]).map(i=>`<div class="dd-item dont"><span>✗</span><span>${i}</span></div>`).join('')}</div></div>`;
+
+  // Red flags
+  document.getElementById('trRedFlags').innerHTML = (d.redFlags||[]).map(f=>`
+    <div class="rf-item"><i class="fas fa-exclamation-circle rf-icon"></i><div class="rf-text">${f}</div></div>`).join('');
+
+  // Doctor CTA
+  document.getElementById('trSpecialty').textContent = `See a ${d.specialty || 'Specialist'} for proper diagnosis`;
+  document.getElementById('trDrugBtn').onclick = () => window.location = `../drugs/index.html?q=${encodeURIComponent(d.relatedDrug||d.name)}`;
+
+  document.getElementById('aiLoading').classList.remove('show');
+  document.getElementById('treatmentResult').classList.add('show');
+}
+
+function renderFallbackTreatment(query) {
+  document.getElementById('trIcon').textContent = '🏥';
+  document.getElementById('trName').textContent = query;
+  document.getElementById('trAlt').textContent = '';
+  document.getElementById('trOverview').textContent = 'Treatment information for this condition. Please ensure you have a valid API key configured, or consult a qualified doctor for detailed treatment guidance.';
+  document.getElementById('trCauses').textContent = 'Please consult a healthcare professional for accurate information.';
+  document.getElementById('trDiagnosis').textContent = 'Diagnosis should be performed by a qualified physician.';
+  document.getElementById('trRecovery').textContent = 'Recovery depends on proper treatment and adherence to medical advice.';
+  document.getElementById('trSteps').innerHTML = '<div class="step-item"><div class="step-num">1</div><div class="step-content"><div class="step-title">Consult a Doctor</div><div class="step-desc">See a qualified physician for proper diagnosis and treatment plan.</div></div></div>';
+  document.getElementById('trMeds').innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1rem">Medicines depend on proper diagnosis by your doctor</td></tr>';
+  document.getElementById('trDoDont').innerHTML = '<div class="dd-box do"><div class="dd-title do">✅ General Advice</div><div class="dd-list"><div class="dd-item do"><span>✓</span><span>Consult a qualified doctor</span></div><div class="dd-item do"><span>✓</span><span>Follow prescribed treatment</span></div></div></div><div class="dd-box dont"><div class="dd-title dont">❌ Avoid</div><div class="dd-list"><div class="dd-item dont"><span>✗</span><span>Self-medication without prescription</span></div><div class="dd-item dont"><span>✗</span><span>Ignoring worsening symptoms</span></div></div></div>';
+  document.getElementById('trRedFlags').innerHTML = '<div class="rf-item"><i class="fas fa-exclamation-circle rf-icon"></i><div class="rf-text">Seek emergency care if symptoms worsen suddenly or become severe</div></div>';
+  document.getElementById('trSpecialty').textContent = 'See a Specialist for proper diagnosis';
+  document.getElementById('urgencyPill').textContent = '⚕️ See Doctor';
+  document.getElementById('urgencyPill').className = 'urgency-pill medium';
+  document.getElementById('trTags').innerHTML = '<span class="tr-tag">Medical Guidance</span>';
+  document.getElementById('trSymptoms').innerHTML = '<span class="sym-chip">• Varies by condition</span>';
+  document.getElementById('aiLoading').classList.remove('show');
+  document.getElementById('treatmentResult').classList.add('show');
+}
+
+// Load from URL param
+const params = new URLSearchParams(location.search);
+const condParam = params.get('condition') || params.get('q');
+if (condParam) {
+  quickTreat(decodeURIComponent(condParam));
+}
+
+renderCondGrid();
+</script>
+
+<!-- MEDFIND FOOTER -->
+<footer style="background:#0f172a;border-top:1px solid rgba(255,255,255,.07);padding:2.5rem 2rem 1.5rem;margin-top:4rem;">
+  <div style="max-width:1160px;margin:0 auto;">
+    <div style="display:flex;flex-wrap:wrap;gap:2rem;justify-content:space-between;margin-bottom:2rem;">
+      <div>
+        <img src="../../assets/medfind-logo.png" alt="MedFind Bangladesh" style="height:44px;width:auto;object-fit:contain;">
+        <p style="color:#64748b;font-size:.82rem;max-width:260px;line-height:1.6;">Bangladesh's digital healthcare platform. Connecting patients with doctors, donors, and AI health tools.</p>
+      </div>
+      <div style="display:flex;gap:3rem;flex-wrap:wrap;">
+        <div>
+          <div style="color:#f8fafc;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Platform</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="/pages/symptoms/index.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Symptom Checker</a>
+            <a href="/pages/drugs/index.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Drug Directory</a>
+            <a href="/pages/treatments/index.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Treatment Guide</a>
+            <a href="/pages/blood-donor/search.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Blood Donors</a>
+            <a href="/pages/doctors/search.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Find Doctors</a>
+            <a href="/pages/hospital/list.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Hospitals</a>
+          </div>
+        </div>
+        <div>
+          <div style="color:#f8fafc;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Legal</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="/pages/privacy.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Privacy Policy</a>
+            <a href="/pages/terms.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Terms of Service</a>
+            <a href="/pages/medical-disclaimer.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Medical Disclaimer</a>
+            <a href="/pages/consent-forms.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Consent Forms</a>
+            <a href="/pages/data-backup-policy.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Data & Security</a>
+            <a href="/pages/cookies.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Cookie Policy</a>
+          </div>
+        </div>
+        <div>
+          <div style="color:#f8fafc;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Emergency</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="tel:999" style="color:#fca5a5;font-size:.82rem;font-weight:700;text-decoration:none;">🚨 999 — National Emergency</a>
+            <a href="tel:+8801772172829" style="color:#fca5a5;font-size:.82rem;text-decoration:none;">📞 MedFind: 01772-172829</a>
+            <a href="tel:029667722" style="color:#94a3b8;font-size:.82rem;text-decoration:none;">🏥 Dhaka Medical: 02-9667722</a>
+            <a href="mailto:medfindbd2026@gmail.com" style="color:#94a3b8;font-size:.82rem;text-decoration:none;">✉️ medfindbd2026@gmail.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.07);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
+      <p style="color:#475569;font-size:.78rem;">© 2026 MedFind Bangladesh. All rights reserved. Not a substitute for professional medical advice.</p>
+      <p style="color:#475569;font-size:.78rem;">🇧🇩 Made for Bangladesh | DGHS Compliant</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

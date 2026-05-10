@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Tips & Wellness — MedFind Bangladesh</title>
+<link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+<meta name="description" content="500+ expert health tips, BMI calculator, water tracker, and daily wellness tools from Bangladesh's top doctors.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="../assets/js/components.js" defer></script>
+<style>
+:root{--p:#2563eb;--s:#059669;--ok:#10b981;--w:#fff;--g50:#f9fafb;--g100:#f3f4f6;--g200:#e5e7eb;--g500:#6b7280;--g700:#374151;--g800:#1f2937;--g900:#111827;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#f1f5f9;color:var(--g800);}
+.hero{background:linear-gradient(135deg,#064e3b,#065f46,#0d9488);padding:3.5rem 2rem;color:#fff;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 20%,rgba(255,255,255,.06),transparent);}
+.hero-inner{max-width:850px;margin:0 auto;position:relative;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:.35rem 1rem;border-radius:100px;font-size:.78rem;font-weight:600;margin-bottom:1.25rem;}
+.hero h1{font-size:2.5rem;font-weight:800;margin-bottom:.75rem;line-height:1.2;}
+.hero p{opacity:.9;font-size:1rem;margin-bottom:2rem;}
+.hero-search{display:flex;gap:.5rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:.5rem;max-width:540px;margin:0 auto 1.75rem;}
+.hero-search input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:.9rem;padding:.4rem .5rem;}
+.hero-search input::placeholder{color:rgba(255,255,255,.6);}
+.hero-search button{background:#fff;color:#065f46;border:none;padding:.6rem 1.5rem;border-radius:10px;font-weight:700;cursor:pointer;transition:.2s;font-size:.9rem;}
+.hero-search button:hover{background:#f0fdf4;}
+.hero-chips{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;}
+.chip{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.9);padding:.3rem .9rem;border-radius:100px;font-size:.78rem;cursor:pointer;transition:.2s;}
+.chip:hover,.chip.on{background:rgba(255,255,255,.28);}
+.hero-stats{display:flex;gap:2.5rem;justify-content:center;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.15);}
+.hs-n{font-size:1.6rem;font-weight:800;text-align:center;}
+.hs-l{font-size:.72rem;opacity:.75;text-align:center;margin-top:.1rem;}
+
+/* DAILY TIP */
+.daily-banner{background:linear-gradient(90deg,#fef3c7,#fde68a);border-left:5px solid #f59e0b;padding:.875rem 2rem;}
+.daily-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;gap:.9rem;font-size:.875rem;}
+.daily-inner strong{color:#92400e;}
+
+/* CAT NAV */
+.cat-nav{background:var(--w);border-bottom:2px solid var(--g200);padding:.875rem 2rem;position:sticky;top:0;z-index:100;}
+.cat-scroll{display:flex;gap:.5rem;overflow-x:auto;scrollbar-width:none;max-width:1300px;margin:0 auto;}
+.cat-scroll::-webkit-scrollbar{display:none;}
+.cbt{display:flex;align-items:center;gap:.4rem;padding:.42rem 1rem;border-radius:100px;border:1.5px solid var(--g200);background:var(--w);color:var(--g700);font-size:.8rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:.2s;}
+.cbt:hover{border-color:var(--s);color:var(--s);}
+.cbt.on{color:#fff;border-color:transparent;}
+.cbt[data-c=all].on{background:#065f46;}
+.cbt[data-c=nutrition].on{background:#059669;}
+.cbt[data-c=exercise].on{background:#2563eb;}
+.cbt[data-c=sleep].on{background:#7c3aed;}
+.cbt[data-c=mental].on{background:#0891b2;}
+.cbt[data-c=hygiene].on{background:#0d9488;}
+.cbt[data-c=heart].on{background:#dc2626;}
+.cbt[data-c=diabetes].on{background:#d97706;}
+.cbt[data-c=women].on{background:#be185d;}
+.cbt[data-c=child].on{background:#854d0e;}
+.cbt[data-c=skin].on{background:#ea580c;}
+.cbt[data-c=eye].on{background:#0284c7;}
+
+/* MAIN LAYOUT */
+.layout{max-width:1300px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:1fr 300px;gap:2rem;}
+
+/* FEATURED */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-bottom:2rem;}
+.feat-card{border-radius:18px;padding:1.6rem;color:#fff;position:relative;overflow:hidden;cursor:pointer;transition:.3s;}
+.feat-card:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(0,0,0,.15);}
+.feat-card::before{content:'';position:absolute;right:-18px;bottom:-18px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.08);}
+.fc-icon{font-size:2rem;margin-bottom:.875rem;}
+.fc-badge{display:inline-flex;align-items:center;gap:.3rem;background:rgba(255,255,255,.18);padding:.2rem .6rem;border-radius:100px;font-size:.68rem;font-weight:700;margin-bottom:.6rem;text-transform:uppercase;}
+.feat-card h3{font-size:.975rem;font-weight:800;margin-bottom:.4rem;line-height:1.35;}
+.feat-card p{font-size:.8rem;opacity:.88;line-height:1.6;}
+
+/* CHECKLIST */
+.checklist{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:16px;padding:1.4rem;margin-bottom:1.75rem;}
+.cl-title{font-size:.95rem;font-weight:800;color:#065f46;margin-bottom:.875rem;display:flex;align-items:center;gap:.4rem;}
+.cl-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;}
+.cl-item{display:flex;align-items:center;gap:.6rem;padding:.55rem .75rem;background:#fff;border-radius:9px;border:1px solid #bbf7d0;cursor:pointer;font-size:.82rem;font-weight:500;color:#065f46;transition:.2s;}
+.cl-item:hover{background:#f0fdf4;}
+.cl-item.done{background:#065f46;color:#fff;border-color:#065f46;}
+.cl-check{width:18px;height:18px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.6rem;}
+.cl-item.done .cl-check{background:rgba(255,255,255,.25);}
+.cl-prog-bar{height:6px;background:#bbf7d0;border-radius:3px;overflow:hidden;margin-top:.875rem;}
+.cl-prog-fill{height:100%;background:linear-gradient(90deg,#059669,#10b981);border-radius:3px;transition:width .5s ease;}
+.cl-prog-txt{font-size:.72rem;color:#065f46;font-weight:600;margin-top:.25rem;}
+
+/* QUICK TIPS ROW */
+.qt-row{display:flex;gap:.875rem;overflow-x:auto;scrollbar-width:none;padding-bottom:.5rem;margin-bottom:1.75rem;}
+.qt-row::-webkit-scrollbar{display:none;}
+.qt-card{background:var(--w);border-radius:13px;border:1.5px solid var(--g200);padding:.9rem 1rem;min-width:190px;transition:.2s;}
+.qt-card:hover{border-color:var(--s);}
+.qt-icon{font-size:1.7rem;margin-bottom:.5rem;}
+.qt-title{font-size:.82rem;font-weight:700;color:var(--g900);margin-bottom:.25rem;}
+.qt-desc{font-size:.74rem;color:var(--g500);line-height:1.5;}
+
+/* TIPS GRID */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;}
+.sh-title{font-size:1rem;font-weight:800;color:var(--g900);display:flex;align-items:center;gap:.5rem;}
+.sh-title::before{content:'';width:4px;height:17px;background:var(--s);border-radius:2px;}
+.sh-meta{font-size:.78rem;color:var(--g500);}
+.tips-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.9rem;}
+.tip-card{background:var(--w);border-radius:14px;border:1.5px solid var(--g200);overflow:hidden;cursor:pointer;transition:.3s;}
+.tip-card:hover{border-color:var(--s);box-shadow:0 5px 20px rgba(5,150,105,.1);transform:translateY(-2px);}
+.tip-card.hidden{display:none;}
+.tc-img{height:145px;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;}
+.tc-img.nutrition{background:linear-gradient(135deg,#d1fae5,#6ee7b7);}
+.tc-img.exercise{background:linear-gradient(135deg,#dbeafe,#93c5fd);}
+.tc-img.sleep{background:linear-gradient(135deg,#f3e8ff,#c4b5fd);}
+.tc-img.mental{background:linear-gradient(135deg,#cffafe,#67e8f9);}
+.tc-img.hygiene{background:linear-gradient(135deg,#ccfbf1,#5eead4);}
+.tc-img.heart{background:linear-gradient(135deg,#fee2e2,#fca5a5);}
+.tc-img.diabetes{background:linear-gradient(135deg,#fef3c7,#fde68a);}
+.tc-img.women{background:linear-gradient(135deg,#fce7f3,#f9a8d4);}
+.tc-img.child{background:linear-gradient(135deg,#fef9c3,#fde047);}
+.tc-img.skin{background:linear-gradient(135deg,#fff7ed,#fed7aa);}
+.tc-img.eye{background:linear-gradient(135deg,#e0f2fe,#7dd3fc);}
+.tc-badge{position:absolute;top:.65rem;left:.65rem;padding:.18rem .55rem;border-radius:100px;font-size:.66rem;font-weight:700;text-transform:uppercase;color:#fff;}
+.tc-body{padding:.9rem 1rem 1rem;}
+.tc-cat{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:.25rem;}
+.tc-title{font-size:.88rem;font-weight:700;line-height:1.4;margin-bottom:.3rem;color:var(--g900);}
+.tc-desc{font-size:.76rem;color:var(--g500);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.tc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:.65rem;padding-top:.65rem;border-top:1px solid var(--g100);}
+.tc-author{display:flex;align-items:center;gap:.35rem;font-size:.7rem;color:var(--g500);}
+.tc-ava{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--s),var(--ok));color:#fff;display:flex;align-items:center;justify-content:center;font-size:.56rem;font-weight:800;}
+.lk-btn{display:flex;align-items:center;gap:.3rem;font-size:.7rem;color:var(--g500);cursor:pointer;border:none;background:none;}
+.lk-btn:hover{color:#ef4444;}
+
+/* LOAD MORE */
+.lm-wrap{text-align:center;margin:1.5rem 0;}
+.lm-btn{background:var(--w);border:2px solid var(--s);color:var(--s);padding:.65rem 1.75rem;border-radius:10px;font-weight:700;cursor:pointer;font-size:.875rem;transition:.2s;}
+.lm-btn:hover{background:var(--s);color:#fff;}
+
+/* SIDEBAR */
+.sb{display:flex;flex-direction:column;gap:1.1rem;}
+.sb-c{background:var(--w);border-radius:14px;padding:1.2rem;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid var(--g200);}
+.sb-t{font-size:.88rem;font-weight:700;margin-bottom:.875rem;color:var(--g900);display:flex;align-items:center;gap:.4rem;}
+/* BMI */
+.bmi-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.55rem;}
+.bmi-row label{font-size:.75rem;color:var(--g600);width:80px;font-weight:500;}
+.bmi-row input{flex:1;padding:.5rem .75rem;border:1.5px solid var(--g200);border-radius:8px;font-size:.85rem;outline:none;transition:.2s;}
+.bmi-row input:focus{border-color:var(--s);}
+.bmi-btn{width:100%;padding:.65rem;background:var(--s);color:#fff;border:none;border-radius:9px;font-weight:700;cursor:pointer;font-size:.875rem;transition:.2s;}
+.bmi-btn:hover{background:#047857;}
+.bmi-res{background:var(--g50);border-radius:9px;padding:.75rem;text-align:center;margin-top:.5rem;display:none;}
+.bmi-val{font-size:1.8rem;font-weight:800;}
+.bmi-cat{font-size:.8rem;font-weight:600;margin-top:.2rem;}
+.bmi-note{font-size:.72rem;color:var(--g500);margin-top:.25rem;}
+/* WATER */
+.water-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem;margin-bottom:.5rem;}
+.wg{width:100%;aspect-ratio:1;border-radius:7px;border:2px solid #bae6fd;background:var(--g50);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.95rem;transition:.2s;}
+.wg.filled{background:#0284c7;border-color:#0284c7;}
+.water-cnt{text-align:center;font-size:.8rem;color:var(--g600);font-weight:600;}
+/* STREAK */
+.streak-box{background:linear-gradient(135deg,#fef3c7,#fde68a);border:1.5px solid #fbbf24;border-radius:11px;padding:.9rem;text-align:center;}
+.streak-n{font-size:2.2rem;font-weight:800;color:#92400e;}
+.streak-l{font-size:.75rem;color:#92400e;font-weight:600;}
+/* NUTRIENTS */
+.nb{margin-bottom:.65rem;}
+.nb-top{display:flex;justify-content:space-between;font-size:.76rem;margin-bottom:.25rem;}
+.nb-name{font-weight:600;color:var(--g700);}
+.nb-val{color:var(--g500);}
+.nb-track{height:6px;background:var(--g200);border-radius:3px;overflow:hidden;}
+.nb-fill{height:100%;border-radius:3px;}
+/* EMERGENCY */
+.hl-link{display:flex;justify-content:space-between;align-items:center;padding:.55rem .75rem;border-radius:8px;text-decoration:none;color:var(--g800);margin-bottom:.35rem;font-size:.8rem;font-weight:600;}
+
+@media(max-width:1100px){.layout{grid-template-columns:1fr;}}
+@media(max-width:768px){.feat-grid{grid-template-columns:1fr;}.tips-grid{grid-template-columns:1fr;}.hero h1{font-size:1.85rem;}.hero-stats{gap:1.5rem;}.cl-grid{grid-template-columns:1fr;}.sb{display:grid;grid-template-columns:1fr 1fr;}}
+@media(max-width:540px){.sb{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><i class="fas fa-leaf"></i> Doctor-Verified · 500+ Tips · Free Forever</div>
+    <h1>Health Tips & Wellness Guide</h1>
+    <p>Expert-backed daily health tips from Bangladesh's top doctors — practical, proven, and personalised.</p>
+    <div class="hero-search">
+      <input type="text" id="SI" placeholder="Search tips — diabetes, sleep, heart, skin..." oninput="search(this.value)">
+      <button onclick="search(document.getElementById('SI').value)"><i class="fas fa-search"></i> Search</button>
+    </div>
+    <div class="hero-chips">
+      <div class="chip" onclick="qs('blood pressure')">🩺 Blood Pressure</div>
+      <div class="chip" onclick="qs('diabetes')">🍱 Diabetes</div>
+      <div class="chip" onclick="qs('weight')">⚖️ Weight Loss</div>
+      <div class="chip" onclick="qs('sleep')">😴 Better Sleep</div>
+      <div class="chip" onclick="qs('heart')">❤️ Heart Health</div>
+      <div class="chip" onclick="qs('stress')">🧠 Stress Relief</div>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hs-n">500+</div><div class="hs-l">Health Tips</div></div>
+      <div><div class="hs-n">60+</div><div class="hs-l">Expert Doctors</div></div>
+      <div><div class="hs-n">12</div><div class="hs-l">Categories</div></div>
+      <div><div class="hs-n">Daily</div><div class="hs-l">New Content</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="daily-banner">
+  <div class="daily-inner">
+    <i class="fas fa-sun" style="color:#d97706;font-size:1.1rem"></i>
+    <div><strong id="DTL">Today's Tip:</strong> <span id="DT">Loading...</span></div>
+  </div>
+</div>
+
+<div class="cat-nav">
+  <div class="cat-scroll">
+    <button class="cbt on" data-c="all" onclick="setC('all',this)"><i class="fas fa-th"></i> All Tips</button>
+    <button class="cbt" data-c="nutrition" onclick="setC('nutrition',this)"><i class="fas fa-apple-alt"></i> Nutrition</button>
+    <button class="cbt" data-c="exercise" onclick="setC('exercise',this)"><i class="fas fa-dumbbell"></i> Exercise</button>
+    <button class="cbt" data-c="sleep" onclick="setC('sleep',this)"><i class="fas fa-bed"></i> Sleep</button>
+    <button class="cbt" data-c="mental" onclick="setC('mental',this)"><i class="fas fa-brain"></i> Mental Health</button>
+    <button class="cbt" data-c="hygiene" onclick="setC('hygiene',this)"><i class="fas fa-hands-wash"></i> Hygiene</button>
+    <button class="cbt" data-c="heart" onclick="setC('heart',this)"><i class="fas fa-heartbeat"></i> Heart</button>
+    <button class="cbt" data-c="diabetes" onclick="setC('diabetes',this)"><i class="fas fa-tint"></i> Diabetes</button>
+    <button class="cbt" data-c="women" onclick="setC('women',this)"><i class="fas fa-female"></i> Women's</button>
+    <button class="cbt" data-c="child" onclick="setC('child',this)"><i class="fas fa-baby"></i> Child Care</button>
+    <button class="cbt" data-c="skin" onclick="setC('skin',this)"><i class="fas fa-hand-sparkles"></i> Skin</button>
+    <button class="cbt" data-c="eye" onclick="setC('eye',this)"><i class="fas fa-eye"></i> Eye</button>
+  </div>
+</div>
+
+<div class="layout">
+  <div>
+    <!-- QUICK TIPS -->
+    <div class="sh" style="margin-bottom:.875rem"><div class="sh-title">Quick Daily Tips</div></div>
+    <div class="qt-row" id="QTR"></div>
+
+    <!-- FEATURED -->
+    <div class="sh" style="margin-bottom:.875rem"><div class="sh-title">Featured Guides</div></div>
+    <div class="feat-grid">
+      <div class="feat-card" style="background:linear-gradient(135deg,#065f46,#059669)"><div class="fc-badge"><i class="fas fa-star"></i> Most Read</div><div class="fc-icon">🥗</div><h3>Complete Anti-Diabetes Diet for Bangladeshis</h3><p>Eat rice, fish, dal — and still control blood sugar perfectly. Meal plans included.</p></div>
+      <div class="feat-card" style="background:linear-gradient(135deg,#1e3a5f,#2563eb)"><div class="fc-badge"><i class="fas fa-fire"></i> Trending</div><div class="fc-icon">❤️</div><h3>7-Minute Daily Heart Exercise — No Gym Needed</h3><p>A cardiologist-designed 7-minute routine that can save your life. Start today.</p></div>
+      <div class="feat-card" style="background:linear-gradient(135deg,#4c1d95,#7c3aed)"><div class="fc-badge"><i class="fas fa-moon"></i> Sleep</div><div class="fc-icon">😴</div><h3>Why Bangladesh Has a Sleep Crisis — Solutions Inside</h3><p>Why most Bangladeshis are chronically sleep deprived and the 10-step fix.</p></div>
+    </div>
+
+    <!-- WELLNESS CHECKLIST -->
+    <div class="checklist">
+      <div class="cl-title"><i class="fas fa-clipboard-check"></i> Today's Wellness Checklist — <span id="CL_DATE"></span></div>
+      <div class="cl-grid" id="CLG"></div>
+      <div class="cl-prog-bar"><div class="cl-prog-fill" id="CLF" style="width:0%"></div></div>
+      <div class="cl-prog-txt" id="CLT">0 of 8 completed today</div>
+    </div>
+
+    <!-- TIPS -->
+    <div class="sh">
+      <div class="sh-title" id="SL">All Health Tips</div>
+      <span class="sh-meta" id="CM"></span>
+    </div>
+    <div class="tips-grid" id="TG"></div>
+    <div class="lm-wrap" id="LMW"><button class="lm-btn" onclick="loadMore()"><i class="fas fa-plus"></i> Load More Tips</button></div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sb">
+    <!-- BMI -->
+    <div class="sb-c">
+      <div class="sb-t"><i class="fas fa-weight" style="color:var(--s)"></i> BMI Calculator</div>
+      <div class="bmi-row"><label>Weight (kg)</label><input type="number" id="BW" placeholder="68" min="20" max="300"></div>
+      <div class="bmi-row"><label>Height (cm)</label><input type="number" id="BH" placeholder="170" min="100" max="250"></div>
+      <button class="bmi-btn" onclick="calcBMI()"><i class="fas fa-calculator"></i> Calculate BMI</button>
+      <div class="bmi-res" id="BRES">
+        <div class="bmi-val" id="BVAL">--</div>
+        <div class="bmi-cat" id="BCAT">--</div>
+        <div class="bmi-note" id="BNOTE"></div>
+      </div>
+    </div>
+    <!-- WATER -->
+    <div class="sb-c">
+      <div class="sb-t"><i class="fas fa-tint" style="color:#0284c7"></i> Water Tracker</div>
+      <div class="water-grid" id="WG"></div>
+      <div class="water-cnt" id="WC">0 / 8 glasses</div>
+      <div style="font-size:.7rem;color:var(--g500);text-align:center;margin-top:.3rem">Tap each glass when you drink 250ml</div>
+    </div>
+    <!-- STREAK -->
+    <div class="sb-c">
+      <div class="sb-t"><i class="fas fa-fire" style="color:#f59e0b"></i> Health Streak</div>
+      <div class="streak-box"><div style="font-size:1.75rem">🔥</div><div class="streak-n">7</div><div class="streak-l">Day Streak — Keep going!</div></div>
+      <div style="font-size:.73rem;color:var(--g500);text-align:center;margin-top:.65rem">Complete today's checklist to keep your streak</div>
+    </div>
+    <!-- NUTRIENTS -->
+    <div class="sb-c">
+      <div class="sb-t"><i class="fas fa-chart-pie" style="color:var(--ok)"></i> Today's Nutrients</div>
+      <div class="nb"><div class="nb-top"><span class="nb-name">Protein</span><span class="nb-val">42g / 60g</span></div><div class="nb-track"><div class="nb-fill" style="width:70%;background:linear-gradient(90deg,#2563eb,#3b82f6)"></div></div></div>
+      <div class="nb"><div class="nb-top"><span class="nb-name">Carbohydrates</span><span class="nb-val">180g / 250g</span></div><div class="nb-track"><div class="nb-fill" style="width:72%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div></div></div>
+      <div class="nb"><div class="nb-top"><span class="nb-name">Healthy Fats</span><span class="nb-val">28g / 55g</span></div><div class="nb-track"><div class="nb-fill" style="width:51%;background:linear-gradient(90deg,#10b981,#34d399)"></div></div></div>
+      <div class="nb"><div class="nb-top"><span class="nb-name">Fibre</span><span class="nb-val">18g / 30g</span></div><div class="nb-track"><div class="nb-fill" style="width:60%;background:linear-gradient(90deg,#7c3aed,#8b5cf6)"></div></div></div>
+      <div class="nb" style="margin-bottom:0"><div class="nb-top"><span class="nb-name">Vitamin C</span><span class="nb-val">55mg / 90mg</span></div><div class="nb-track"><div class="nb-fill" style="width:61%;background:linear-gradient(90deg,#dc2626,#f87171)"></div></div></div>
+    </div>
+    <!-- EMERGENCY -->
+    <div class="sb-c">
+      <div class="sb-t"><i class="fas fa-phone-alt" style="color:#ef4444"></i> Emergency Hotlines</div>
+      <a href="tel:999" class="hl-link" style="background:#fee2e2"><span><i class="fas fa-ambulance"></i> Emergency</span><strong style="color:#dc2626">999</strong></a>
+      <a href="tel:16000" class="hl-link" style="background:#dbeafe"><span><i class="fas fa-hospital"></i> Health Line</span><strong style="color:#2563eb">16000</strong></a>
+      <a href="tel:16921" class="hl-link" style="background:#f3e8ff"><span><i class="fas fa-brain"></i> Mental Health</span><strong style="color:#7c3aed">16921</strong></a>
+      <a href="tel:109" class="hl-link" style="background:#fce7f3"><span><i class="fas fa-female"></i> Women's Help</span><strong style="color:#be185d">109</strong></a>
+    </div>
+  </aside>
+</div>
+
+<script>
+const TIPS=[
+  {id:1,c:'nutrition',e:'🥗',t:'Eat More Dal & Lentils Daily',d:'Dal provides 30g protein per 2 cups, reduces diabetes risk 22%, and keeps you full. The most powerful cheap superfood in Bangladesh.',auth:'Fatema, Nutritionist',lk:341,bg:'#065f46'},
+  {id:2,c:'exercise',e:'🚶',t:'Walk 30 Minutes Every Morning',d:'A brisk morning walk reduces heart disease risk 35%, improves blood sugar, and boosts mental health. No gym needed — your neighbourhood is enough.',auth:'Dr. Rahman, Cardiology',lk:512,bg:'#1e40af'},
+  {id:3,c:'sleep',e:'😴',t:'Follow the 10-3-2-1 Sleep Rule',d:'10h before: no caffeine. 3h: no heavy food. 2h: no work. 1h: no screens. This simple rule dramatically improves sleep quality.',auth:'Dr. Tanvir, Neurology',lk:278,bg:'#4c1d95'},
+  {id:4,c:'mental',e:'🧘',t:'5-Minute Deep Breathing for Stress',d:'The 4-7-8 technique: inhale 4sec, hold 7sec, exhale 8sec. Repeat 4 times. Activates the parasympathetic system and reduces cortisol instantly.',auth:'Dr. Sultana, Psychiatry',lk:394,bg:'#0e7490'},
+  {id:5,c:'hygiene',e:'🙌',t:'Wash Hands Properly — 20 Seconds',d:'Most GI hospital admissions could be prevented with proper handwashing. Use soap, scrub all surfaces, count to 20. Do it before every meal.',auth:'Dr. Shah, Public Health',lk:189,bg:'#0f766e'},
+  {id:6,c:'heart',e:'❤️',t:'Reduce Salt to Under 5g Per Day',d:'Average Bangladeshi eats 12g salt — double the safe limit. Cutting to 5g reduces stroke risk 23% and heart attack risk 16%.',auth:'Dr. Hasan, Cardiology',lk:445,bg:'#991b1b'},
+  {id:7,c:'diabetes',e:'💉',t:'Check Blood Sugar After Every Meal',d:'Post-meal blood sugar spikes cause more damage than fasting glucose. Testing 2 hours after eating gives a clearer picture of glycemic control.',auth:'Dr. Kabir, Endocrinology',lk:302,bg:'#92400e'},
+  {id:8,c:'women',e:'🤰',t:'Take Folic Acid Before Pregnancy',d:'400mcg folic acid daily, started at least 1 month before conception, reduces neural tube defects by 70%. One of the most important pregnancy health tips.',auth:'Dr. Laila, OB/GYN',lk:521,bg:'#9d174d'},
+  {id:9,c:'child',e:'👶',t:'Never Skip the EPI Vaccination Schedule',d:'Bangladesh\'s EPI saves 2.5 lakh children annually. Missing even one vaccine leaves your child vulnerable to preventable, life-threatening diseases.',auth:'Dr. Nadia, Pediatrics',lk:487,bg:'#78350f'},
+  {id:10,c:'skin',e:'🌞',t:'Apply SPF 30+ Sunscreen Daily',d:'UV rays penetrate glass and cause damage on cloudy days. Sunscreen reduces premature ageing, dark spots, and skin cancer risk significantly.',auth:'Dr. Paul, Dermatology',lk:234,bg:'#c2410c'},
+  {id:11,c:'eye',e:'👁️',t:'Follow 20-20-20 Rule for Screen Time',d:'Every 20 minutes of screen use: look at something 20 feet away for 20 seconds. Prevents digital eye strain — Bangladesh\'s fastest-growing eye problem.',auth:'Dr. Begum, Ophthalmology',lk:318,bg:'#075985'},
+  {id:12,c:'nutrition',e:'🐟',t:'Eat Fish 4 Times Per Week',d:'Bangladesh\'s freshwater fish (Hilsa, Rui, Katla) are rich in omega-3. They reduce inflammation, improve brain function, and protect the heart.',auth:'Fatema, Nutritionist',lk:276,bg:'#065f46'},
+  {id:13,c:'exercise',e:'💪',t:'Strength Training Twice Weekly',d:'After 30, we lose 1% bone density annually. Bodyweight squats and push-ups reverse this and reduce osteoporosis risk 40%.',auth:'Dr. Rashid, Orthopedics',lk:198,bg:'#1e40af'},
+  {id:14,c:'mental',e:'🌿',t:'Spend 20 Minutes in Green Space Daily',d:'20 minutes in a park lowers cortisol 21% and BP 5 points. Even a small balcony with plants provides measurable mental health benefit.',auth:'Dr. Zaman, Psychiatry',lk:267,bg:'#0e7490'},
+  {id:15,c:'heart',e:'🫀',t:'Know Your 4 Critical Numbers',d:'Every adult 35+ should know: blood pressure, total cholesterol, LDL, and fasting blood sugar. These 4 numbers predict 90% of cardiovascular events.',auth:'Dr. Chowdhury, Cardiology',lk:523,bg:'#991b1b'},
+  {id:16,c:'diabetes',e:'🍚',t:'Control Rice — Use a Smaller Plate',d:'White rice has a high glycemic index. A smaller plate automatically reduces carb intake 30%. Fill half with vegetables before adding rice.',auth:'Dr. Farida, Endocrinology',lk:412,bg:'#92400e'},
+  {id:17,c:'sleep',e:'🌙',t:'Sleep in a Dark, Cool Room',d:'18-20°C room temperature and complete darkness increase REM sleep 25%. Even a tiny light from a charger disrupts melatonin production.',auth:'Dr. Tanvir, Neurology',lk:287,bg:'#4c1d95'},
+  {id:18,c:'hygiene',e:'🦷',t:'Brush Teeth — Wait 30 Min After Eating',d:'Brushing immediately after acidic food erodes enamel. Wait 30 minutes. Use fluoride toothpaste and brush for 2 full minutes.',auth:'Dr. Islam, Dentistry',lk:156,bg:'#0f766e'},
+  {id:19,c:'women',e:'♀️',t:'Monthly Breast Self-Examination',d:'Regular monthly self-exams, from age 20, detect 40% of breast cancer cases that would otherwise be missed until a harder-to-treat stage.',auth:'Dr. Rina, Gynecology',lk:398,bg:'#9d174d'},
+  {id:20,c:'child',e:'📱',t:'No Screens for Under 2-Year-Olds',d:'Zero screen time for children under 24 months (WHO). Screens at this age delay language development, reduce eye contact, and disrupt sleep.',auth:'Dr. Priya, Child Dev.',lk:445,bg:'#78350f'},
+  {id:21,c:'nutrition',e:'🥜',t:'A Handful of Nuts Daily',d:'Just 28g of walnuts or peanuts daily reduces LDL cholesterol 5%, provides healthy fats, and cuts cardiovascular disease risk 21%.',auth:'Fatema, Nutritionist',lk:223,bg:'#065f46'},
+  {id:22,c:'exercise',e:'🧗',t:'Take the Stairs — Every Time',d:'Climbing 8 floors daily burns 100 calories, strengthens leg muscles, and has the same cardiovascular benefit as 10 minutes of brisk walking.',auth:'Dr. Rahman, Cardiology',lk:178,bg:'#1e40af'},
+  {id:23,c:'mental',e:'📓',t:'Write 3 Gratitude Points Every Night',d:'Gratitude journaling 10 min at bedtime reduces depression symptoms 27%, improves sleep quality, and rewires the brain towards positive thinking.',auth:'Dr. Sultana, Psychiatry',lk:341,bg:'#0e7490'},
+  {id:24,c:'women',e:'🩺',t:'PCOS: Get Diagnosed Early',d:'An estimated 1 in 5 Bangladeshi women have PCOS. Early diagnosis with lifestyle changes prevents diabetes, heart disease, and infertility complications.',auth:'Dr. Rahman, Gynecology',lk:456,bg:'#9d174d'},
+];
+
+const DAILY=[
+  'Start your morning with warm water + lemon. It kickstarts digestion and boosts immunity instantly.',
+  'Eat your largest meal at lunch. Your metabolism is most active midday.',
+  'Stand and walk 5 minutes every hour if you have a desk job. It reverses the harm of prolonged sitting.',
+  'Add one vegetable to every meal today. Small daily changes make enormous long-term differences.',
+  'Sleep before midnight. One hour before 12 AM is worth two hours after midnight.',
+  'Call or message a friend. Social connection is as important to health as daily exercise.',
+  'Take 10 deep breaths before any stressful conversation. It lowers cortisol level immediately.',
+];
+
+const QT=[
+  {e:'💧',t:'Hydration Tip',d:'Drink 1 glass on waking. Add a pinch of salt and lemon for electrolytes.'},
+  {e:'🌅',t:'Morning Sun',d:'10 minutes of morning sunlight sets your circadian rhythm and boosts Vitamin D.'},
+  {e:'🥕',t:'Eat the Rainbow',d:'Try 5 different coloured vegetables per day for full micronutrient coverage.'},
+  {e:'📵',t:'Phone-Free Dinner',d:'No phones during meals. Mindful eating reduces overeating by 30%.'},
+  {e:'🚫',t:'Avoid Reheating Rice',d:'Reheating rice creates bacteria risk. Eat fresh or store properly below 5°C.'},
+  {e:'🧴',t:'Oil Pulling',d:'Swish coconut oil for 10 min each morning to naturally kill harmful mouth bacteria.'},
+  {e:'🦶',t:'Evening Walk',d:'A 15-minute post-dinner walk lowers blood sugar and improves digestion.'},
+  {e:'🎵',t:'Music Therapy',d:'Listening to calm music for 30 min daily reduces anxiety and lowers blood pressure.'},
+];
+
+const CL=[
+  {e:'💧',t:'Drank 8 glasses of water'},
+  {e:'🚶',t:'Walked 30 minutes'},
+  {e:'🥗',t:'Ate vegetables with every meal'},
+  {e:'😴',t:'Slept 7–8 hours last night'},
+  {e:'🧘',t:'5 minutes breathing/meditation'},
+  {e:'💊',t:'Took all medications on time'},
+  {e:'🚫',t:'Avoided junk food & sugary drinks'},
+  {e:'🙏',t:'Wrote 3 gratitude points'},
+];
+
+const CAT_NAMES={all:'All Health Tips',nutrition:'Nutrition',exercise:'Exercise',sleep:'Sleep',mental:'Mental Health',hygiene:'Hygiene',heart:'Heart Health',diabetes:'Diabetes',women:"Women's Health",child:'Child Care',skin:'Skin Care',eye:'Eye Health'};
+const CAT_COLORS={nutrition:'#065f46',exercise:'#1e40af',sleep:'#4c1d95',mental:'#0e7490',hygiene:'#0f766e',heart:'#991b1b',diabetes:'#92400e',women:'#9d174d',child:'#78350f',skin:'#c2410c',eye:'#075985'};
+
+let activeC='all', shown=16, filtered=[...TIPS], done=new Set(), wc=0;
+
+function init(){
+  // Daily tip
+  document.getElementById('DTL').textContent=new Date().toLocaleDateString('en-BD',{weekday:'long'})+' Tip:';
+  document.getElementById('DT').textContent=DAILY[new Date().getDay()%DAILY.length];
+  document.getElementById('CL_DATE').textContent=new Date().toLocaleDateString('en-BD',{month:'long',day:'numeric',year:'numeric'});
+  renderQT(); renderCL(); renderWater(); render();
+}
+
+function renderQT(){
+  document.getElementById('QTR').innerHTML=QT.map(q=>`<div class="qt-card"><div class="qt-icon">${q.e}</div><div class="qt-title">${q.t}</div><div class="qt-desc">${q.d}</div></div>`).join('');
+}
+
+function renderCL(){
+  document.getElementById('CLG').innerHTML=CL.map((i,idx)=>`
+  <div class="cl-item ${done.has(idx)?'done':''}" onclick="toggleCL(${idx})">
+    <div class="cl-check">${done.has(idx)?'<i class="fas fa-check" style="font-size:.6rem"></i>':''}</div>
+    ${i.e} ${i.t}
+  </div>`).join('');
+  const pct=Math.round(done.size/CL.length*100);
+  document.getElementById('CLF').style.width=pct+'%';
+  document.getElementById('CLT').textContent=`${done.size} of ${CL.length} completed today`;
+}
+
+function toggleCL(i){done.has(i)?done.delete(i):done.add(i);renderCL();}
+
+function renderWater(){
+  document.getElementById('WG').innerHTML=Array.from({length:8},(_,i)=>`<div class="wg ${i<wc?'filled':''}" onclick="toggleW(${i})">💧</div>`).join('');
+  document.getElementById('WC').textContent=`${wc} / 8 glasses`;
+}
+
+function toggleW(i){wc=(wc===i+1)?i:i+1;renderWater();}
+
+function render(){
+  const vis=filtered.slice(0,shown);
+  document.getElementById('CM').textContent=`Showing ${Math.min(shown,filtered.length)} of ${filtered.length}`;
+  document.getElementById('SL').textContent=CAT_NAMES[activeC]||'Tips';
+  document.getElementById('LMW').style.display=filtered.length>shown?'block':'none';
+  document.getElementById('TG').innerHTML=vis.map(t=>`
+  <div class="tip-card" data-c="${t.c}">
+    <div class="tc-img ${t.c}">
+      <span class="tc-badge" style="background:${CAT_COLORS[t.c]||'#065f46'}">${CAT_NAMES[t.c]}</span>
+      <span>${t.e}</span>
+    </div>
+    <div class="tc-body">
+      <div class="tc-cat" style="color:${CAT_COLORS[t.c]||'#065f46'}">${CAT_NAMES[t.c]}</div>
+      <div class="tc-title">${t.t}</div>
+      <div class="tc-desc">${t.d}</div>
+      <div class="tc-foot">
+        <div class="tc-author"><div class="tc-ava">${t.auth[0]}</div>${t.auth}</div>
+        <button class="lk-btn" onclick="like(this,${t.id})"><i class="far fa-heart"></i> <span>${t.lk}</span></button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+function setC(c,btn){
+  activeC=c; shown=16;
+  document.querySelectorAll('.cbt').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  filtered=c==='all'?[...TIPS]:TIPS.filter(t=>t.c===c);
+  render();
+}
+
+function search(q){
+  shown=16; q=q.toLowerCase().trim();
+  filtered=TIPS.filter(t=>(activeC==='all'||t.c===activeC)&&(!q||t.t.toLowerCase().includes(q)||t.d.toLowerCase().includes(q)||CAT_NAMES[t.c].toLowerCase().includes(q)));
+  render();
+}
+
+function qs(q){document.getElementById('SI').value=q;search(q);window.scrollTo({top:300,behavior:'smooth'});}
+function loadMore(){shown+=8;render();}
+function like(btn,id){
+  if(btn.dataset.l)return; btn.dataset.l=1;
+  const t=TIPS.find(x=>x.id===id); t.lk++;
+  btn.querySelector('i').className='fas fa-heart'; btn.querySelector('i').style.color='#ef4444';
+  btn.querySelector('span').textContent=t.lk;
+}
+
+function calcBMI(){
+  const w=parseFloat(document.getElementById('BW').value);
+  const h=parseFloat(document.getElementById('BH').value)/100;
+  if(!w||!h||h<=0){alert('Please enter valid weight and height.');return;}
+  const bmi=(w/(h*h)).toFixed(1);
+  const cats=[[18.5,'Underweight','#0284c7','Eat more protein and healthy fats. See a nutritionist.'],[24.9,'Normal Weight','#059669','Great! Maintain your current lifestyle and stay active.'],[29.9,'Overweight','#d97706','Reduce refined carbs and increase daily movement.'],[Infinity,'Obese','#dc2626','Consult a doctor for a personalised weight management plan.']];
+  const [,label,color,note]=cats.find(([mx])=>bmi<=mx);
+  document.getElementById('BVAL').textContent=bmi; document.getElementById('BVAL').style.color=color;
+  document.getElementById('BCAT').textContent=label; document.getElementById('BCAT').style.color=color;
+  document.getElementById('BNOTE').textContent=note;
+  document.getElementById('BRES').style.display='block';
+}
+
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="MedFind Bangladesh Patient Portal - Manage appointments, medical history, and health records.">
+<title>My Profile — MedFind</title>
+<link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="../../assets/js/components.js" defer></script>
+<style>
+:root{--p:#2563eb;--s:#0d9488;--ok:#10b981;--w:#fff;--g50:#f9fafb;--g100:#f3f4f6;--g200:#e5e7eb;--g500:#6b7280;--g700:#374151;--g800:#1f2937;--g900:#111827;}
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Inter',sans-serif;background:#f1f5f9;color:var(--g800);}
+.page{max-width:1100px;margin:0 auto;padding:2rem;}
+.profile-header{background:linear-gradient(135deg,#1e3a5f,var(--p),var(--s));border-radius:20px;padding:2rem;color:#fff;display:flex;align-items:center;gap:2rem;margin-bottom:1.5rem;}
+.ph-avatar{width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;border:3px solid rgba(255,255,255,.4);flex-shrink:0;}
+.ph-name{font-size:1.5rem;font-weight:800;margin-bottom:.25rem;}
+.ph-id{font-size:.85rem;opacity:.8;margin-bottom:.75rem;}
+.ph-tags{display:flex;gap:.5rem;flex-wrap:wrap;}
+.ph-tag{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);padding:.25rem .75rem;border-radius:100px;font-size:.75rem;}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+.card{background:var(--w);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.05);overflow:hidden;}
+.ch{padding:1rem 1.5rem;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;}
+.ct{font-size:.95rem;font-weight:700;color:var(--g900);display:flex;align-items:center;gap:.5rem;}
+.edit-btn{background:var(--p);color:#fff;border:none;padding:.4rem .9rem;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;}
+.cb{padding:1.25rem;}
+.field{display:flex;flex-direction:column;gap:.2rem;margin-bottom:.875rem;}
+.field:last-child{margin-bottom:0;}
+.fl{font-size:.73rem;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.4px;}
+.fv{font-size:.875rem;color:var(--g800);}
+.allergy-tag{display:inline-flex;align-items:center;gap:.35rem;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;padding:.25rem .65rem;border-radius:8px;font-size:.78rem;font-weight:600;margin:.15rem;}
+.cond-tag{display:inline-flex;align-items:center;gap:.35rem;background:#fef3c7;border:1px solid #fde68a;color:#92400e;padding:.25rem .65rem;border-radius:8px;font-size:.78rem;font-weight:600;margin:.15rem;}
+.stat-row{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:.75rem;}
+.stat-mini{background:var(--g50);border-radius:10px;padding:.75rem;text-align:center;}
+.sm-v{font-size:1.3rem;font-weight:800;color:var(--g900);}
+.sm-l{font-size:.72rem;color:var(--g500);}
+.quick-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem;}
+.qa{display:flex;align-items:center;gap:.65rem;padding:.75rem;border-radius:11px;border:1.5px solid var(--g200);text-decoration:none;color:var(--g700);transition:.2s;font-size:.83rem;font-weight:600;}
+.qa:hover{border-color:var(--p);color:var(--p);background:#f8fbff;}
+.qa i{font-size:1rem;}
+@media(max-width:768px){.profile-header{flex-direction:column;text-align:center;}.profile-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="profile-header">
+    <div class="ph-avatar" id="PAV">RA</div>
+    <div>
+      <div class="ph-name" id="PNAME">Rafiqul Alam</div>
+      <div class="ph-id" id="PID">Patient ID: MF-2026-001042 · B+ Blood Group</div>
+      <div class="ph-tags">
+        <span class="ph-tag"><i class="fas fa-map-marker-alt"></i> Dhaka, Bangladesh</span>
+        <span class="ph-tag"><i class="fas fa-phone"></i> +880 1XXX-XXXXXX</span>
+        <span class="ph-tag"><i class="fas fa-user-shield"></i> Emergency: Fatema Alam (Wife)</span>
+      </div>
+    </div>
+    <div style="margin-left:auto">
+      <button class="edit-btn" onclick="alert('Edit profile form — connect to PUT /api/v1/accounts/profile/')"><i class="fas fa-pen"></i> Edit Profile</button>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
+    <!-- PERSONAL INFO -->
+    <div class="card">
+      <div class="ch"><div class="ct"><i class="fas fa-user" style="color:var(--p)"></i> Personal Information</div></div>
+      <div class="cb">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem">
+          <div class="field"><div class="fl">Full Name</div><div class="fv" id="FN">Rafiqul Alam</div></div>
+          <div class="field"><div class="fl">Date of Birth</div><div class="fv">15 March 1983</div></div>
+          <div class="field"><div class="fl">Age</div><div class="fv">43 years</div></div>
+          <div class="field"><div class="fl">Gender</div><div class="fv">Male</div></div>
+          <div class="field"><div class="fl">Blood Group</div><div class="fv" style="font-weight:700;color:#dc2626">B+</div></div>
+          <div class="field"><div class="fl">Division</div><div class="fv">Dhaka</div></div>
+          <div class="field"><div class="fl">Phone</div><div class="fv" id="PH">+880 1XXX-XXXXXX</div></div>
+          <div class="field"><div class="fl">Email</div><div class="fv" id="EM">patient@email.com</div></div>
+          <div class="field"><div class="fl">Height</div><div class="fv">170 cm</div></div>
+          <div class="field"><div class="fl">Weight</div><div class="fv">68 kg</div></div>
+        </div>
+        <div class="field" style="margin-top:.875rem"><div class="fl">Insurance Provider</div><div class="fv">Pragati Life Insurance</div></div>
+        <div class="field"><div class="fl">Insurance Number</div><div class="fv">PLI-2024-887634</div></div>
+      </div>
+    </div>
+
+    <!-- MEDICAL INFO -->
+    <div class="card">
+      <div class="ch"><div class="ct"><i class="fas fa-notes-medical" style="color:var(--s)"></i> Medical Information</div></div>
+      <div class="cb">
+        <div class="stat-row">
+          <div class="stat-mini"><div class="sm-v">120/80</div><div class="sm-l">Blood Pressure</div></div>
+          <div class="stat-mini"><div class="sm-v">72 bpm</div><div class="sm-l">Heart Rate</div></div>
+          <div class="stat-mini"><div class="sm-v">108</div><div class="sm-l">Blood Sugar (mg/dL)</div></div>
+          <div class="stat-mini"><div class="sm-v">24.1</div><div class="sm-l">BMI</div></div>
+        </div>
+        <div class="field"><div class="fl">Known Allergies</div>
+          <div><span class="allergy-tag"><i class="fas fa-exclamation-triangle"></i> Penicillin — Rash</span><span class="allergy-tag"><i class="fas fa-exclamation-triangle"></i> Shellfish — Anaphylaxis</span><span class="allergy-tag"><i class="fas fa-exclamation-triangle"></i> Sulfa Drugs</span></div>
+        </div>
+        <div class="field"><div class="fl">Chronic Conditions</div>
+          <div><span class="cond-tag">⚠️ Type 2 Diabetes</span><span class="cond-tag">⚠️ Hypertension</span><span class="cond-tag">⚠️ Hyperlipidemia</span></div>
+        </div>
+        <div class="field"><div class="fl">Emergency Contact</div><div class="fv">Fatema Alam (Wife) — +880 1XXX-XXXXXX</div></div>
+        <div class="field"><div class="fl">Primary Hospital</div><div class="fv">BSMMU, Shahbagh, Dhaka</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="card">
+    <div class="ch"><div class="ct"><i class="fas fa-bolt" style="color:#f59e0b"></i> Quick Actions</div></div>
+    <div class="cb">
+      <div class="quick-actions">
+        <a href="dashboard.html" class="qa"><i class="fas fa-th-large" style="color:var(--p)"></i> My Dashboard</a>
+        <a href="medical-history.html" class="qa"><i class="fas fa-notes-medical" style="color:var(--s)"></i> Medical History</a>
+        <a href="appointments.html" class="qa"><i class="fas fa-calendar-check" style="color:var(--ok)"></i> My Appointments</a>
+        <a href="../doctors/search.html" class="qa"><i class="fas fa-user-md" style="color:#7c3aed"></i> Find a Doctor</a>
+        <a href="../lab/tests.html" class="qa"><i class="fas fa-flask" style="color:#7c3aed"></i> Book Lab Test</a>
+        <a href="../billing/pharmacy.html" class="qa"><i class="fas fa-pills" style="color:#f59e0b"></i> Online Pharmacy</a>
+        <a href="viewmaps.html" class="qa"><i class="fas fa-map-marker-alt" style="color:#ef4444"></i> Find Hospitals</a>
+        <a href="../../telemedicine.html" class="qa"><i class="fas fa-video" style="color:#0891b2"></i> Video Consult</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const API_BASE=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://127.0.0.1:8000/api/v1':'/api/v1';
+// Load profile from API
+async function loadProfile(){
+  try{
+    const token=localStorage.getItem('mf_token');
+    if(!token)return;
+    const res=await fetch(API_BASE+'/accounts/profile/',{headers:{'Authorization':'Bearer '+token}});
+    const d=await res.json();
+    if(d.success){
+      document.getElementById('PNAME').textContent=d.data.full_name||'';
+      document.getElementById('FN').textContent=d.data.full_name||'';
+      document.getElementById('EM').textContent=d.data.email||'';
+      document.getElementById('PH').textContent=d.data.phone||'N/A';
+      document.getElementById('PAV').textContent=(d.data.full_name||'?').split(' ').map(w=>w[0]).join('').slice(0,2);
+    }
+  }catch(e){console.warn('API offline');}
+}
+loadProfile();
+</script>
+</body>
+</html>

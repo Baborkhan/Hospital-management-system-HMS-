@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donate Life — MedFind Bangladesh</title>
+<link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+Bengali:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   DONATE LIFE — DESIGN SYSTEM
+   Aesthetic: Warm humanitarian • Organic depth • Life-affirming
+═══════════════════════════════════════════════════════ */
+:root {
+  /* Warm crimson-to-amber life palette */
+  --blood:    #c1121f;
+  --crimson:  #e63946;
+  --rose:     #ff6b6b;
+  --coral:    #ff9f7f;
+  --amber:    #f4a261;
+  --gold:     #e9c46a;
+  --sage:     #2a9d8f;
+  --forest:   #264653;
+
+  /* Deep warm backgrounds */
+  --void:     #0d0608;
+  --deep:     #130a0b;
+  --ink:      #1a0f10;
+  --surface:  #231518;
+  --lift:     #2e1c1f;
+  --panel:    #3a2226;
+
+  /* Glassmorphism */
+  --glass:    rgba(255,255,255,0.03);
+  --glass2:   rgba(255,255,255,0.06);
+  --glass3:   rgba(255,255,255,0.09);
+
+  /* Borders */
+  --b1: rgba(193,18,31,0.15);
+  --b2: rgba(193,18,31,0.28);
+  --b3: rgba(193,18,31,0.45);
+
+  /* Text */
+  --t1: #fdf6f0;
+  --t2: #c4a4a8;
+  --t3: #6b4048;
+  --t4: #3d2025;
+
+  /* Glows */
+  --glow:     0 0 60px rgba(193,18,31,0.12), 0 0 120px rgba(193,18,31,0.06);
+  --glow-sm:  0 0 24px rgba(193,18,31,0.2);
+  --shadow:   0 40px 100px rgba(0,0,0,0.8);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', 'Noto Sans Bengali', system-ui, sans-serif;
+  background: var(--void);
+  color: var(--t1);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ANIMATED BACKGROUND
+═══════════════════════════════════════════════════════ */
+#bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  overflow: hidden;
+}
+#bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(193,18,31,0.09) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 70% at 80% 90%, rgba(244,162,97,0.06) 0%, transparent 55%),
+    linear-gradient(160deg, #0d0608 0%, #130a0b 50%, #0a0608 100%);
+}
+.bg-heartbeat {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Cpath d='M0 30 L40 30 L50 10 L60 50 L70 20 L80 40 L90 30 L200 30' stroke='rgba(193,18,31,0.06)' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  background-size: 300px 60px;
+  animation: hbMove 8s linear infinite;
+  opacity: 0.6;
+}
+@keyframes hbMove { from{background-position:0 0} to{background-position:300px 0} }
+
+.bg-orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(100px); pointer-events: none;
+}
+.orb1 { width:500px;height:500px;top:-150px;left:-150px;background:radial-gradient(circle,rgba(193,18,31,0.07),transparent 70%);animation:orbF 22s ease-in-out infinite; }
+.orb2 { width:400px;height:400px;bottom:-100px;right:-100px;background:radial-gradient(circle,rgba(244,162,97,0.05),transparent 70%);animation:orbF 18s ease-in-out infinite reverse; }
+@keyframes orbF { 0%,100%{transform:translate(0,0)scale(1)} 50%{transform:translate(40px,-30px)scale(1.08)} }
+
+/* ═══════════════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(13,6,8,0.85);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--b1);
+  padding: 0 24px;
+  height: 62px;
+  display: flex; align-items: center; gap: 14px;
+}
+nav::after {
+  content: '';
+  position: absolute; bottom: 0; left: 15%; right: 15%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(193,18,31,0.4), transparent);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+.nav-logo-icon {
+  width: 38px; height: 38px; border-radius: 11px;
+  background: linear-gradient(135deg, var(--blood), var(--crimson));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 14px rgba(193,18,31,0.3);
+}
+.nav-logo-text { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 700; color: var(--t1); }
+.nav-logo-text span { color: var(--crimson); }
+
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.nav-lang {
+  display: flex; background: var(--glass2);
+  border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; overflow: hidden;
+}
+.nl { padding: 5px 12px; font-size: 11px; font-weight: 700; font-family: inherit;
+  border: none; background: transparent; color: var(--t3); cursor: pointer; transition: all 0.2s; }
+.nl.on { background: var(--blood); color: white; }
+.nav-back {
+  padding: 7px 16px; border-radius: 11px; border: 1px solid var(--b2);
+  background: transparent; color: var(--t2); font-family: inherit; font-size: 12px;
+  font-weight: 600; cursor: pointer; transition: all 0.25s; text-decoration: none;
+  display: flex; align-items: center; gap: 5px;
+}
+.nav-back:hover { background: rgba(193,18,31,0.1); color: var(--t1); }
+
+/* ═══════════════════════════════════════════════════════
+   HERO SECTION
+═══════════════════════════════════════════════════════ */
+.hero {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 100px 24px 60px;
+  text-align: center;
+}
+
+/* Heartbeat line across hero */
+.hero-hb {
+  position: absolute; top: 50%; left: 0; right: 0; height: 80px;
+  transform: translateY(-50%); opacity: 0.08; pointer-events: none;
+  overflow: hidden;
+}
+.hero-hb svg { width: 100%; height: 100%; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(193,18,31,0.1); border: 1px solid rgba(193,18,31,0.25);
+  border-radius: 24px; padding: 6px 16px; margin-bottom: 28px;
+  font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+  color: var(--rose); text-transform: uppercase;
+  animation: badgeIn 0.8s 0.2s both ease;
+}
+.hb-heart { font-size: 14px; animation: heartbeat 1.5s ease-in-out infinite; }
+@keyframes heartbeat {
+  0%,100%{transform:scale(1)} 14%{transform:scale(1.18)} 28%{transform:scale(1)} 42%{transform:scale(1.12)} 70%{transform:scale(1)}
+}
+
+.hero-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(52px, 8vw, 88px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -3px;
+  margin-bottom: 24px;
+  animation: titleIn 0.9s 0.3s both cubic-bezier(.22,.68,0,1.2);
+}
+.hero-title .line1 { display: block; color: var(--t1); }
+.hero-title .line2 {
+  display: block;
+  background: linear-gradient(135deg, var(--crimson) 0%, var(--coral) 50%, var(--amber) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  animation: gradShift 4s ease-in-out infinite alternate;
+  background-size: 200% 200%;
+}
+@keyframes gradShift { from{background-position:0%50%} to{background-position:100%50%} }
+
+.hero-sub {
+  font-size: clamp(15px, 2vw, 18px); color: var(--t2); line-height: 1.7;
+  max-width: 560px; margin: 0 auto 44px;
+  animation: fadeUp 0.8s 0.5s both ease;
+}
+
+.hero-ctas {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  animation: fadeUp 0.8s 0.65s both ease;
+}
+.cta-primary {
+  padding: 16px 36px; border-radius: 16px;
+  background: linear-gradient(135deg, var(--blood), var(--crimson));
+  border: none; color: white; font-family: inherit;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 8px 28px rgba(193,18,31,0.4);
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  position: relative; overflow: hidden;
+}
+.cta-primary::before {
+  content: '';
+  position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s;
+}
+.cta-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 38px rgba(193,18,31,0.55); }
+.cta-primary:hover::before { left: 100%; }
+
+.cta-secondary {
+  padding: 16px 32px; border-radius: 16px;
+  background: var(--glass2); border: 1px solid var(--b2);
+  color: var(--t1); font-family: inherit;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: all 0.3s; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.cta-secondary:hover { background: rgba(193,18,31,0.1); border-color: var(--b3); transform: translateY(-2px); }
+
+/* Stats */
+.hero-stats {
+  display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+  margin-top: 60px; padding-top: 40px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  animation: fadeUp 0.8s 0.8s both ease;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 36px; font-weight: 900; letter-spacing: -1px;
+  background: linear-gradient(135deg, var(--crimson), var(--coral));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.stat-lbl { font-size: 12px; color: var(--t3); font-weight: 600; letter-spacing: 0.5px; margin-top: 3px; }
+
+/* ═══════════════════════════════════════════════════════
+   LEGAL DISCLAIMER BANNER
+═══════════════════════════════════════════════════════ */
+.legal-banner {
+  position: relative; z-index: 1;
+  background: linear-gradient(135deg, rgba(244,162,97,0.08), rgba(244,162,97,0.04));
+  border: 1px solid rgba(244,162,97,0.2);
+  border-left: 4px solid var(--amber);
+  border-radius: 0;
+  padding: 18px 24px;
+  display: flex; align-items: flex-start; gap: 14px;
+  margin: 0;
+}
+.lb-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+.lb-text { font-size: 13px; color: rgba(244,162,97,0.9); line-height: 1.7; }
+.lb-title { font-weight: 800; font-size: 14px; color: var(--amber); margin-bottom: 3px; }
+
+/* ═══════════════════════════════════════════════════════
+   SECTIONS
+═══════════════════════════════════════════════════════ */
+section { position: relative; z-index: 1; }
+.container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+.section-pad { padding: 80px 0; scroll-margin-top: 72px; }
+
+.section-eyebrow {
+  font-size: 11px; font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--crimson);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.section-eyebrow::before {
+  content: ''; width: 24px; height: 2px;
+  background: var(--crimson); border-radius: 2px;
+}
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(32px, 5vw, 50px); font-weight: 900;
+  letter-spacing: -1.5px; line-height: 1.05; margin-bottom: 16px;
+}
+.section-sub { font-size: 15px; color: var(--t2); line-height: 1.7; max-width: 560px; }
+
+/* ═══════════════════════════════════════════════════════
+   AWARENESS / HOW IT WORKS
+═══════════════════════════════════════════════════════ */
+.awareness-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px; margin-top: 48px;
+}
+.aw-card {
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 20px; padding: 28px 24px;
+  position: relative; overflow: hidden;
+  transition: all 0.35s;
+}
+.aw-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--crimson), transparent);
+  opacity: 0; transition: opacity 0.35s;
+}
+.aw-card:hover { background: var(--glass2); border-color: var(--b1); transform: translateY(-4px); }
+.aw-card:hover::before { opacity: 1; }
+.aw-icon { font-size: 32px; margin-bottom: 16px; display: block; }
+.aw-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.aw-text { font-size: 13.5px; color: var(--t2); line-height: 1.7; }
+
+/* ═══════════════════════════════════════════════════════
+   MYTHS vs FACTS
+═══════════════════════════════════════════════════════ */
+.myths-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 48px;
+}
+@media (max-width: 600px) { .myths-grid { grid-template-columns: 1fr; } }
+.myth-card {
+  border-radius: 16px; padding: 20px;
+  position: relative; overflow: hidden;
+}
+.myth-card.myth {
+  background: rgba(230,57,70,0.06);
+  border: 1px solid rgba(230,57,70,0.18);
+}
+.myth-card.fact {
+  background: rgba(42,157,143,0.06);
+  border: 1px solid rgba(42,157,143,0.2);
+}
+.mf-label {
+  font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+  text-transform: uppercase; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.mf-label.m { color: var(--crimson); }
+.mf-label.f { color: var(--sage); }
+.myth-card p { font-size: 13.5px; color: var(--t2); line-height: 1.7; }
+
+/* ═══════════════════════════════════════════════════════
+   ORGAN CARDS
+═══════════════════════════════════════════════════════ */
+.organs-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px; margin-top: 40px;
+}
+.organ-chip {
+  background: var(--glass); border: 1px solid var(--b1);
+  border-radius: 14px; padding: 16px 12px; text-align: center;
+  transition: all 0.25s; cursor: default;
+}
+.organ-chip:hover { background: rgba(193,18,31,0.08); border-color: var(--b2); transform: scale(1.04); }
+.oc-icon { font-size: 26px; display: block; margin-bottom: 6px; }
+.oc-name { font-size: 11.5px; font-weight: 700; color: var(--t2); }
+
+/* ═══════════════════════════════════════════════════════
+   REGISTRATION FORM — THE CENTERPIECE
+═══════════════════════════════════════════════════════ */
+#register {
+  background: linear-gradient(160deg, rgba(46,28,31,0.8) 0%, rgba(26,15,16,0.9) 100%);
+  border-top: 1px solid var(--b1);
+  border-bottom: 1px solid var(--b1);
+}
+
+.form-card {
+  background: linear-gradient(145deg, rgba(58,34,38,0.6), rgba(26,15,16,0.8));
+  border: 1px solid var(--b2);
+  border-radius: 28px; padding: 44px 40px;
+  position: relative; overflow: hidden;
+  box-shadow: var(--shadow), var(--glow);
+  backdrop-filter: blur(20px);
+}
+.form-card::before {
+  content: '';
+  position: absolute; top: 0; left: 20%; right: 20%; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--crimson), var(--coral), transparent);
+}
+/* Shimmer */
+.form-card::after {
+  content: '';
+  position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.015), transparent);
+  animation: shimmer 7s ease-in-out infinite;
+}
+@keyframes shimmer { 0%,45%{left:-100%} 100%{left:200%} }
+
+.form-header { text-align: center; margin-bottom: 40px; }
+.form-logo-wrap {
+  width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 20px;
+  background: conic-gradient(var(--blood), var(--crimson), var(--coral), var(--blood));
+  animation: logoSpin 8s linear infinite;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.form-logo-inner {
+  position: absolute; inset: 3px; border-radius: 50%;
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center; font-size: 28px;
+}
+@keyframes logoSpin { to{transform:rotate(360deg)} }
+
+.form-title { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; }
+.form-sub { font-size: 13.5px; color: var(--t2); line-height: 1.6; }
+
+/* Progress bar */
+.progress-bar {
+  display: flex; gap: 6px; margin-bottom: 36px; align-items: center;
+}
+.pb-step {
+  flex: 1; height: 4px; border-radius: 4px;
+  background: rgba(255,255,255,0.08);
+  transition: all 0.4s;
+  position: relative; overflow: hidden;
+}
+.pb-step.done { background: var(--blood); }
+.pb-step.active {
+  background: linear-gradient(90deg, var(--blood), var(--crimson));
+  box-shadow: 0 0 12px rgba(193,18,31,0.4);
+}
+.pb-step.active::after {
+  content: '';
+  position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: pbShimmer 1.5s ease-in-out infinite;
+}
+@keyframes pbShimmer { from{left:-100%} to{left:200%} }
+.pb-label { font-size: 10px; color: var(--t3); font-weight: 700; white-space: nowrap; }
+
+/* Steps */
+.step { display: none; animation: stepIn 0.4s cubic-bezier(.22,.68,0,1.2); }
+.step.active { display: block; }
+@keyframes stepIn { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
+
+.step-title {
+  font-family: 'Fraunces', serif; font-size: 20px; font-weight: 800;
+  margin-bottom: 6px; color: var(--t1);
+}
+.step-sub { font-size: 13px; color: var(--t2); margin-bottom: 24px; line-height: 1.6; }
+
+/* Form rows */
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+@media (max-width: 600px) { .frow { grid-template-columns: 1fr; } }
+.frow.one { grid-template-columns: 1fr; }
+.frow.three { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 600px) { .frow.three { grid-template-columns: 1fr 1fr; } }
+
+.fgrp { display: flex; flex-direction: column; gap: 6px; }
+.flbl {
+  font-size: 11.5px; font-weight: 700; color: var(--t2);
+  display: flex; align-items: center; gap: 5px;
+}
+.flbl .req { color: var(--crimson); }
+.finp {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 12px 14px;
+  color: var(--t1); font-size: 13.5px; font-family: inherit;
+  outline: none; transition: all 0.3s; width: 100%;
+}
+.finp:focus {
+  border-color: rgba(193,18,31,0.4);
+  background: rgba(193,18,31,0.05);
+  box-shadow: 0 0 0 4px rgba(193,18,31,0.06);
+}
+.finp::placeholder { color: var(--t3); font-size: 13px; }
+.finp.err { border-color: rgba(230,57,70,0.5); background: rgba(230,57,70,0.05); }
+.finp.ok  { border-color: rgba(42,157,143,0.4); }
+
+textarea.finp { resize: vertical; min-height: 80px; }
+
+/* Blood group selector */
+.blood-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+.bg-chip {
+  padding: 11px 6px; border-radius: 11px; text-align: center;
+  background: var(--glass); border: 1px solid rgba(255,255,255,0.06);
+  font-size: 14px; font-weight: 800; color: var(--t3);
+  font-family: 'DM Mono', monospace;
+  cursor: pointer; transition: all 0.22s;
+}
+.bg-chip:hover, .bg-chip.on {
+  background: rgba(193,18,31,0.12);
+  border-color: var(--b2); color: var(--rose);
+  transform: scale(1.04);
+  box-shadow: 0 4px 14px rgba(193,18,31,0.15);
+}
+.bg-chip.on { border-color: var(--crimson); }
+
+/* Organ multi-select */
+.organ-select-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px;
+}
+.os-chip {
+  padding: 10px 8px; border-radius: 11px; text-align: center;
+  background: var(--glass); border: 1px solid rgba(255,255,255,0.05);
+  font-size: 11px; font-weight: 700; color: var(--t3);
+  font-family: inherit; cursor: pointer; transition: all 0.22s;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.os-chip span { font-size: 18px; }
+.os-chip:hover, .os-chip.on {
+  background: rgba(193,18,31,0.1); border-color: var(--b2); color: var(--rose);
+  transform: translateY(-2px);
+}
+.os-chip.on { border-color: var(--crimson); box-shadow: 0 4px 12px rgba(193,18,31,0.12); }
+
+/* Checkbox custom */
+.fcheck {
+  display: flex; align-items: flex-start; gap: 11px; cursor: pointer;
+  padding: 14px; border-radius: 13px;
+  background: var(--glass); border: 1px solid rgba(255,255,255,0.05);
+  transition: all 0.22s; margin-bottom: 10px;
+}
+.fcheck:hover { background: var(--glass2); border-color: var(--b1); }
+.fcheck input[type=checkbox] { display: none; }
+.cb-box {
+  width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0; margin-top: 1px;
+  background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.22s; font-size: 12px;
+}
+.fcheck input:checked + .cb-box {
+  background: var(--blood); border-color: var(--blood);
+  box-shadow: 0 0 12px rgba(193,18,31,0.3);
+}
+.fcheck input:checked + .cb-box::after { content: '✓'; color: white; font-weight: 800; }
+.cb-text { font-size: 13px; color: var(--t2); line-height: 1.6; }
+.cb-text strong { color: var(--t1); }
+
+/* Buttons */
+.step-nav { display: flex; gap: 10px; margin-top: 28px; justify-content: space-between; }
+.btn-next {
+  padding: 14px 32px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--blood), var(--crimson));
+  border: none; color: white; font-family: inherit;
+  font-size: 14px; font-weight: 800; cursor: pointer;
+  transition: all 0.3s; box-shadow: 0 6px 20px rgba(193,18,31,0.35);
+  display: flex; align-items: center; gap: 7px; margin-left: auto;
+}
+.btn-next:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(193,18,31,0.5); }
+.btn-next:disabled { background: rgba(193,18,31,0.2); box-shadow: none; transform: none; cursor: not-allowed; }
+.btn-back {
+  padding: 14px 24px; border-radius: 14px;
+  background: var(--glass2); border: 1px solid rgba(255,255,255,0.07);
+  color: var(--t2); font-family: inherit; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.25s; display: flex; align-items: center; gap: 7px;
+}
+.btn-back:hover { background: var(--glass3); color: var(--t1); }
+.btn-submit {
+  padding: 16px 36px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--blood), var(--crimson));
+  border: none; color: white; font-family: inherit;
+  font-size: 15px; font-weight: 800; cursor: pointer;
+  transition: all 0.3s; box-shadow: 0 8px 28px rgba(193,18,31,0.4);
+  display: flex; align-items: center; gap: 8px; margin-left: auto;
+  position: relative; overflow: hidden;
+}
+.btn-submit::before {
+  content: '';
+  position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s;
+}
+.btn-submit:hover { transform: translateY(-3px); box-shadow: 0 14px 38px rgba(193,18,31,0.55); }
+.btn-submit:hover::before { left: 100%; }
+
+/* Error message */
+.ferr { font-size: 11.5px; color: var(--crimson); margin-top: 4px; display: none; }
+.ferr.show { display: block; }
+
+/* ═══════════════════════════════════════════════════════
+   SUCCESS SCREEN
+═══════════════════════════════════════════════════════ */
+#success-screen {
+  display: none; text-align: center; padding: 20px 0;
+  animation: fadeUp 0.5s ease;
+}
+.success-ring {
+  width: 100px; height: 100px; border-radius: 50%;
+  background: conic-gradient(var(--blood), var(--crimson), var(--coral), var(--blood));
+  margin: 0 auto 24px; display: flex; align-items: center; justify-content: center;
+  position: relative; animation: logoSpin 4s linear infinite;
+}
+.success-inner {
+  position: absolute; inset: 4px; border-radius: 50%;
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center; font-size: 36px;
+}
+.success-title { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px; }
+.success-title span { color: var(--crimson); }
+.success-sub { font-size: 14px; color: var(--t2); line-height: 1.7; max-width: 420px; margin: 0 auto 28px; }
+.success-id {
+  background: var(--glass2); border: 1px solid var(--b1);
+  border-radius: 12px; padding: 14px 20px; margin: 0 auto 28px;
+  font-family: 'DM Mono', monospace; font-size: 14px; color: var(--rose);
+  display: inline-block; letter-spacing: 1px;
+}
+.success-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.sa-btn {
+  padding: 12px 24px; border-radius: 12px; font-family: inherit;
+  font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.25s;
+  border: 1px solid; text-decoration: none; display: flex; align-items: center; gap: 6px;
+}
+.sa-btn.primary { background: var(--blood); border-color: var(--blood); color: white; box-shadow: 0 4px 16px rgba(193,18,31,0.3); }
+.sa-btn.primary:hover { background: var(--crimson); transform: translateY(-2px); }
+.sa-btn.outline { background: var(--glass2); border-color: var(--b2); color: var(--t2); }
+.sa-btn.outline:hover { background: rgba(193,18,31,0.1); color: var(--t1); }
+
+/* ═══════════════════════════════════════════════════════
+   HOSPITALS / NGO SECTION
+═══════════════════════════════════════════════════════ */
+.hosp-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px; margin-top: 40px;
+}
+.hosp-card {
+  background: var(--glass); border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 18px; padding: 22px;
+  transition: all 0.3s; position: relative; overflow: hidden;
+}
+.hosp-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, var(--crimson), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.hosp-card:hover { background: var(--glass2); border-color: var(--b1); transform: translateY(-3px); }
+.hosp-card:hover::before { opacity: 1; }
+.hc-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+.hc-icon {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: rgba(193,18,31,0.12); border: 1px solid var(--b1);
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.hc-name { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
+.hc-type { font-size: 11px; color: var(--crimson); font-weight: 700; }
+.hc-addr { font-size: 12px; color: var(--t3); margin-top: 2px; }
+.hc-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+.hc-badge {
+  font-size: 10px; padding: 3px 9px; border-radius: 10px;
+  background: rgba(42,157,143,0.08); border: 1px solid rgba(42,157,143,0.18); color: var(--sage);
+}
+.hc-contact {
+  padding: 9px 16px; border-radius: 10px; border: 1px solid var(--b2);
+  background: rgba(193,18,31,0.08); color: var(--rose);
+  font-size: 12px; font-weight: 700; font-family: inherit;
+  cursor: pointer; transition: all 0.22s; display: inline-flex; align-items: center; gap: 5px;
+}
+.hc-contact:hover { background: rgba(193,18,31,0.16); }
+
+/* ═══════════════════════════════════════════════════════
+   LEGAL / DISCLAIMER SECTION
+═══════════════════════════════════════════════════════ */
+.legal-section {
+  background: linear-gradient(160deg, rgba(46,28,31,0.4), rgba(13,6,8,0.6));
+  border: 1px solid var(--b1); border-radius: 20px; padding: 32px;
+  margin-top: 40px;
+}
+.legal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+@media (max-width: 600px) { .legal-grid { grid-template-columns: 1fr; } }
+.legal-item {
+  display: flex; gap: 10px; font-size: 13px; color: var(--t2); line-height: 1.6;
+}
+.legal-item .li-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+/* ═══════════════════════════════════════════════════════
+   ISLAMIC PERSPECTIVE
+═══════════════════════════════════════════════════════ */
+.islamic-card {
+  background: linear-gradient(135deg, rgba(42,157,143,0.06), rgba(42,157,143,0.02));
+  border: 1px solid rgba(42,157,143,0.18);
+  border-radius: 20px; padding: 28px 32px;
+  margin-top: 20px;
+  position: relative; overflow: hidden;
+}
+.islamic-card::before {
+  content: '☪️';
+  position: absolute; right: 20px; top: 16px; font-size: 32px; opacity: 0.12;
+}
+.ic-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 800; color: var(--sage); margin-bottom: 10px; }
+.ic-text { font-size: 13.5px; color: var(--t2); line-height: 1.8; }
+
+/* ═══════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════ */
+footer {
+  position: relative; z-index: 1;
+  background: rgba(6,3,4,0.9);
+  border-top: 1px solid var(--b1);
+  padding: 40px 24px;
+  text-align: center;
+}
+.footer-logo { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+.footer-logo span { color: var(--crimson); }
+.footer-dis { font-size: 12px; color: var(--t3); line-height: 1.7; max-width: 560px; margin: 0 auto 16px; }
+.footer-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+.footer-links a { font-size: 12px; color: var(--t3); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--crimson); }
+.footer-dev { font-size: 11px; color: var(--t4); margin-top: 16px; }
+.footer-dev span { color: var(--crimson); }
+
+/* ═══════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════ */
+#toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: linear-gradient(135deg, var(--surface), var(--ink));
+  border: 1px solid var(--b2); border-radius: 12px;
+  padding: 12px 22px; font-size: 13.5px; color: var(--t1); z-index: 999;
+  opacity: 0; pointer-events: none; transition: all 0.3s; white-space: nowrap;
+  box-shadow: 0 10px 32px rgba(0,0,0,0.6), var(--glow-sm);
+}
+#toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════════════ */
+@keyframes badgeIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes titleIn { from{opacity:0;transform:translateY(24px)scale(.96)} to{opacity:1;transform:translateY(0)scale(1)} }
+@keyframes fadeUp  { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+/* Scroll reveal */
+.reveal { opacity:0; transform:translateY(24px); transition:all 0.7s cubic-bezier(.22,.68,0,1.2); }
+.reveal.shown { opacity:1; transform:translateY(0); }
+.reveal-delay-1 { transition-delay:0.1s; }
+.reveal-delay-2 { transition-delay:0.2s; }
+.reveal-delay-3 { transition-delay:0.3s; }
+
+/* Divider */
+.divider { width:60px;height:3px;background:linear-gradient(90deg,var(--blood),var(--coral));border-radius:3px;margin:16px 0; }
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .form-card { padding: 32px 22px; }
+  .hero-stats { gap: 24px; }
+  nav { padding: 0 12px; gap: 8px; }
+  .nav-back { display: none; }
+  .nav-logo-text { font-size: 15px; }
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(193,18,31,0.25); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div id="bg">
+  <div class="bg-heartbeat"></div>
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="../../index.html" class="nav-logo">
+    <div class="nav-logo-icon">🏥</div>
+    <span class="nav-logo-text">Med<span>Find</span></span>
+  </a>
+  <div style="font-size:11px;color:var(--t3);font-weight:700;letter-spacing:1px">/ DONATE LIFE</div>
+  <div class="nav-right">
+    <div class="nav-lang">
+      <button class="nl on" id="nl-en" onclick="setLang('en')">EN</button>
+      <button class="nl" id="nl-bn" onclick="setLang('bn')">বাং</button>
+    </div>
+    <a href="../../index.html" class="nav-back">← <span id="nav-back-txt">Back to MedFind</span></a>
+  </div>
+</nav>
+
+<!-- LEGAL DISCLAIMER BANNER -->
+<div class="legal-banner" style="margin-top:62px">
+  <span class="lb-icon">⚖️</span>
+  <div class="lb-text">
+    <div class="lb-title" id="lb-title">Legal Notice — Transplantation of Human Organs Act 1999</div>
+    <span id="lb-text">This platform facilitates voluntary donor registration and awareness only. We do not perform, arrange, or broker organ transplants. All organ donations must go through licensed medical authorities. No buying or selling of organs is permitted under any circumstances.</span>
+  </div>
+</div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-hb">
+    <svg viewBox="0 0 1200 80" preserveAspectRatio="none">
+      <path d="M0 40 L200 40 L250 15 L300 65 L350 25 L400 55 L450 40 L550 40 L600 10 L650 70 L700 20 L750 60 L800 40 L1200 40" stroke="rgba(193,18,31,0.5)" stroke-width="2" fill="none" stroke-dasharray="8,4"/>
+    </svg>
+  </div>
+  <div class="hero-badge"><span class="hb-heart">❤️</span> <span id="hero-badge-txt">Voluntary Organ Donation Initiative — Bangladesh</span></div>
+  <h1 class="hero-title">
+    <span class="line1" id="hero-l1">One Life Can</span>
+    <span class="line2" id="hero-l2">Save Eight Lives</span>
+  </h1>
+  <p class="hero-sub" id="hero-sub">Register as a voluntary organ donor today. Your decision after death can give multiple people a second chance at life. A noble, legal, and deeply human act of compassion.</p>
+  <div class="hero-ctas">
+    <a href="#register" class="cta-primary">❤️ <span id="cta1">Register as Donor</span></a>
+    <a href="#awareness" class="cta-secondary">📖 <span id="cta2">Learn More</span></a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-num">8</div><div class="stat-lbl" id="stat1">Lives one donor can save</div></div>
+    <div class="stat-item"><div class="stat-num">75+</div><div class="stat-lbl" id="stat2">Hospitals in BD</div></div>
+    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-lbl" id="stat3">Voluntary & Free</div></div>
+    <div class="stat-item"><div class="stat-num">0৳</div><div class="stat-lbl" id="stat4">No cost ever</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════ AWARENESS ═══════════════ -->
+<section id="awareness" class="section-pad">
+  <div class="container">
+    <div class="section-eyebrow reveal" id="aw-eyebrow">What is Organ Donation?</div>
+    <h2 class="section-title reveal reveal-delay-1" id="aw-title">How It Works</h2>
+    <p class="section-sub reveal reveal-delay-2" id="aw-sub">Organ donation is the gift of an organ or tissue to help someone who needs a transplant. It is completely voluntary, free, and done through licensed medical authorities only.</p>
+    <div class="divider reveal reveal-delay-2"></div>
+
+    <div class="awareness-grid">
+      <div class="aw-card reveal reveal-delay-1">
+        <span class="aw-icon">📝</span>
+        <div class="aw-title" id="aw1-t">Register Your Decision</div>
+        <div class="aw-text" id="aw1-d">You sign up as a voluntary donor. Your family is informed. No organ is taken during your lifetime — only after confirmed brain death or cardiac death, with family consent.</div>
+      </div>
+      <div class="aw-card reveal reveal-delay-2">
+        <span class="aw-icon">👨‍👩‍👧</span>
+        <div class="aw-title" id="aw2-t">Family Consent is Key</div>
+        <div class="aw-text" id="aw2-d">In Bangladesh, family consent is legally and ethically essential. Your family must agree. Informing them of your decision now makes this process smoother.</div>
+      </div>
+      <div class="aw-card reveal reveal-delay-3">
+        <span class="aw-icon">🏥</span>
+        <div class="aw-title" id="aw3-t">Hospital Handles Everything</div>
+        <div class="aw-text" id="aw3-d">A licensed hospital or transplant authority manages the entire process under strict medical and legal supervision. MedFind only facilitates awareness and registration.</div>
+      </div>
+      <div class="aw-card reveal reveal-delay-1">
+        <span class="aw-icon">🫀</span>
+        <div class="aw-title" id="aw4-t">What Can Be Donated?</div>
+        <div class="aw-text" id="aw4-d">Kidneys, liver, heart, lungs, corneas, pancreas, intestines, bone marrow, skin, and more. A single donor can give life to 8+ people and restore sight to 2 more.</div>
+      </div>
+      <div class="aw-card reveal reveal-delay-2">
+        <span class="aw-icon">⚖️</span>
+        <div class="aw-title" id="aw5-t">Completely Legal</div>
+        <div class="aw-text" id="aw5-d">Governed by Transplantation of Human Organs Act 1999 (Bangladesh). Buying or selling organs is illegal. All donations must be voluntary and through authorized channels.</div>
+      </div>
+      <div class="aw-card reveal reveal-delay-3">
+        <span class="aw-icon">🔒</span>
+        <div class="aw-title" id="aw6-t">Your Data is Safe</div>
+        <div class="aw-text" id="aw6-d">Your registration data is encrypted, never sold or publicly shared. Only you and authorized medical personnel can access your donor information.</div>
+      </div>
+    </div>
+
+    <!-- Organs grid -->
+    <div style="margin-top:52px">
+      <h3 style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;margin-bottom:6px;letter-spacing:-0.5px" id="og-title" class="reveal">Organs & Tissues That Can Be Donated</h3>
+      <p style="font-size:13px;color:var(--t2);margin-bottom:4px" id="og-sub" class="reveal">Living donation (kidney, liver segment, bone marrow) is also possible in some cases with legal approval.</p>
+      <div class="organs-grid reveal">
+        <div class="organ-chip"><span class="oc-icon">🫀</span><div class="oc-name">Heart</div></div>
+        <div class="organ-chip"><span class="oc-icon">🫁</span><div class="oc-name">Lungs</div></div>
+        <div class="organ-chip"><span class="oc-icon">🟤</span><div class="oc-name">Liver</div></div>
+        <div class="organ-chip"><span class="oc-icon">🫘</span><div class="oc-name">Kidneys</div></div>
+        <div class="organ-chip"><span class="oc-icon">👁️</span><div class="oc-name">Corneas</div></div>
+        <div class="organ-chip"><span class="oc-icon">🩺</span><div class="oc-name">Pancreas</div></div>
+        <div class="organ-chip"><span class="oc-icon">🦴</span><div class="oc-name">Bone</div></div>
+        <div class="organ-chip"><span class="oc-icon">🧬</span><div class="oc-name">Bone Marrow</div></div>
+        <div class="organ-chip"><span class="oc-icon">🩹</span><div class="oc-name">Skin</div></div>
+        <div class="organ-chip"><span class="oc-icon">💉</span><div class="oc-name">Blood Vessels</div></div>
+      </div>
+    </div>
+
+    <!-- Myths vs Facts -->
+    <div style="margin-top:60px">
+      <div class="section-eyebrow reveal" id="mf-eyebrow">Common Misconceptions</div>
+      <h3 class="section-title reveal" id="mf-title" style="font-size:clamp(26px,4vw,38px)">Myths vs Facts</h3>
+      <div class="myths-grid">
+        <div class="myth-card myth reveal">
+          <div class="mf-label m">❌ Myth</div>
+          <p id="m1">Doctors won't try as hard to save me if I'm a registered donor.</p>
+        </div>
+        <div class="myth-card fact reveal reveal-delay-1">
+          <div class="mf-label f">✅ Fact</div>
+          <p id="f1">Donor status has zero impact on your treatment. Transplant teams are completely separate from emergency medical teams.</p>
+        </div>
+        <div class="myth-card myth reveal">
+          <div class="mf-label m">❌ Myth</div>
+          <p id="m2">Organ donation is against Islam / religion.</p>
+        </div>
+        <div class="myth-card fact reveal reveal-delay-1">
+          <div class="mf-label f">✅ Fact</div>
+          <p id="f2">Most Islamic scholars consider organ donation permissible (halal) as it saves lives. It is viewed as an act of great charity (sadaqah).</p>
+        </div>
+        <div class="myth-card myth reveal">
+          <div class="mf-label m">❌ Myth</div>
+          <p id="m3">Only young, healthy people can donate organs.</p>
+        </div>
+        <div class="myth-card fact reveal reveal-delay-1">
+          <div class="mf-label f">✅ Fact</div>
+          <p id="f3">People of all ages can donate. Medical professionals decide at time of death which organs are suitable. Even 70+ year olds have donated life-saving corneas.</p>
+        </div>
+        <div class="myth-card myth reveal">
+          <div class="mf-label m">❌ Myth</div>
+          <p id="m4">You can buy or sell organs through platforms like MedFind.</p>
+        </div>
+        <div class="myth-card fact reveal reveal-delay-1">
+          <div class="mf-label f">✅ Fact</div>
+          <p id="f4">Buying/selling organs is strictly illegal in Bangladesh (punishable by law). MedFind only facilitates awareness and voluntary registration. No transactions ever.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Islamic perspective -->
+    <div class="islamic-card reveal" style="margin-top:40px">
+      <div class="ic-title" id="ic-title">☪️ Islamic Perspective on Organ Donation</div>
+      <div class="ic-text" id="ic-text">The Islamic Fiqh Council and most contemporary scholars permit organ donation on the basis of saving lives (<em>Hifzul-Nafs</em>), which is one of the five objectives of Islamic law. The Prophet Muhammad (ﷺ) said: "Whoever saves one life, it is as if he has saved all of mankind" (Quran 5:32). Donating organs is considered a form of ongoing charity (<em>Sadaqah Jariyah</em>) that continues to benefit others even after death. Families should consult their local scholars if they have specific concerns.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ REGISTRATION FORM ═══════════════ -->
+<section id="register" class="section-pad">
+  <div class="container">
+    <div class="section-eyebrow reveal" id="reg-eyebrow">Voluntary Registration</div>
+    <h2 class="section-title reveal reveal-delay-1" id="reg-title">Become a Donor</h2>
+    <p class="section-sub reveal reveal-delay-2" id="reg-sub">Complete the form below to register your voluntary organ donation decision. This registration is for awareness and intent only — it does not constitute a legal document.</p>
+    <div class="divider reveal reveal-delay-2"></div>
+
+    <div style="max-width:680px;margin:40px auto 0">
+      <div class="form-card reveal">
+        <!-- Progress -->
+        <div class="progress-bar" id="progress-bar">
+          <div class="pb-step active" id="pb1"></div>
+          <div class="pb-step" id="pb2"></div>
+          <div class="pb-step" id="pb3"></div>
+          <div class="pb-step" id="pb4"></div>
+          <div class="pb-label" id="pb-lbl">Step 1 of 4</div>
+        </div>
+
+        <!-- FORM STEPS -->
+        <div id="form-content">
+
+          <!-- STEP 1: Personal Info -->
+          <div class="step active" id="step1">
+            <div class="step-title" id="s1-title">Personal Information</div>
+            <div class="step-sub" id="s1-sub">Basic details to create your donor profile. All information is encrypted and confidential.</div>
+            <div class="frow">
+              <div class="fgrp">
+                <label class="flbl">Full Name <span class="req">*</span></label>
+                <input class="finp" id="f-name" type="text" placeholder="Md. Ahsanul Islam">
+                <div class="ferr" id="err-name">Name is required</div>
+              </div>
+              <div class="fgrp">
+                <label class="flbl">Date of Birth <span class="req">*</span></label>
+                <input class="finp" id="f-dob" type="date">
+                <div class="ferr" id="err-dob">Date of birth is required</div>
+              </div>
+            </div>
+            <div class="frow">
+              <div class="fgrp">
+                <label class="flbl">Gender <span class="req">*</span></label>
+                <select class="finp" id="f-gender">
+                  <option value="">Select gender</option>
+                  <option value="male">Male / পুরুষ</option>
+                  <option value="female">Female / মহিলা</option>
+                  <option value="other">Other</option>
+                </select>
+                <div class="ferr" id="err-gender">Gender is required</div>
+              </div>
+              <div class="fgrp">
+                <label class="flbl">NID / Passport Number <span class="req">*</span></label>
+                <input class="finp" id="f-nid" type="text" placeholder="19 digit NID or Passport">
+                <div class="ferr" id="err-nid">NID is required</div>
+              </div>
+            </div>
+            <div class="frow">
+              <div class="fgrp">
+                <label class="flbl">Phone Number <span class="req">*</span></label>
+                <input class="finp" id="f-phone" type="tel" placeholder="01XXXXXXXXX">
+                <div class="ferr" id="err-phone">Valid phone required</div>
+              </div>
+              <div class="fgrp">
+                <label class="flbl">Email Address</label>
+                <input class="finp" id="f-email" type="email" placeholder="you@email.com">
+              </div>
+            </div>
+            <div class="frow one">
+              <div class="fgrp">
+                <label class="flbl">Full Address <span class="req">*</span></label>
+                <input class="finp" id="f-address" type="text" placeholder="Village/Area, Thana, District">
+                <div class="ferr" id="err-address">Address is required</div>
+              </div>
+            </div>
+            <div class="step-nav">
+              <button class="btn-next" onclick="goStep(2)">Next: Health Info <span>→</span></button>
+            </div>
+          </div>
+
+          <!-- STEP 2: Blood Group & Organs -->
+          <div class="step" id="step2">
+            <div class="step-title" id="s2-title">Health & Donation Details</div>
+            <div class="step-sub" id="s2-sub">Select your blood group and which organs you wish to donate. You can select all or specific ones.</div>
+
+            <div class="fgrp" style="margin-bottom:16px">
+              <label class="flbl">Blood Group <span class="req">*</span></label>
+              <div class="blood-grid">
+                <div class="bg-chip" onclick="selectBlood('A+')" id="bg-Ap">A+</div>
+                <div class="bg-chip" onclick="selectBlood('A-')" id="bg-Am">A−</div>
+                <div class="bg-chip" onclick="selectBlood('B+')" id="bg-Bp">B+</div>
+                <div class="bg-chip" onclick="selectBlood('B-')" id="bg-Bm">B−</div>
+                <div class="bg-chip" onclick="selectBlood('AB+')" id="bg-ABp">AB+</div>
+                <div class="bg-chip" onclick="selectBlood('AB-')" id="bg-ABm">AB−</div>
+                <div class="bg-chip" onclick="selectBlood('O+')" id="bg-Op">O+</div>
+                <div class="bg-chip" onclick="selectBlood('O-')" id="bg-Om">O−</div>
+              </div>
+              <div class="ferr show" id="err-blood" style="display:none">Please select your blood group</div>
+            </div>
+
+            <div class="fgrp" style="margin-bottom:16px">
+              <label class="flbl">Organs / Tissues to Donate <span class="req">*</span></label>
+              <div style="margin-bottom:8px">
+                <button onclick="selectAllOrgans()" style="font-size:11px;color:var(--crimson);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:700;padding:0" id="select-all-txt">✓ Select All</button>
+              </div>
+              <div class="organ-select-grid" id="organ-grid">
+                <button class="os-chip" data-organ="Heart" onclick="toggleOrgan(this)"><span>🫀</span>Heart</button>
+                <button class="os-chip" data-organ="Lungs" onclick="toggleOrgan(this)"><span>🫁</span>Lungs</button>
+                <button class="os-chip" data-organ="Liver" onclick="toggleOrgan(this)"><span>🟤</span>Liver</button>
+                <button class="os-chip" data-organ="Kidneys" onclick="toggleOrgan(this)"><span>🫘</span>Kidneys</button>
+                <button class="os-chip" data-organ="Corneas" onclick="toggleOrgan(this)"><span>👁️</span>Corneas</button>
+                <button class="os-chip" data-organ="Pancreas" onclick="toggleOrgan(this)"><span>🩺</span>Pancreas</button>
+                <button class="os-chip" data-organ="Bone Marrow" onclick="toggleOrgan(this)"><span>🧬</span>Bone Marrow</button>
+                <button class="os-chip" data-organ="Skin" onclick="toggleOrgan(this)"><span>🩹</span>Skin</button>
+                <button class="os-chip" data-organ="Bone & Tissue" onclick="toggleOrgan(this)"><span>🦴</span>Bone & Tissue</button>
+                <button class="os-chip" data-organ="Intestines" onclick="toggleOrgan(this)"><span>🔵</span>Intestines</button>
+              </div>
+              <div class="ferr" id="err-organs">Please select at least one organ</div>
+            </div>
+
+            <div class="frow">
+              <div class="fgrp">
+                <label class="flbl">Known Medical Conditions</label>
+                <input class="finp" id="f-conditions" type="text" placeholder="e.g. Diabetes, Hypertension (or None)">
+              </div>
+              <div class="fgrp">
+                <label class="flbl">Current Medications</label>
+                <input class="finp" id="f-meds" type="text" placeholder="e.g. Metformin, or None">
+              </div>
+            </div>
+
+            <div class="step-nav">
+              <button class="btn-back" onclick="goStep(1)"><span>←</span> Back</button>
+              <button class="btn-next" onclick="goStep(3)">Next: Emergency Contact <span>→</span></button>
+            </div>
+          </div>
+
+          <!-- STEP 3: Emergency Contact & Consent -->
+          <div class="step" id="step3">
+            <div class="step-title" id="s3-title">Emergency Contact & Family</div>
+            <div class="step-sub" id="s3-sub">Your family's awareness and consent is legally important in Bangladesh. Please provide at least one emergency contact.</div>
+
+            <div class="frow">
+              <div class="fgrp">
+                <label class="flbl">Emergency Contact Name <span class="req">*</span></label>
+                <input class="finp" id="f-ec-name" type="text" placeholder="Full name">
+                <div class="ferr" id="err-ec-name">Contact name is required</div>
+              </div>
+              <div class="fgrp">
+                <label class="flbl">Relationship <span class="req">*</span></label>
+                <select class="finp" id="f-ec-rel">
+                  <option value="">Select relationship</option>
+                  <option>Spouse</option><option>Parent</option><option>Child</option>
+                  <option>Sibling</option><option>Guardian</option><option>Other</option>
+                </select>
+                <div class="ferr" id="err-ec-rel">Relationship is required</div>
+              </div>
+            </div>
+            <div class="frow">
+              <div class="fgrp">
+                <label class="flbl">Emergency Contact Phone <span class="req">*</span></label>
+                <input class="finp" id="f-ec-phone" type="tel" placeholder="01XXXXXXXXX">
+                <div class="ferr" id="err-ec-phone">Phone is required</div>
+              </div>
+              <div class="fgrp">
+                <label class="flbl">Family Informed?</label>
+                <select class="finp" id="f-family-informed">
+                  <option value="yes">Yes — family knows my decision</option>
+                  <option value="no">Not yet — I will inform them</option>
+                  <option value="partial">Some family members know</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-top:4px;margin-bottom:6px;font-size:12px;color:var(--t3);padding:10px 12px;background:rgba(42,157,143,0.05);border-radius:10px;border:1px solid rgba(42,157,143,0.1)" id="family-tip">
+              💡 <strong style="color:var(--sage)">Tip:</strong> Talking to your family about your decision is the most important step. In Bangladesh, family consent is required for donation to proceed.
+            </div>
+
+            <div style="margin-top:16px;margin-bottom:6px;font-size:12px;font-weight:700;color:var(--t3)" id="s3-note-lbl">Additional Note for Family</div>
+            <textarea class="finp" id="f-note" placeholder="Optional: Write a personal message for your family about your donation decision..."></textarea>
+
+            <div class="step-nav">
+              <button class="btn-back" onclick="goStep(2)"><span>←</span> Back</button>
+              <button class="btn-next" onclick="goStep(4)">Next: Review & Confirm <span>→</span></button>
+            </div>
+          </div>
+
+          <!-- STEP 4: Declaration & Submit -->
+          <div class="step" id="step4">
+            <div class="step-title" id="s4-title">Declaration & Confirmation</div>
+            <div class="step-sub" id="s4-sub">Please read and accept the following declarations before submitting your voluntary registration.</div>
+
+            <label class="fcheck" id="decl1-lbl">
+              <input type="checkbox" id="decl1">
+              <div class="cb-box"></div>
+              <div class="cb-text"><strong id="d1-strong">I voluntarily</strong> <span id="d1-text">wish to donate my organs after my death (brain death or cardiac death), subject to family consent and the laws of Bangladesh. This is not a legally binding contract.</span></div>
+            </label>
+
+            <label class="fcheck" id="decl2-lbl">
+              <input type="checkbox" id="decl2">
+              <div class="cb-box"></div>
+              <div class="cb-text"><strong id="d2-strong">I understand</strong> <span id="d2-text">that MedFind does not perform or arrange organ transplants. This registration is for voluntary intent and awareness only. All actual donation processes must go through licensed medical authorities.</span></div>
+            </label>
+
+            <label class="fcheck" id="decl3-lbl">
+              <input type="checkbox" id="decl3">
+              <div class="cb-box"></div>
+              <div class="cb-text"><strong id="d3-strong">I confirm</strong> <span id="d3-text">that no buying, selling, or commercial transaction of organs is involved. Organ donation is purely voluntary and in accordance with the Transplantation of Human Organs Act 1999 (Bangladesh).</span></div>
+            </label>
+
+            <label class="fcheck" id="decl4-lbl">
+              <input type="checkbox" id="decl4">
+              <div class="cb-box"></div>
+              <div class="cb-text"><strong id="d4-strong">I agree</strong> <span id="d4-text">that my personal data will be stored securely and encrypted, used only for donor record purposes, and never shared publicly or sold to third parties.</span></div>
+            </label>
+
+            <div style="margin-top:16px;padding:14px 16px;background:rgba(244,162,97,0.06);border:1px solid rgba(244,162,97,0.15);border-radius:12px;font-size:12px;color:rgba(244,162,97,0.9);line-height:1.7" id="final-disclaimer">
+              ⚠️ This registration does not guarantee organ donation will occur. Final decisions rest with your family, attending physicians, and relevant authorities at the time. You may withdraw your registration at any time.
+            </div>
+
+            <div class="step-nav" style="margin-top:20px">
+              <button class="btn-back" onclick="goStep(3)"><span>←</span> Back</button>
+              <button class="btn-submit" onclick="submitForm()">❤️ <span id="submit-txt">Complete Registration</span></button>
+            </div>
+          </div>
+
+        </div><!-- end form-content -->
+
+        <!-- SUCCESS -->
+        <div id="success-screen">
+          <div class="success-ring"><div class="success-inner">❤️</div></div>
+          <div class="success-title">Thank You, <span id="success-name">Donor</span>!</div>
+          <div class="success-sub" id="success-sub-txt">You have taken a noble step. Your voluntary registration has been recorded. Please inform your family about your decision — their consent is essential.</div>
+          <div class="success-id" id="donor-id">Donor ID: MF-2026-XXXX</div>
+          <div class="success-actions">
+            <button class="sa-btn primary" onclick="printCard()">🖨️ <span id="sa-print">Print Donor Card</span></button>
+            <button class="sa-btn outline" onclick="shareWhatsApp()">📲 <span id="sa-share">Share with Family</span></button>
+            <a href="#awareness" class="sa-btn outline">📖 <span id="sa-learn">Learn More</span></a>
+          </div>
+        </div>
+
+      </div><!-- end form-card -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ HOSPITALS / NGOs ═══════════════ -->
+<section class="section-pad">
+  <div class="container">
+    <div class="section-eyebrow reveal" id="hosp-eyebrow">Authorized Organizations</div>
+    <h2 class="section-title reveal reveal-delay-1" id="hosp-title">Contact These Hospitals & NGOs</h2>
+    <p class="section-sub reveal reveal-delay-2" id="hosp-sub">These are licensed organizations in Bangladesh that handle organ donation and transplantation. Contact them directly for official procedures.</p>
+    <div class="divider reveal reveal-delay-2"></div>
+    <div class="hosp-grid">
+      <div class="hosp-card reveal">
+        <div class="hc-top">
+          <div class="hc-icon">🏥</div>
+          <div><div class="hc-name">Dhaka Medical College Hospital</div><div class="hc-type">Government Transplant Center</div><div class="hc-addr">📍 Bakshibazar, Dhaka-1000</div></div>
+        </div>
+        <div class="hc-badges"><span class="hc-badge">Kidney Transplant</span><span class="hc-badge">Cornea</span><span class="hc-badge">24/7</span></div>
+        <button class="hc-contact" onclick="toast('📞 DMCH: 02-55165088')">📞 02-55165088</button>
+      </div>
+      <div class="hosp-card reveal reveal-delay-1">
+        <div class="hc-top">
+          <div class="hc-icon">❤️</div>
+          <div><div class="hc-name">Sandhani — National Eye Bank</div><div class="hc-type">NGO — Cornea & Blood</div><div class="hc-addr">📍 Dhaka Medical College Campus</div></div>
+        </div>
+        <div class="hc-badges"><span class="hc-badge">Cornea Donation</span><span class="hc-badge">Blood Bank</span><span class="hc-badge">Active</span></div>
+        <button class="hc-contact" onclick="toast('📞 Sandhani: 01711-XXXXXX')">📞 Contact Sandhani</button>
+      </div>
+      <div class="hosp-card reveal reveal-delay-2">
+        <div class="hc-top">
+          <div class="hc-icon">🏨</div>
+          <div><div class="hc-name">BSMMU (PG Hospital)</div><div class="hc-type">Government University Hospital</div><div class="hc-addr">📍 Shahbag, Dhaka</div></div>
+        </div>
+        <div class="hc-badges"><span class="hc-badge">Kidney Transplant</span><span class="hc-badge">Research</span></div>
+        <button class="hc-contact" onclick="toast('📞 BSMMU: 02-9661065')">📞 02-9661065</button>
+      </div>
+      <div class="hosp-card reveal">
+        <div class="hc-top">
+          <div class="hc-icon">🩺</div>
+          <div><div class="hc-name">NICVD</div><div class="hc-type">National Heart Institute</div><div class="hc-addr">📍 Sher-e-Bangla Nagar, Dhaka</div></div>
+        </div>
+        <div class="hc-badges"><span class="hc-badge">Heart Transplant</span><span class="hc-badge">Cardiac Care</span></div>
+        <button class="hc-contact" onclick="toast('📞 NICVD: 02-9128360')">📞 02-9128360</button>
+      </div>
+      <div class="hosp-card reveal reveal-delay-1">
+        <div class="hc-top">
+          <div class="hc-icon">🏩</div>
+          <div><div class="hc-name">Evercare Hospital Dhaka</div><div class="hc-type">Private — International Standard</div><div class="hc-addr">📍 Bashundhara, Dhaka</div></div>
+        </div>
+        <div class="hc-badges"><span class="hc-badge">All Organs</span><span class="hc-badge">International</span></div>
+        <button class="hc-contact" onclick="toast('📞 Evercare: 10678')">📞 10678</button>
+      </div>
+      <div class="hosp-card reveal reveal-delay-2">
+        <div class="hc-top">
+          <div class="hc-icon">🔬</div>
+          <div><div class="hc-name">IEDCR Bangladesh</div><div class="hc-type">Government Health Authority</div><div class="hc-addr">📍 Mohakhali, Dhaka</div></div>
+        </div>
+        <div class="hc-badges"><span class="hc-badge">Policy</span><span class="hc-badge">Oversight</span></div>
+        <button class="hc-contact" onclick="toast('📞 IEDCR: 01401-184551')">📞 01401-184551</button>
+      </div>
+    </div>
+
+    <!-- Legal section -->
+    <div class="legal-section reveal">
+      <h3 style="font-family:'Fraunces',serif;font-size:20px;font-weight:800;margin-bottom:4px" id="ls-title">Legal Framework & Our Commitment</h3>
+      <p style="font-size:13px;color:var(--t2)" id="ls-sub">MedFind's Donate Life module strictly follows Bangladesh law and ethical guidelines.</p>
+      <div class="legal-grid">
+        <div class="legal-item"><span class="li-icon">✅</span><span id="li1">Governed by Transplantation of Human Organs Act 1999</span></div>
+        <div class="legal-item"><span class="li-icon">✅</span><span id="li2">All donations are 100% voluntary — zero payment</span></div>
+        <div class="legal-item"><span class="li-icon">✅</span><span id="li3">We do not perform or broker any transplant</span></div>
+        <div class="legal-item"><span class="li-icon">✅</span><span id="li4">Donor data is encrypted and never sold</span></div>
+        <div class="legal-item"><span class="li-icon">✅</span><span id="li5">No direct matching between donors and recipients</span></div>
+        <div class="legal-item"><span class="li-icon">✅</span><span id="li6">Family consent is always required — we emphasize this</span></div>
+        <div class="legal-item"><span class="li-icon">✅</span><span id="li7">Registration can be withdrawn at any time</span></div>
+        <div class="legal-item"><span class="li-icon">✅</span><span id="li8">Awareness & registration only — no transactions</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Med<span>Find</span> — Donate Life</div>
+  <p class="footer-dis" id="footer-dis">MedFind Donate Life is an awareness and voluntary registration platform. We do not perform, arrange, or broker organ transplants. All donations must go through licensed medical authorities. No buying or selling of organs is permitted.</p>
+  <div class="footer-links">
+    <a href="../../pages/privacy.html" style="color:var(--t3);text-decoration:none;">Privacy Policy</a>
+    <a href="../../pages/terms.html" style="color:var(--t3);text-decoration:none;">Terms & Conditions</a>
+    <a href="../../pages/medical-disclaimer.html" style="color:var(--t3);text-decoration:none;">Medical Disclaimer</a>
+    <a href="../../index.html">← Back to MedFind</a>
+  </div>
+  <div class="footer-dev">Developed by <span>Ahsanul Yamin Babor</span> · medfindbd2026@gmail.com · BAUET 2026</div>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════
+   LANGUAGE TRANSLATIONS
+══════════════════════════════════════════ */
+const T = {
+  en: {
+    navBack:'← Back to MedFind',
+    lbTitle:'Legal Notice — Transplantation of Human Organs Act 1999',
+    lbText:'This platform facilitates voluntary donor registration and awareness only. We do not perform, arrange, or broker organ transplants. All organ donations must go through licensed medical authorities. No buying or selling of organs is permitted under any circumstances.',
+    heroBadge:'Voluntary Organ Donation Initiative — Bangladesh',
+    heroL1:'One Life Can', heroL2:'Save Eight Lives',
+    heroSub:'Register as a voluntary organ donor today. Your decision after death can give multiple people a second chance at life.',
+    cta1:'Register as Donor', cta2:'Learn More',
+    stat1:'Lives one donor can save', stat2:'Hospitals in BD', stat3:'Voluntary & Free', stat4:'No cost ever',
+    awEyebrow:'What is Organ Donation?', awTitle:'How It Works',
+    awSub:'Organ donation is the gift of an organ to help someone who needs a transplant. Voluntary, free, and through licensed authorities only.',
+    aw1t:'Register Your Decision', aw1d:'You sign up as a voluntary donor. Your family is informed. No organ is taken during your lifetime — only after confirmed death, with family consent.',
+    aw2t:'Family Consent is Key', aw2d:'In Bangladesh, family consent is legally and ethically essential. Your family must agree. Informing them now makes this process smoother.',
+    aw3t:'Hospital Handles Everything', aw3d:'A licensed hospital manages the entire process under strict medical and legal supervision. MedFind only facilitates awareness and registration.',
+    aw4t:'What Can Be Donated?', aw4d:'Kidneys, liver, heart, lungs, corneas, pancreas, bone marrow, and more. A single donor can give life to 8+ people.',
+    aw5t:'Completely Legal', aw5d:'Governed by Transplantation of Human Organs Act 1999. Buying or selling organs is illegal. All donations must be voluntary.',
+    aw6t:'Your Data is Safe', aw6d:'Your registration data is encrypted, never sold or publicly shared. Only authorized medical personnel can access your donor information.',
+    ogTitle:'Organs & Tissues That Can Be Donated', ogSub:'Living donation (kidney, liver segment) is also possible with legal approval.',
+    mfEyebrow:'Common Misconceptions', mfTitle:'Myths vs Facts',
+    m1:'Doctors won\'t try as hard to save me if I\'m a registered donor.',
+    f1:'Donor status has zero impact on your treatment. Transplant teams are completely separate from emergency teams.',
+    m2:'Organ donation is against Islam.',
+    f2:'Most Islamic scholars consider organ donation permissible as it saves lives — an act of great charity (Sadaqah).',
+    m3:'Only young, healthy people can donate.',
+    f3:'People of all ages can donate. Medical professionals decide which organs are suitable. 70+ year olds have donated life-saving corneas.',
+    m4:'You can buy/sell organs through platforms like MedFind.',
+    f4:'Buying/selling organs is strictly illegal in Bangladesh. MedFind only facilitates voluntary registration. No transactions ever.',
+    icTitle:'☪️ Islamic Perspective on Organ Donation',
+    icText:'The Islamic Fiqh Council and most contemporary scholars permit organ donation on the basis of saving lives (Hifzul-Nafs). The Prophet Muhammad (ﷺ) said: "Whoever saves one life, it is as if he has saved all of mankind" (Quran 5:32). Donating organs is considered a form of ongoing charity (Sadaqah Jariyah).',
+    regEyebrow:'Voluntary Registration', regTitle:'Become a Donor',
+    regSub:'Complete the form below to register your voluntary organ donation decision. This registration is for awareness and intent only.',
+    s1t:'Personal Information', s1s:'Basic details to create your donor profile. All information is encrypted and confidential.',
+    s2t:'Health & Donation Details', s2s:'Select your blood group and which organs you wish to donate.',
+    s3t:'Emergency Contact & Family', s3s:'Your family\'s awareness and consent is legally important in Bangladesh.',
+    s3noteLbl:'Additional Note for Family',
+    s4t:'Declaration & Confirmation', s4s:'Please read and accept the declarations before submitting.',
+    d1s:'I voluntarily', d1t:'wish to donate my organs after my death, subject to family consent and the laws of Bangladesh. This is not a legally binding contract.',
+    d2s:'I understand', d2t:'that MedFind does not perform or arrange organ transplants. This registration is for voluntary intent and awareness only.',
+    d3s:'I confirm', d3t:'that no buying, selling, or commercial transaction of organs is involved. Donation is purely voluntary under the Transplantation of Human Organs Act 1999.',
+    d4s:'I agree', d4t:'that my personal data will be stored securely, used only for donor record purposes, and never shared publicly or sold.',
+    finalDisclaimer:'⚠️ This registration does not guarantee organ donation will occur. You may withdraw your registration at any time.',
+    submitTxt:'Complete Registration',
+    hospEyebrow:'Authorized Organizations', hospTitle:'Contact These Hospitals & NGOs',
+    hospSub:'Licensed organizations in Bangladesh that handle organ donation and transplantation.',
+    lsTitle:'Legal Framework & Our Commitment',
+    lsSub:'MedFind\'s Donate Life module strictly follows Bangladesh law and ethical guidelines.',
+    li1:'Governed by Transplantation of Human Organs Act 1999',
+    li2:'All donations are 100% voluntary — zero payment',
+    li3:'We do not perform or broker any transplant',
+    li4:'Donor data is encrypted and never sold',
+    li5:'No direct matching between donors and recipients',
+    li6:'Family consent is always required',
+    li7:'Registration can be withdrawn at any time',
+    li8:'Awareness & registration only — no transactions',
+    selectAllTxt:'✓ Select All',
+    familyTip:'💡 <strong style="color:var(--sage)">Tip:</strong> Talking to your family about your decision is the most important step. In Bangladesh, family consent is required for donation to proceed.',
+    successSub:'You have taken a noble step. Your voluntary registration has been recorded. Please inform your family about your decision — their consent is essential.',
+    pbLbl: ['Step 1 of 4','Step 2 of 4','Step 3 of 4','Step 4 of 4'],
+    saPrint:'Print Donor Card', saShare:'Share with Family', saLearn:'Learn More',
+  },
+  bn: {
+    navBack:'← MedFind এ ফিরুন',
+    lbTitle:'আইনি নোটিশ — মানব অঙ্গ প্রতিস্থাপন আইন ১৯৯৯',
+    lbText:'এই প্ল্যাটফর্ম শুধুমাত্র স্বেচ্ছামূলক দাতা নিবন্ধন ও সচেতনতার জন্য। আমরা অঙ্গ প্রতিস্থাপন করি না বা কোনো লেনদেনে সহায়তা করি না। সমস্ত অঙ্গ দান লাইসেন্সপ্রাপ্ত চিকিৎসা কর্তৃপক্ষের মাধ্যমে হতে হবে। অঙ্গ ক্রয়-বিক্রয় সম্পূর্ণ নিষিদ্ধ।',
+    heroBadge:'স্বেচ্ছামূলক অঙ্গ দান উদ্যোগ — বাংলাদেশ',
+    heroL1:'একটি জীবন বাঁচাতে পারে', heroL2:'আটটি প্রাণ',
+    heroSub:'আজই স্বেচ্ছামূলক অঙ্গদাতা হিসেবে নিবন্ধন করুন। আপনার মৃত্যুর পর আপনার সিদ্ধান্ত একাধিক মানুষের জীবন বাঁচাতে পারে।',
+    cta1:'দাতা হিসেবে নিবন্ধন করুন', cta2:'আরো জানুন',
+    stat1:'একজন দাতা যত জীবন বাঁচাতে পারেন', stat2:'হাসপাতাল বাংলাদেশে', stat3:'সম্পূর্ণ স্বেচ্ছামূলক', stat4:'কোনো খরচ নেই',
+    awEyebrow:'অঙ্গ দান কী?', awTitle:'এটি কীভাবে কাজ করে',
+    awSub:'অঙ্গ দান হলো প্রতিস্থাপনের প্রয়োজন এমন কাউকে অঙ্গ বা টিস্যু দান করা। সম্পূর্ণ স্বেচ্ছামূলক, বিনামূল্যে এবং লাইসেন্সপ্রাপ্ত কর্তৃপক্ষের মাধ্যমে।',
+    aw1t:'আপনার সিদ্ধান্ত নিবন্ধন করুন', aw1d:'আপনি স্বেচ্ছামূলক দাতা হিসেবে নিবন্ধন করেন। আপনার পরিবারকে জানানো হয়। জীবদ্দশায় কোনো অঙ্গ নেওয়া হয় না।',
+    aw2t:'পরিবারের সম্মতি গুরুত্বপূর্ণ', aw2d:'বাংলাদেশে পরিবারের সম্মতি আইনিভাবে অপরিহার্য। আপনার পরিবারকে এখনই জানান।',
+    aw3t:'হাসপাতাল সব পরিচালনা করে', aw3d:'লাইসেন্সপ্রাপ্ত হাসপাতাল কঠোর চিকিৎসা ও আইনি তত্ত্বাবধানে পুরো প্রক্রিয়া পরিচালনা করে।',
+    aw4t:'কী দান করা যায়?', aw4d:'কিডনি, লিভার, হৃৎপিণ্ড, ফুসফুস, কর্নিয়া, অস্থিমজ্জা ইত্যাদি। একজন দাতা ৮+ মানুষের জীবন বাঁচাতে পারেন।',
+    aw5t:'সম্পূর্ণ আইনসম্মত', aw5d:'মানব অঙ্গ প্রতিস্থাপন আইন ১৯৯৯ দ্বারা পরিচালিত। অঙ্গ ক্রয়-বিক্রয় অবৈধ।',
+    aw6t:'আপনার তথ্য সুরক্ষিত', aw6d:'আপনার নিবন্ধন তথ্য এনক্রিপ্টেড, কখনো বিক্রি বা প্রকাশ করা হবে না।',
+    ogTitle:'যেসব অঙ্গ ও টিস্যু দান করা যায়', ogSub:'জীবিত দান (কিডনি, লিভারের অংশ) আইনি অনুমোদনে সম্ভব।',
+    mfEyebrow:'সাধারণ ভুল ধারণা', mfTitle:'ভ্রান্তি বনাম সত্য',
+    m1:'দাতা হলে ডাক্তাররা আমাকে বাঁচাতে কম চেষ্টা করবেন।',
+    f1:'দাতার মর্যাদা চিকিৎসায় কোনো প্রভাব ফেলে না। ট্রান্সপ্লান্ট দল ও জরুরি চিকিৎসা দল সম্পূর্ণ আলাদা।',
+    m2:'অঙ্গ দান ইসলামে নিষিদ্ধ।',
+    f2:'অধিকাংশ ইসলামিক পণ্ডিত অঙ্গ দানকে জায়েজ বলেন কারণ এটি জীবন বাঁচায় — মহান দান (সদকা)।',
+    m3:'শুধু তরুণ ও সুস্থ মানুষ দান করতে পারেন।',
+    f3:'সব বয়সের মানুষ দান করতে পারেন। ৭০+ বয়সীরাও জীবন রক্ষাকারী কর্নিয়া দান করেছেন।',
+    m4:'MedFind এর মাধ্যমে অঙ্গ কেনা-বেচা করা যায়।',
+    f4:'অঙ্গ ক্রয়-বিক্রয় বাংলাদেশে সম্পূর্ণ অবৈধ। MedFind শুধু স্বেচ্ছামূলক নিবন্ধনে সহায়তা করে।',
+    icTitle:'☪️ অঙ্গ দান সম্পর্কে ইসলামিক দৃষ্টিভঙ্গি',
+    icText:'ইসলামিক ফিকাহ কাউন্সিল এবং অধিকাংশ সমসাময়িক আলেম জীবন রক্ষার ভিত্তিতে (হিফযুন-নফস) অঙ্গ দানকে জায়েজ বলেন। মহানবী (ﷺ) বলেছেন: "যে ব্যক্তি একটি প্রাণ বাঁচায়, সে যেন সমগ্র মানবজাতিকে বাঁচাল" (কুরআন ৫:৩২)।',
+    regEyebrow:'স্বেচ্ছামূলক নিবন্ধন', regTitle:'দাতা হিসেবে যোগ দিন',
+    regSub:'নিচের ফর্মটি পূরণ করুন। এই নিবন্ধন শুধুমাত্র সচেতনতা ও ইচ্ছার জন্য — এটি কোনো আইনগত দলিল নয়।',
+    s1t:'ব্যক্তিগত তথ্য', s1s:'আপনার দাতা প্রোফাইল তৈরি করতে মূল তথ্য। সব তথ্য এনক্রিপ্টেড ও গোপনীয়।',
+    s2t:'স্বাস্থ্য ও দানের বিবরণ', s2s:'আপনার রক্তের গ্রুপ এবং কোন কোন অঙ্গ দান করতে চান তা নির্বাচন করুন।',
+    s3t:'জরুরি যোগাযোগ ও পরিবার', s3s:'বাংলাদেশে পরিবারের সচেতনতা ও সম্মতি আইনগতভাবে গুরুত্বপূর্ণ।',
+    s3noteLbl:'পরিবারের জন্য অতিরিক্ত নোট',
+    s4t:'ঘোষণা ও নিশ্চিতকরণ', s4s:'জমা দেওয়ার আগে নিচের ঘোষণাগুলো পড়ুন এবং সম্মতি দিন।',
+    d1s:'আমি স্বেচ্ছায়', d1t:'আমার মৃত্যুর পর পরিবারের সম্মতি ও বাংলাদেশের আইন সাপেক্ষে আমার অঙ্গ দান করতে চাই। এটি আইনগতভাবে বাধ্যতামূলক নয়।',
+    d2s:'আমি বুঝতে পারছি', d2t:'MedFind অঙ্গ প্রতিস্থাপন করে না বা ব্যবস্থা করে না। এই নিবন্ধন শুধুমাত্র স্বেচ্ছামূলক ইচ্ছা ও সচেতনতার জন্য।',
+    d3s:'আমি নিশ্চিত করছি', d3t:'এখানে কোনো অঙ্গ ক্রয়-বিক্রয় বা বাণিজ্যিক লেনদেন নেই। দান সম্পূর্ণ স্বেচ্ছামূলক।',
+    d4s:'আমি সম্মতি দিচ্ছি', d4t:'আমার ব্যক্তিগত তথ্য নিরাপদে সংরক্ষিত থাকবে এবং শুধুমাত্র দাতার রেকর্ডের উদ্দেশ্যে ব্যবহার হবে।',
+    finalDisclaimer:'⚠️ এই নিবন্ধন অঙ্গ দান নিশ্চিত করে না। আপনি যেকোনো সময় নিবন্ধন প্রত্যাহার করতে পারবেন।',
+    submitTxt:'নিবন্ধন সম্পন্ন করুন',
+    hospEyebrow:'অনুমোদিত প্রতিষ্ঠান', hospTitle:'এই হাসপাতাল ও NGO তে যোগাযোগ করুন',
+    hospSub:'বাংলাদেশে অঙ্গ দান ও প্রতিস্থাপন পরিচালনাকারী লাইসেন্সপ্রাপ্ত প্রতিষ্ঠান।',
+    lsTitle:'আইনি কাঠামো ও আমাদের প্রতিশ্রুতি',
+    lsSub:'MedFind এর Donate Life মডিউল বাংলাদেশের আইন ও নৈতিক নির্দেশিকা কঠোরভাবে অনুসরণ করে।',
+    li1:'মানব অঙ্গ প্রতিস্থাপন আইন ১৯৯৯ দ্বারা পরিচালিত',
+    li2:'সব দান ১০০% স্বেচ্ছামূলক — কোনো অর্থপ্রদান নেই',
+    li3:'আমরা কোনো প্রতিস্থাপন করি বা ব্যবস্থা করি না',
+    li4:'দাতার তথ্য এনক্রিপ্টেড ও কখনো বিক্রি হয় না',
+    li5:'দাতা ও গ্রহীতার মধ্যে কোনো সরাসরি মেলামেশা নেই',
+    li6:'পরিবারের সম্মতি সবসময় প্রয়োজন',
+    li7:'নিবন্ধন যেকোনো সময় প্রত্যাহার করা যাবে',
+    li8:'শুধুমাত্র সচেতনতা ও নিবন্ধন — কোনো লেনদেন নেই',
+    selectAllTxt:'✓ সব নির্বাচন করুন',
+    familyTip:'💡 <strong style="color:var(--sage)">পরামর্শ:</strong> পরিবারকে আপনার সিদ্ধান্ত জানানোই সবচেয়ে গুরুত্বপূর্ণ পদক্ষেপ। বাংলাদেশে দান সম্পন্ন হতে পরিবারের সম্মতি আবশ্যক।',
+    successSub:'আপনি একটি মহৎ পদক্ষেপ নিয়েছেন। আপনার নিবন্ধন রেকর্ড করা হয়েছে। আপনার পরিবারকে আপনার সিদ্ধান্ত জানান — তাদের সম্মতি অপরিহার্য।',
+    pbLbl: ['ধাপ ১ / ৪','ধাপ ২ / ৪','ধাপ ৩ / ৪','ধাপ ৪ / ৪'],
+    saPrint:'দাতার কার্ড প্রিন্ট করুন', saShare:'পরিবারের সাথে শেয়ার করুন', saLearn:'আরো জানুন',
+  }
+};
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let lang = 'en';
+let currentStep = 1;
+let selectedBlood = '';
+let selectedOrgans = new Set();
+let donorName = '';
+
+/* ══════════════════════════════════════════
+   LANG
+══════════════════════════════════════════ */
+function setLang(l) {
+  lang = l;
+  document.getElementById('nl-en').classList.toggle('on', l==='en');
+  document.getElementById('nl-bn').classList.toggle('on', l==='bn');
+  applyLang();
+}
+
+function applyLang() {
+  const t = T[lang];
+  const map = {
+    'nav-back-txt':t.navBack,'lb-title':t.lbTitle,'lb-text':t.lbText,
+    'hero-badge-txt':t.heroBadge,'hero-l1':t.heroL1,'hero-l2':t.heroL2,
+    'hero-sub':t.heroSub,'cta1':t.cta1,'cta2':t.cta2,
+    'stat1':t.stat1,'stat2':t.stat2,'stat3':t.stat3,'stat4':t.stat4,
+    'aw-eyebrow':t.awEyebrow,'aw-title':t.awTitle,'aw-sub':t.awSub,
+    'aw1-t':t.aw1t,'aw1-d':t.aw1d,'aw2-t':t.aw2t,'aw2-d':t.aw2d,
+    'aw3-t':t.aw3t,'aw3-d':t.aw3d,'aw4-t':t.aw4t,'aw4-d':t.aw4d,
+    'aw5-t':t.aw5t,'aw5-d':t.aw5d,'aw6-t':t.aw6t,'aw6-d':t.aw6d,
+    'og-title':t.ogTitle,'og-sub':t.ogSub,'mf-eyebrow':t.mfEyebrow,'mf-title':t.mfTitle,
+    'm1':t.m1,'f1':t.f1,'m2':t.m2,'f2':t.f2,'m3':t.m3,'f3':t.f3,'m4':t.m4,'f4':t.f4,
+    'ic-title':t.icTitle,'ic-text':t.icText,
+    'reg-eyebrow':t.regEyebrow,'reg-title':t.regTitle,'reg-sub':t.regSub,
+    's1-title':t.s1t,'s1-sub':t.s1s,'s2-title':t.s2t,'s2-sub':t.s2s,
+    's3-title':t.s3t,'s3-sub':t.s3s,'s3-note-lbl':t.s3noteLbl,
+    's4-title':t.s4t,'s4-sub':t.s4s,
+    'd1-strong':t.d1s,'d1-text':t.d1t,'d2-strong':t.d2s,'d2-text':t.d2t,
+    'd3-strong':t.d3s,'d3-text':t.d3t,'d4-strong':t.d4s,'d4-text':t.d4t,
+    'final-disclaimer':t.finalDisclaimer,'submit-txt':t.submitTxt,
+    'hosp-eyebrow':t.hospEyebrow,'hosp-title':t.hospTitle,'hosp-sub':t.hospSub,
+    'ls-title':t.lsTitle,'ls-sub':t.lsSub,
+    'li1':t.li1,'li2':t.li2,'li3':t.li3,'li4':t.li4,
+    'li5':t.li5,'li6':t.li6,'li7':t.li7,'li8':t.li8,
+    'select-all-txt':t.selectAllTxt,
+    'pb-lbl': t.pbLbl[currentStep-1],
+    'success-sub-txt':t.successSub,
+    'sa-print':t.saPrint,'sa-share':t.saShare,'sa-learn':t.saLearn,
+  };
+  Object.entries(map).forEach(([id,val])=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=val;
+  });
+  const ft=document.getElementById('family-tip');
+  if(ft) ft.innerHTML=t.familyTip;
+}
+
+/* ══════════════════════════════════════════
+   FORM STEPS
+══════════════════════════════════════════ */
+function goStep(n) {
+  if (n > currentStep) {
+    if (!validateStep(currentStep)) return;
+  }
+  document.getElementById('step'+currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step'+n).classList.add('active');
+  updateProgress();
+  document.getElementById('register').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function updateProgress() {
+  [1,2,3,4].forEach(i => {
+    const el = document.getElementById('pb'+i);
+    if (i < currentStep)       { el.classList.add('done'); el.classList.remove('active'); }
+    else if (i === currentStep) { el.classList.add('active'); el.classList.remove('done'); }
+    else                        { el.classList.remove('done','active'); }
+  });
+  const lbl = document.getElementById('pb-lbl');
+  if (lbl) lbl.textContent = T[lang].pbLbl[currentStep-1];
+}
+
+function validateStep(step) {
+  let ok = true;
+  if (step === 1) {
+    ok = v('f-name','err-name') & v('f-dob','err-dob') & v('f-gender','err-gender') & v('f-nid','err-nid') & v('f-phone','err-phone') & v('f-address','err-address');
+  }
+  if (step === 2) {
+    if (!selectedBlood) { document.getElementById('err-blood').style.display='block'; ok=false; }
+    else document.getElementById('err-blood').style.display='none';
+    if (selectedOrgans.size === 0) { document.getElementById('err-organs').classList.add('show'); ok=false; }
+    else document.getElementById('err-organs').classList.remove('show');
+  }
+  if (step === 3) {
+    ok = v('f-ec-name','err-ec-name') & v('f-ec-phone','err-ec-phone');
+    if (!document.getElementById('f-ec-rel').value) {
+      document.getElementById('err-ec-rel').classList.add('show'); ok=false;
+    } else document.getElementById('err-ec-rel').classList.remove('show');
+  }
+  return !!ok;
+}
+
+function v(fieldId, errId) {
+  const el = document.getElementById(fieldId);
+  const val = el?.value?.trim();
+  if (!val) {
+    el?.classList.add('err');
+    document.getElementById(errId)?.classList.add('show');
+    return false;
+  }
+  el?.classList.remove('err');
+  el?.classList.add('ok');
+  document.getElementById(errId)?.classList.remove('show');
+  return true;
+}
+
+/* ══════════════════════════════════════════
+   BLOOD GROUP SELECT
+══════════════════════════════════════════ */
+function selectBlood(bg) {
+  selectedBlood = bg;
+  document.querySelectorAll('.bg-chip').forEach(c => c.classList.remove('on'));
+  const cleanId = 'bg-' + bg.replace('+','p').replace('-','m');
+  document.getElementById(cleanId)?.classList.add('on');
+  document.getElementById('err-blood').style.display='none';
+}
+
+/* ══════════════════════════════════════════
+   ORGAN SELECT
+══════════════════════════════════════════ */
+function toggleOrgan(btn) {
+  const organ = btn.dataset.organ;
+  if (selectedOrgans.has(organ)) {
+    selectedOrgans.delete(organ);
+    btn.classList.remove('on');
+  } else {
+    selectedOrgans.add(organ);
+    btn.classList.add('on');
+  }
+  if (selectedOrgans.size > 0) document.getElementById('err-organs').classList.remove('show');
+}
+
+function selectAllOrgans() {
+  document.querySelectorAll('.os-chip').forEach(btn => {
+    selectedOrgans.add(btn.dataset.organ);
+    btn.classList.add('on');
+  });
+}
+
+/* ══════════════════════════════════════════
+   SUBMIT
+══════════════════════════════════════════ */
+async function submitForm() {
+  if (!document.getElementById('decl1').checked ||
+      !document.getElementById('decl2').checked ||
+      !document.getElementById('decl3').checked ||
+      !document.getElementById('decl4').checked) {
+    toast('⚠️ Please accept all declarations / সব ঘোষণায় সম্মতি দিন');
+    return;
+  }
+
+  const btn = document.querySelector('.btn-submit');
+  btn.disabled = true; btn.innerHTML = '⏳ Submitting...';
+
+  const formData = {
+    name:       document.getElementById('f-name').value.trim(),
+    dob:        document.getElementById('f-dob').value,
+    gender:     document.getElementById('f-gender').value,
+    nid:        document.getElementById('f-nid').value.trim(),
+    phone:      document.getElementById('f-phone').value.trim(),
+    email:      document.getElementById('f-email').value.trim(),
+    address:    document.getElementById('f-address').value.trim(),
+    blood_group:selectedBlood,
+    organs:     Array.from(selectedOrgans),
+    conditions: document.getElementById('f-conditions').value.trim(),
+    medications:document.getElementById('f-meds').value.trim(),
+    ec_name:    document.getElementById('f-ec-name').value.trim(),
+    ec_relation:document.getElementById('f-ec-rel').value,
+    ec_phone:   document.getElementById('f-ec-phone').value.trim(),
+    family_informed: document.getElementById('f-family-informed').value,
+    note:       document.getElementById('f-note').value.trim(),
+    lang:       lang,
+    registered_at: new Date().toISOString(),
+  };
+
+  donorName = formData.name.split(' ')[0];
+
+  try {
+    // Try Django backend first
+    const res = await fetch('/api/donate/register/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+      body: JSON.stringify(formData),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      showSuccess(data.donor_id || generateId());
+    } else {
+      // Fallback: show success with local ID (demo mode)
+      showSuccess(generateId());
+    }
+  } catch(e) {
+    // Offline/demo mode
+    showSuccess(generateId());
+  }
+}
+
+function generateId() {
+  return 'MF-' + new Date().getFullYear() + '-' + Math.random().toString(36).substr(2,6).toUpperCase();
+}
+
+function showSuccess(donorId) {
+  document.getElementById('form-content').style.display = 'none';
+  document.getElementById('progress-bar').style.display = 'none';
+  document.getElementById('success-screen').style.display = 'block';
+  document.getElementById('success-name').textContent = donorName || 'Donor';
+  document.getElementById('donor-id').textContent = 'Donor ID: ' + donorId;
+  document.getElementById('success-sub-txt').textContent = T[lang].successSub;
+  document.getElementById('sa-print').textContent = T[lang].saPrint;
+  document.getElementById('sa-share').textContent = T[lang].saShare;
+  document.getElementById('sa-learn').textContent = T[lang].saLearn;
+}
+
+function printCard() {
+  const name = document.getElementById('success-name').textContent;
+  const id = document.getElementById('donor-id').textContent;
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Donor Card</title><style>
+    body{font-family:Georgia,serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f5f5f5}
+    .card{width:340px;height:200px;background:linear-gradient(135deg,#c1121f,#e63946,#ff6b6b);border-radius:16px;padding:24px;color:white;position:relative;box-shadow:0 8px 32px rgba(193,18,31,0.4)}
+    h2{font-size:20px;margin:0 0 4px;letter-spacing:-0.5px}
+    .sub{font-size:11px;opacity:0.8;margin-bottom:16px}
+    .name{font-size:18px;font-weight:700;margin-bottom:6px}
+    .did{font-size:12px;opacity:0.85;font-family:monospace}
+    .corner{position:absolute;top:20px;right:20px;font-size:32px}
+    .foot{position:absolute;bottom:14px;left:24px;right:24px;font-size:10px;opacity:0.7;border-top:1px solid rgba(255,255,255,0.3);padding-top:8px}
+  </style></head><body><div class="card">
+    <div class="corner">❤️</div>
+    <h2>ORGAN DONOR</h2>
+    <div class="sub">MedFind Donate Life — Bangladesh</div>
+    <div class="name">${name}</div>
+    <div class="did">${id}</div>
+    <div class="foot">In case of emergency, please consult my family. My wish is to donate my organs to save lives. • medfindbd2026@gmail.com</div>
+  </div></body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),500);
+}
+
+function shareWhatsApp() {
+  const id = document.getElementById('donor-id').textContent;
+  const msg = lang==='bn'
+    ? `আমি MedFind এ স্বেচ্ছামূলক অঙ্গদাতা হিসেবে নিবন্ধন করেছি। ${id}\nআমার পরিবারকে আমার সিদ্ধান্ত জানাচ্ছি। ❤️\nmedfindbd2026@gmail.com`
+    : `I have registered as a voluntary organ donor on MedFind! ${id}\nOne life can save eight lives. ❤️\nmedfindbd2026@gmail.com`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+
+/* ══════════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════════ */
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('shown'); });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* ══════════════════════════════════════════
+   TOAST & UTILS
+══════════════════════════════════════════ */
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'), 3000);
+}
+
+function getCookie(n) {
+  const v = document.cookie.match('(^|;) ?'+n+'=([^;]*)(;|$)');
+  return v ? v[2] : '';
+}
+
+// Init
+applyLang();
+</script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Login to MedFind Bangladesh - Access your healthcare account securely.">
+<title>Login — MedFind Bangladesh</title>
+<link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* MedFind Brand Colors — Blue + Teal */
+  --ink:#05101e;
+  --blue:#1a56db;
+  --blue-d:#1344b4;
+  --teal:#0d9488;
+  --teal-l:#14b8a6;
+  --cyan:#06b6d4;
+  --t1:#f0f9ff;
+  --t2:#93c5fd;
+  --t3:#475569;
+  --border:rgba(255,255,255,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--t1);}
+
+/* ── BG ──────────────────────────────────────────────────────────── */
+#bgc{position:fixed;inset:0;z-index:0;}
+.mesh{position:fixed;inset:0;z-index:1;
+  background:
+    radial-gradient(ellipse 70% 65% at 12% 50%,rgba(26,86,219,.22),transparent 65%),
+    radial-gradient(ellipse 55% 60% at 88% 25%,rgba(13,148,136,.18),transparent 65%),
+    radial-gradient(ellipse 50% 40% at 55% 90%,rgba(6,182,212,.12),transparent 60%);}
+.ptc{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
+.pt{position:absolute;border-radius:50%;animation:rise linear infinite;}
+@keyframes rise{0%{transform:translateY(110vh);opacity:0}10%{opacity:1}85%{opacity:.4}100%{transform:translateY(-5vh);opacity:0}}
+
+/* ── LAYOUT ───────────────────────────────────────────────────────── */
+.screen{position:relative;z-index:10;height:100vh;display:grid;grid-template-columns:1.1fr .9fr;}
+
+/* ── LEFT ─────────────────────────────────────────────────────────── */
+.left{padding:2.5rem 3.5rem;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;}
+.lgrid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+  background-size:52px 52px;mask-image:radial-gradient(ellipse 85% 85% at 50% 50%,black 30%,transparent 100%);}
+
+/* LOGO */
+.logo{display:flex;align-items:center;gap:1rem;animation:fsr .6s ease both;}
+.logo-img{width:52px;height:52px;object-fit:contain;filter:drop-shadow(0 4px 14px rgba(13,148,136,.5));transition:.3s;}
+.logo-img:hover{transform:scale(1.05);}
+.logo-text .lname{font-size:1.65rem;font-weight:900;letter-spacing:-.02em;}
+.logo-text .lname .med{color:#fff;} .logo-text .lname .find{color:var(--teal-l);}
+.logo-text .ltag{font-size:.62rem;color:var(--t3);font-weight:500;letter-spacing:.3px;}
+
+/* HERO */
+.hero{flex:1;display:flex;flex-direction:column;justify-content:center;padding:1.5rem 0;}
+.badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(13,148,136,.12);border:1px solid rgba(13,148,136,.28);border-radius:30px;padding:.4rem 1rem;font-size:.72rem;font-weight:700;color:var(--teal-l);margin-bottom:1.5rem;animation:fsr .6s .1s ease both;}
+.badge::before{content:'';width:7px;height:7px;background:var(--teal-l);border-radius:50%;animation:dot 2s infinite;box-shadow:0 0 8px var(--teal-l);}
+@keyframes dot{0%,100%{opacity:1}50%{opacity:.2}}
+
+.htitle{font-size:3.1rem;font-weight:900;line-height:1.08;letter-spacing:-.035em;margin-bottom:1.1rem;animation:fsr .6s .15s ease both;}
+.htitle em{font-style:normal;background:linear-gradient(135deg,#38bdf8 0%,#5eead4 50%,#34d399 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hdesc{font-size:.97rem;color:rgba(240,249,255,.7);line-height:1.7;max-width:400px;margin-bottom:1.75rem;animation:fsr .6s .2s ease both;}
+
+.feats{display:flex;flex-direction:column;gap:.55rem;animation:fsr .6s .25s ease both;}
+.feat{display:flex;align-items:center;gap:.875rem;padding:.6rem .875rem;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.045);border-radius:11px;transition:.2s;}
+.feat:hover{background:rgba(255,255,255,.05);}
+.fic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.875rem;flex-shrink:0;}
+.ft{font-size:.82rem;color:rgba(240,249,255,.7);}
+.ft b{color:#e0f2fe;font-weight:700;}
+
+.sbar{display:flex;gap:2.5rem;border-top:1px solid var(--border);padding-top:1.5rem;animation:fsr .6s .3s ease both;}
+.sv{font-size:1.85rem;font-weight:800;background:linear-gradient(135deg,#f0f9ff,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sl{font-size:.7rem;color:var(--t3);font-weight:500;}
+
+/* ── RIGHT ────────────────────────────────────────────────────────── */
+.right{display:flex;align-items:center;justify-content:center;padding:2rem;position:relative;}
+.right::before{content:'';position:absolute;left:0;top:12%;bottom:12%;width:1px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.07) 35%,rgba(255,255,255,.07) 65%,transparent);}
+
+.lcard{width:100%;max-width:448px;animation:fsl .7s ease both;}
+.ch{margin-bottom:1.75rem;}
+.ct{font-size:1.95rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.4rem;}
+.cs{font-size:.875rem;color:rgba(240,249,255,.55);}
+
+/* ROLES */
+.rl-lbl{font-size:.68rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:.65rem;display:block;}
+.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem;margin-bottom:1.75rem;}
+.rp{border:1.5px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025);border-radius:11px;padding:.62rem .4rem;text-align:center;cursor:pointer;transition:.25s;position:relative;overflow:hidden;}
+.rp::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#1a56db,#0d9488);opacity:0;transition:.25s;z-index:0;}
+.rp:hover{border-color:rgba(13,148,136,.4);}
+.rp.on{border-color:transparent;box-shadow:0 0 0 1.5px rgba(13,148,136,.55),0 8px 22px rgba(13,148,136,.2);}
+.rp.on::after{opacity:1;}
+.rpi{position:relative;z-index:1;}
+.ric{font-size:1.05rem;margin-bottom:.25rem;display:block;}
+.rn{font-size:.68rem;font-weight:700;color:rgba(240,249,255,.6);}
+.rp.on .rn{color:#fff;}
+/* Super Admin hidden until 5-click logo */
+.rp[data-role="superadmin"]{display:none;}
+.rp[data-role="superadmin"].unlocked{display:block;}
+.sahint{display:none;font-size:.67rem;color:rgba(20,184,166,.75);text-align:center;margin-top:-.9rem;margin-bottom:.8rem;font-family:'JetBrains Mono',monospace;}
+.sahint.show{display:block;animation:fadeIn .4s ease;}
+
+/* FORM */
+.fstack{display:flex;flex-direction:column;gap:1rem;margin-bottom:1.15rem;}
+.fl{font-size:.72rem;font-weight:700;color:rgba(240,249,255,.6);display:block;margin-bottom:.4rem;}
+.iw{position:relative;}
+.iic{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-size:.8rem;color:var(--t3);pointer-events:none;transition:.25s;}
+.fi{width:100%;padding:.8rem 1rem .8rem 2.6rem;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.07);border-radius:11px;color:var(--t1);font-size:.875rem;font-family:'Outfit',sans-serif;outline:none;transition:.25s;}
+.fi::placeholder{color:var(--t3);}
+.fi:focus{background:rgba(255,255,255,.065);border-color:rgba(13,148,136,.55);box-shadow:0 0 0 3px rgba(13,148,136,.1);}
+.iw:focus-within .iic{color:var(--teal-l);}
+.eyeb{position:absolute;right:.875rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--t3);cursor:pointer;font-size:.8rem;transition:.2s;}
+.eyeb:hover{color:var(--t1);}
+.frow{display:flex;justify-content:flex-end;margin-top:.3rem;}
+.fla{font-size:.76rem;color:var(--teal-l);font-weight:600;text-decoration:none;transition:.2s;}
+.fla:hover{color:#5eead4;}
+
+/* ALERTS */
+.al{display:none;align-items:center;gap:.6rem;padding:.7rem .95rem;border-radius:10px;font-size:.8rem;margin-bottom:.875rem;}
+.al.vis{display:flex;animation:shk .35s ease;}
+.al.err{background:rgba(239,68,68,.09);border:1px solid rgba(239,68,68,.22);color:#fca5a5;}
+.al.ok{background:rgba(13,148,136,.09);border:1px solid rgba(13,148,136,.22);color:#5eead4;}
+@keyframes shk{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}60%{transform:translateX(5px)}}
+
+/* BTN */
+.sbtn{width:100%;padding:.875rem;background:linear-gradient(135deg,#1a56db,#0d9488);border:none;border-radius:12px;color:#fff;font-size:.95rem;font-weight:800;font-family:'Outfit',sans-serif;cursor:pointer;transition:.3s;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(26,86,219,.28);letter-spacing:-.01em;}
+.sbtn:hover{transform:translateY(-1px);box-shadow:0 14px 30px rgba(13,148,136,.35);}
+.sbtn:active{transform:translateY(0);}
+.sbtn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.bi{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:.6rem;}
+.sp{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none;position:relative;z-index:1;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PAYMENT BADGES */
+.pay-badges{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:1rem;padding:.75rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.055);border-radius:10px;}
+.pay-lbl{font-size:.62rem;color:var(--t3);width:100%;text-align:center;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.25rem;}
+.pbadge{display:flex;align-items:center;gap:.3rem;font-size:.68rem;font-weight:700;padding:.25rem .6rem;border-radius:7px;}
+.pbadge.bkash{background:rgba(224,15,64,.15);color:#ff6b8a;border:1px solid rgba(224,15,64,.25);}
+.pbadge.nagad{background:rgba(245,130,32,.12);color:#fbbf24;border:1px solid rgba(245,130,32,.25);}
+.pbadge.rocket{background:rgba(130,27,196,.12);color:#c084fc;border:1px solid rgba(130,27,196,.25);}
+.pbadge.card{background:rgba(26,86,219,.12);color:#93c5fd;border:1px solid rgba(26,86,219,.25);}
+.pbadge.ssl{background:rgba(13,148,136,.12);color:#5eead4;border:1px solid rgba(13,148,136,.25);}
+
+.div{display:flex;align-items:center;gap:.7rem;margin:1.1rem 0;color:var(--t3);font-size:.76rem;}
+.div::before,.div::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.055);}
+.regrow{text-align:center;font-size:.82rem;color:rgba(240,249,255,.45);}
+.regrow a{color:var(--teal-l);font-weight:700;text-decoration:none;transition:.2s;}
+.regrow a:hover{color:#5eead4;}
+
+/* DEMO */
+.dp{background:rgba(255,255,255,.018);border:1px solid rgba(255,255,255,.055);border-radius:11px;padding:.8rem;margin-top:1.1rem;}
+.dlbl{font-size:.65rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem;}
+.drow{display:flex;justify-content:space-between;align-items:center;padding:.25rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.drow:last-child{border-bottom:none;}
+.drole{font-size:.72rem;color:var(--t3);}
+.dcred{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--teal-l);background:rgba(13,148,136,.1);padding:.2rem .5rem;border-radius:6px;cursor:pointer;border:1px solid rgba(13,148,136,.18);transition:.2s;}
+.dcred:hover{background:rgba(13,148,136,.2);color:#5eead4;}
+
+@keyframes fsr{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fsl{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+@media(max-width:960px){.screen{grid-template-columns:1fr;}.left{display:none;}.right{padding:1.5rem;}.right::before{display:none;}html,body{height:auto;min-height:100vh;}body{overflow:auto;}}
+</style>
+</head>
+<body>
+<canvas id="bgc"></canvas>
+<div class="mesh"></div>
+<div class="ptc" id="ptc"></div>
+
+<div class="screen">
+  <!-- LEFT -->
+  <div class="left">
+    <div class="lgrid"></div>
+    <div class="logo">
+      <img class="logo-img" src="../assets/medfind-logo.png" alt="MedFind Bangladesh" style="width:52px;height:52px;object-fit:contain;">
+      <div class="logo-text">
+        <div class="lname"><span class="med">Med</span><span class="find">Find</span></div>
+        <div class="ltag">CARE YOU CAN TRUST</div>
+      </div>
+    </div>
+    <div class="hero">
+      <div class="badge">Bangladesh's #1 Digital Healthcare Platform</div>
+      <div class="htitle">Connecting <em>Patients</em><br>with <em>Better Care</em></div>
+      <div class="hdesc">Access 2,400+ verified doctors, book lab tests, manage beds, and conduct telemedicine consultations — all in one secure platform built for Bangladesh.</div>
+      <div class="feats">
+        <div class="feat"><div class="fic" style="background:rgba(26,86,219,.18);color:#93c5fd;"><i class="fas fa-user-md"></i></div><div class="ft"><b>2,400+</b> BMDC Verified Specialist Doctors</div></div>
+        <div class="feat"><div class="fic" style="background:rgba(13,148,136,.18);color:#5eead4;"><i class="fas fa-hospital"></i></div><div class="ft"><b>800+</b> Hospitals Across Bangladesh</div></div>
+        <div class="feat"><div class="fic" style="background:rgba(6,182,212,.15);color:#67e8f9;"><i class="fas fa-flask"></i></div><div class="ft"><b>50+</b> Lab Tests with Online Booking</div></div>
+        <div class="feat"><div class="fic" style="background:rgba(139,92,246,.15);color:#c4b5fd;"><i class="fas fa-video"></i></div><div class="ft"><b>HD Video</b> Telemedicine Consultations</div></div>
+        <div class="feat"><div class="fic" style="background:rgba(245,158,11,.12);color:#fcd34d;"><i class="fas fa-shield-halved"></i></div><div class="ft"><b>BMDC Verified</b> — 24/7 Secure Support</div></div>
+      </div>
+    </div>
+    <div class="sbar">
+      <div><div class="sv" id="c1">0</div><div class="sl">Patients Served</div></div>
+      <div><div class="sv" id="c2">0</div><div class="sl">Doctors</div></div>
+      <div><div class="sv" id="c3">0</div><div class="sl">Hospitals</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="lcard">
+      <div class="ch">
+        <div class="ct">Welcome Back 👋</div>
+        <div class="cs">Sign in to your MedFind account</div>
+      </div>
+
+      <span class="rl-lbl">Select your role</span>
+      <div class="rg" id="roleGrid">
+        <div class="rp on" data-role="patient" onclick="setRole('patient',this)"><div class="rpi"><span class="ric"><i class="fas fa-user"></i></span><div class="rn">Patient</div></div></div>
+        <div class="rp" data-role="doctor" onclick="setRole('doctor',this)"><div class="rpi"><span class="ric"><i class="fas fa-stethoscope"></i></span><div class="rn">Doctor</div></div></div>
+        <div class="rp" data-role="hospital_admin" onclick="setRole('hospital_admin',this)"><div class="rpi"><span class="ric"><i class="fas fa-hospital"></i></span><div class="rn">Hospital Admin</div></div></div>
+        <div class="rp" data-role="pharmacy_admin" onclick="setRole('pharmacy_admin',this)"><div class="rpi"><span class="ric"><i class="fas fa-pills"></i></span><div class="rn">Pharmacy</div></div></div>
+        <div class="rp" data-role="lab_admin" onclick="setRole('lab_admin',this)"><div class="rpi"><span class="ric"><i class="fas fa-flask"></i></span><div class="rn">Lab Admin</div></div></div>
+        <!-- SUPER ADMIN: hidden — click logo 5× to unlock -->
+        <div class="rp" data-role="superadmin" onclick="setRole('superadmin',this)"><div class="rpi"><span class="ric"><i class="fas fa-shield-halved"></i></span><div class="rn">Super Admin</div></div></div>
+      </div>
+      <div class="sahint" id="saHint">🔐 Developer access unlocked — Ahsanul Yamin</div>
+
+      <div class="al err" id="aErr"><i class="fas fa-circle-exclamation"></i><span id="aErrMsg"></span></div>
+      <div class="al ok" id="aOk"><i class="fas fa-circle-check"></i><span id="aOkMsg"></span></div>
+
+      <!-- LOGIN METHOD TOGGLE -->
+      <div style="display:flex;gap:8px;margin-bottom:1rem;">
+        <button class="login-method-btn active" id="btnMethodEmail" onclick="switchMethod('email')"><i class="fas fa-envelope"></i> Email</button>
+        <button class="login-method-btn" id="btnMethodPhone" onclick="switchMethod('phone')"><i class="fas fa-phone"></i> Phone</button>
+      </div>
+      <div class="fstack">
+        <div id="emailField">
+          <label class="fl">Email Address</label>
+          <div class="iw">
+            <i class="fas fa-envelope iic"></i>
+            <input type="email" id="EMAIL" class="fi" placeholder="your@email.com" autocomplete="email">
+          </div>
+        </div>
+        <div id="phoneField" style="display:none;">
+          <label class="fl">Phone Number</label>
+          <div style="display:flex;">
+            <span style="background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.1);border-right:none;border-radius:11px 0 0 11px;padding:0 .75rem;display:flex;align-items:center;font-size:.85rem;color:#475569;font-weight:600;">+880</span>
+            <input type="tel" id="PHONE" class="fi" style="border-radius:0 11px 11px 0;" placeholder="1XXXXXXXXX" maxlength="10" autocomplete="tel">
+          </div>
+        </div>
+        <div>
+          <label class="fl">Password</label>
+          <div class="iw">
+            <i class="fas fa-lock iic"></i>
+            <input type="password" id="PASS" class="fi" placeholder="Enter your password" autocomplete="current-password">
+            <button class="eyeb" type="button" onclick="togglePass()"><i class="fas fa-eye" id="eyeIc"></i></button>
+          </div>
+          <div class="frow"><a href="#" class="fla">Forgot password?</a></div>
+        </div>
+      </div>
+
+      <button class="sbtn" id="loginBtn" onclick="doLogin()">
+        <div class="bi" id="btnTxt"><i class="fas fa-arrow-right-to-bracket"></i> Sign In</div>
+        <div class="sp" id="sp"></div>
+      </button>
+
+      <!-- PAYMENT METHODS -->
+      <div class="pay-badges">
+        <div class="pay-lbl">Secure Payments via SSLCommerz</div>
+        <span class="pbadge bkash"><i class="fas fa-mobile-screen-button"></i> bKash</span>
+        <span class="pbadge nagad"><i class="fas fa-mobile-screen-button"></i> Nagad</span>
+        <span class="pbadge rocket"><i class="fas fa-mobile-screen-button"></i> Rocket</span>
+        <span class="pbadge card"><i class="fas fa-credit-card"></i> Card</span>
+        <span class="pbadge ssl"><i class="fas fa-lock"></i> SSLCommerz</span>
+      </div>
+
+      <div class="div">or</div>
+      <div class="regrow">Don't have an account? <a href="register.html">Create one free →</a></div>
+
+      <div class="dp">
+        <div class="dlbl">🔑 Demo Credentials — click to fill</div>
+        <div class="drow"><span class="drole">Doctor</span><code class="dcred" onclick="fillCreds('dr.karim@medfind.com','Doctor@123')">dr.karim@medfind.com / Doctor@123</code></div>
+        <div class="drow"><span class="drole">Patient</span><code class="dcred" onclick="fillCreds('patient@demo.com','Patient@123')">patient@demo.com / Patient@123</code></div>
+        <div class="drow" id="saCredRow" style="display:none;"><span class="drole" style="color:#5eead4">Super Admin</span><code class="dcred" style="border-color:rgba(13,148,136,.4);color:#5eead4" onclick="fillCreds('admin@medfind.com','Admin@12345')">admin@medfind.com / Admin@12345</code></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* BG CANVAS */
+const cv=document.getElementById('bgc'),cx=cv.getContext('2d');
+let W,H,nds=[];
+function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;}
+rsz();window.addEventListener('resize',rsz);
+for(let i=0;i<85;i++)nds.push({x:Math.random()*9999,y:Math.random()*9999,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5});
+(function loop(){
+  if(nds[0].x>9990)nds.forEach(n=>{n.x=Math.random()*W;n.y=Math.random()*H;});
+  cx.fillStyle='#05101e';cx.fillRect(0,0,W,H);
+  nds.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;cx.beginPath();cx.arc(n.x,n.y,n.r,0,Math.PI*2);cx.fillStyle='rgba(13,148,136,.45)';cx.fill();});
+  for(let i=0;i<nds.length;i++)for(let j=i+1;j<nds.length;j++){const dx=nds[i].x-nds[j].x,dy=nds[i].y-nds[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){cx.beginPath();cx.moveTo(nds[i].x,nds[i].y);cx.lineTo(nds[j].x,nds[j].y);cx.strokeStyle=`rgba(26,86,219,${.14*(1-d/120)})`;cx.lineWidth=.5;cx.stroke();}}
+  requestAnimationFrame(loop);
+})();
+
+/* PARTICLES */
+const pc=document.getElementById('ptc');
+for(let i=0;i<26;i++){const p=document.createElement('div');p.className='pt';p.style.cssText=`left:${Math.random()*100}%;width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;animation-duration:${Math.random()*12+7}s;animation-delay:${Math.random()*12}s;background:rgba(${Math.random()>.5?'13,148,136':'26,86,219'},.55);`;pc.appendChild(p);}
+
+/* COUNTERS */
+function cnt(el,end,sfx=''){let n=0,s=end/55;const iv=setInterval(()=>{n=Math.min(n+s,end);el.textContent=Math.round(n).toLocaleString()+sfx;if(n>=end)clearInterval(iv);},22);}
+setTimeout(()=>{cnt(document.getElementById('c1'),52000,'+');cnt(document.getElementById('c2'),2400,'+');cnt(document.getElementById('c3'),800,'+');},700);
+
+/* ROLE */
+const API_BASE=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://127.0.0.1:8000/api/v1':'/api/v1';
+const API=API_BASE;
+let role='patient';
+const DASH={superadmin:'../pages/admin/dashboard.html',hospital_admin:'../pages/hospital/admin.html',pharmacy_admin:'../pages/billing/pharmacy.html',lab_admin:'../pages/lab/tests.html',doctor:'../pages/doctors/schedule.html',patient:'../pages/patients/dashboard.html'};
+const PH={superadmin:'admin@medfind.com',doctor:'dr.karim@medfind.com',hospital_admin:'hospital@medfind.com',pharmacy_admin:'pharmacy@medfind.com',lab_admin:'lab@medfind.com',patient:'patient@email.com'};
+function setRole(r,el){role=r;document.querySelectorAll('.rp').forEach(b=>b.classList.remove('on'));el.classList.add('on');document.getElementById('EMAIL').placeholder=PH[r]||'your@email.com';}
+
+/* SECRET 5-CLICK LOGO = SUPER ADMIN */
+let clicks=0,timer=null;
+document.getElementById('logoBox').addEventListener('click',()=>{
+  clicks++;clearTimeout(timer);timer=setTimeout(()=>clicks=0,1800);
+  if(clicks>=5){
+    clicks=0;
+    const sa=document.querySelector('[data-role="superadmin"]');
+    if(!sa.classList.contains('unlocked')){
+      sa.classList.add('unlocked');
+      document.getElementById('saHint').classList.add('show');
+      document.getElementById('saCredRow').style.display='flex';
+    }
+  }
+});
+
+function togglePass(){const i=document.getElementById('PASS'),ic=document.getElementById('eyeIc');i.type=i.type==='password'?'text':'password';ic.className=i.type==='password'?'fas fa-eye':'fas fa-eye-slash';}
+function fillCreds(e,p){document.getElementById('EMAIL').value=e;document.getElementById('PASS').value=p;}
+function showAl(type,msg){document.getElementById('aErr').classList.remove('vis');document.getElementById('aOk').classList.remove('vis');const el=document.getElementById(type==='error'?'aErr':'aOk');document.getElementById(type==='error'?'aErrMsg':'aOkMsg').textContent=msg;el.classList.add('vis');}
+function setLoad(v){document.getElementById('btnTxt').style.display=v?'none':'flex';document.getElementById('sp').style.display=v?'block':'none';document.getElementById('loginBtn').disabled=v;}
+
+let loginMethod = 'email';
+function switchMethod(m){
+  loginMethod = m;
+  document.getElementById('emailField').style.display = m==='email'?'block':'none';
+  document.getElementById('phoneField').style.display = m==='phone'?'block':'none';
+  document.getElementById('btnMethodEmail').classList.toggle('active', m==='email');
+  document.getElementById('btnMethodPhone').classList.toggle('active', m==='phone');
+}
+
+async function doLogin(){
+  const pass = document.getElementById('PASS').value;
+  let identifier = '';
+  if(loginMethod === 'email'){
+    identifier = document.getElementById('EMAIL').value.trim();
+    if(!identifier){ showAl('error','Please enter your email address'); return; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier)){ showAl('error','Please enter a valid email address'); return; }
+  } else {
+    const phone = document.getElementById('PHONE').value.trim();
+    identifier = '+880' + phone;
+    if(!phone || phone.length < 10){ showAl('error','Please enter a valid 10-digit phone number'); return; }
+  }
+  if(!pass){ showAl('error','Please enter your password'); return; }
+  setLoad(true);
+  try{
+    const body = loginMethod==='email' ? {email:identifier,password:pass} : {phone:identifier,password:pass};
+    const res=await fetch(API+'/accounts/login/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await res.json();
+    if(data.success){localStorage.setItem('mf_token',data.token);localStorage.setItem('mf_user',JSON.stringify(data.user));showAl('success',`Welcome, ${data.user.full_name.split(' ')[0]}! Redirecting...`);setTimeout(()=>{window.location.href=DASH[data.user.role]||DASH.patient;},900);}
+    else{showAl('error',data.message||'Invalid credentials');setLoad(false);}
+  }catch(e){
+    // Demo fallback (both email and phone)
+    const demos = {
+      'admin@medfind.com':  {pw:'Admin@12345',role:'superadmin',name:'Ahsanul Yamin Babor'},
+      'dr.karim@medfind.com':{pw:'Doctor@123',role:'doctor',name:'Dr. Karim'},
+      'patient@demo.com':   {pw:'Patient@123',role:'patient',name:'Demo Patient'},
+      '+8801772172829':     {pw:'Admin@12345',role:'superadmin',name:'Ahsanul Yamin Babor'},
+    };
+    // Also check registered users from localStorage
+    const regUsers = JSON.parse(localStorage.getItem('mf_registered_users')||'{}');
+    const regUser = regUsers[identifier];
+    if(regUser && regUser.password === pass){
+      localStorage.setItem('mf_token','user_'+Date.now());
+      localStorage.setItem('mf_user',JSON.stringify({email:identifier,role:regUser.role||'patient',full_name:regUser.firstName+' '+regUser.lastName}));
+      showAl('success',`Welcome back, ${regUser.firstName}! Redirecting...`);
+      setTimeout(()=>{window.location.href=DASH[regUser.role||'patient']||DASH.patient;},900);
+      return;
+    }
+    const u=demos[identifier];
+    if(u&&u.pw===pass){localStorage.setItem('mf_token','demo_'+Date.now());localStorage.setItem('mf_user',JSON.stringify({email:identifier,role:u.role,full_name:u.name}));showAl('success',`Welcome, ${u.name.split(' ')[0]}! Redirecting...`);setTimeout(()=>{window.location.href=DASH[u.role]||DASH.patient;},900);}
+    else{showAl('error','Invalid credentials. Check email/phone and password.');setLoad(false);}
+  }
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+</script>
+</body>
+</html>

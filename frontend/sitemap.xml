@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://medfind.com.bd/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/symptoms/index.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/drugs/index.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/treatments/index.html</loc><priority>0.9</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/blood-donor/search.html</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/doctors/search.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/hospital/list.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/lab/tests.html</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/medfind-ai.html</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/health-articles.html</loc><priority>0.6</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/login.html</loc><priority>0.5</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/register.html</loc><priority>0.5</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/privacy.html</loc><priority>0.4</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/terms.html</loc><priority>0.4</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/medical-disclaimer.html</loc><priority>0.4</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/consent-forms.html</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://medfind.com.bd/pages/data-backup-policy.html</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+</urlset>

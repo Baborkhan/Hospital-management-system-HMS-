@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /pages/admin/
+Disallow: /pages/patients/
+Disallow: /pages/billing/
+Disallow: /pages/doctors/console.html
+Disallow: /pages/hospital/admin.html
+Disallow: /pages/hospital/bed-management.html
+
+# NOTE: Update this URL with your real domain before deployment
+Sitemap: https://medfind.com.bd/sitemap.xml
