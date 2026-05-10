@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin Panel — MedFind Bangladesh</title>
+<link rel="icon" type="image/png" href="../../assets/medfind-logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<style>
+:root{
+  --ink:#05101e;--panel:#07172b;--card:#0a1929;--blue:#1a56db;--teal:#0d9488;--teal-l:#14b8a6;
+  --t1:#f0f9ff;--t2:#93c5fd;--t3:#475569;--border:rgba(255,255,255,.07);
+  --red:#ef4444;--green:#10b981;--amber:#f59e0b;--purple:#8b5cf6;
+  --sidebar:220px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--t1);display:flex;min-height:100vh;}
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;}
+.sb-logo{padding:1.25rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.7rem;}
+.sb-logo img{width:34px;height:34px;object-fit:contain;}
+.sb-brand{font-size:1.1rem;font-weight:900;}.sb-brand .m{color:#fff;}.sb-brand .f{color:var(--teal-l);}
+.sb-role{font-size:.58rem;color:var(--t3);font-weight:600;letter-spacing:.4px;display:block;}
+.sb-nav{flex:1;padding:.75rem .6rem;overflow-y:auto;}
+.sb-section{font-size:.58rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;padding:.5rem .6rem .3rem;margin-top:.5rem;}
+.nav-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .75rem;border-radius:9px;cursor:pointer;transition:.18s;color:rgba(240,249,255,.5);font-size:.82rem;font-weight:600;margin-bottom:.18rem;position:relative;text-decoration:none;}
+.nav-item:hover{background:rgba(255,255,255,.04);color:rgba(240,249,255,.85);}
+.nav-item.active{background:linear-gradient(135deg,rgba(26,86,219,.3),rgba(13,148,136,.3));color:var(--teal-l);}
+.nav-item i{width:16px;text-align:center;font-size:.82rem;}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:.58rem;font-weight:700;padding:.15rem .45rem;border-radius:20px;min-width:18px;text-align:center;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.sb-bottom{padding:.75rem .6rem;border-top:1px solid var(--border);}
+.sb-user{display:flex;align-items:center;gap:.6rem;padding:.5rem .6rem;}
+.sb-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--teal));display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;}
+.sb-uname{font-size:.78rem;font-weight:600;color:var(--t1);}
+.sb-uemail{font-size:.6rem;color:var(--t3);}
+.logout-btn{display:flex;align-items:center;gap:.55rem;padding:.5rem .75rem;border-radius:8px;color:rgba(239,68,68,.75);font-size:.78rem;font-weight:600;cursor:pointer;transition:.18s;background:none;border:none;font-family:'Outfit',sans-serif;width:100%;}
+.logout-btn:hover{background:rgba(239,68,68,.08);color:var(--red);}
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--panel);border-bottom:1px solid var(--border);padding:.85rem 1.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.tb-title{font-size:1.1rem;font-weight:700;}
+.tb-right{display:flex;align-items:center;gap:.75rem;}
+.tb-notif{position:relative;width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.82rem;color:var(--t3);transition:.18s;}
+.tb-notif:hover{background:rgba(255,255,255,.08);color:var(--t1);}
+.notif-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid var(--panel);}
+.tb-admin-tag{font-size:.68rem;background:rgba(139,92,246,.15);color:#c4b5fd;border:1px solid rgba(139,92,246,.25);border-radius:20px;padding:.25rem .75rem;font-weight:700;}
+/* CONTENT */
+.content{padding:1.75rem;flex:1;}
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;position:relative;overflow:hidden;transition:.22s;}
+.stat-card:hover{border-color:rgba(255,255,255,.12);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.stat-card.blue::before{background:linear-gradient(90deg,#1a56db,#3b82f6);}
+.stat-card.teal::before{background:linear-gradient(90deg,#0d9488,#14b8a6);}
+.stat-card.amber::before{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+.stat-card.red::before{background:linear-gradient(90deg,#ef4444,#f87171);}
+.stat-card.purple::before{background:linear-gradient(90deg,#8b5cf6,#a78bfa);}
+.stat-card.green::before{background:linear-gradient(90deg,#10b981,#34d399);}
+.stat-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:.95rem;margin-bottom:.9rem;}
+.stat-n{font-size:1.85rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.2rem;}
+.stat-l{font-size:.72rem;color:var(--t3);font-weight:600;}
+.stat-change{font-size:.68rem;margin-top:.35rem;display:flex;align-items:center;gap:.3rem;}
+.stat-change.up{color:var(--green);}
+.stat-change.pend{color:var(--amber);}
+/* SECTION */
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.sec-title{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:.6rem;}
+.sec-title i{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.75rem;}
+.sec-action{font-size:.75rem;color:var(--teal-l);font-weight:600;cursor:pointer;background:none;border:none;font-family:'Outfit',sans-serif;}
+/* PENDING CARDS */
+.pending-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem;margin-bottom:1.75rem;}
+.pend-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;transition:.22s;}
+.pend-card:hover{border-color:rgba(255,255,255,.12);}
+.pend-header{display:flex;align-items:flex-start;gap:.85rem;margin-bottom:.9rem;}
+.pend-avatar{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.pend-name{font-size:.92rem;font-weight:700;margin-bottom:.18rem;}
+.pend-meta{font-size:.7rem;color:var(--t3);}
+.pend-type{margin-left:auto;font-size:.62rem;font-weight:700;padding:.2rem .55rem;border-radius:20px;}
+.pend-type.doctor{background:rgba(139,92,246,.15);color:#c4b5fd;border:1px solid rgba(139,92,246,.25);}
+.pend-type.hospital{background:rgba(5,150,105,.15);color:#5eead4;border:1px solid rgba(5,150,105,.25);}
+.pend-details{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.9rem;}
+.pend-detail{font-size:.72rem;color:var(--t3);}
+.pend-detail b{color:var(--t1);font-weight:600;}
+.pend-actions{display:flex;gap:.55rem;}
+.btn-approve{flex:1;padding:.58rem;background:rgba(16,185,129,.14);border:1.5px solid rgba(16,185,129,.3);border-radius:9px;color:#34d399;font-size:.78rem;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:.4rem;}
+.btn-approve:hover{background:rgba(16,185,129,.25);}
+.btn-reject{flex:1;padding:.58rem;background:rgba(239,68,68,.1);border:1.5px solid rgba(239,68,68,.25);border-radius:9px;color:#fca5a5;font-size:.78rem;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:.4rem;}
+.btn-reject:hover{background:rgba(239,68,68,.18);}
+.btn-view{padding:.58rem .85rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;color:var(--t3);font-size:.78rem;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;transition:.2s;}
+.btn-view:hover{color:var(--t1);border-color:rgba(255,255,255,.12);}
+/* TABLE */
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.75rem;}
+.table-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+.search-box{flex:1;min-width:180px;position:relative;}
+.search-box input{width:100%;padding:.5rem .9rem .5rem 2.2rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;color:var(--t1);font-size:.8rem;font-family:'Outfit',sans-serif;outline:none;transition:.2s;}
+.search-box input:focus{border-color:rgba(13,148,136,.4);}
+.search-box i{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);font-size:.75rem;color:var(--t3);}
+.filter-sel{padding:.48rem .75rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;color:var(--t1);font-size:.78rem;font-family:'Outfit',sans-serif;outline:none;cursor:pointer;}
+.filter-sel option{background:#0a1929;}
+table{width:100%;border-collapse:collapse;}
+th{padding:.75rem 1.25rem;text-align:left;font-size:.68rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:.82rem 1.25rem;font-size:.82rem;border-bottom:1px solid rgba(255,255,255,.035);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+.role-tag{display:inline-flex;align-items:center;gap:.32rem;font-size:.65rem;font-weight:700;padding:.2rem .55rem;border-radius:20px;}
+.role-tag.patient{background:rgba(26,86,219,.13);color:#93c5fd;border:1px solid rgba(26,86,219,.22);}
+.role-tag.doctor{background:rgba(139,92,246,.13);color:#c4b5fd;border:1px solid rgba(139,92,246,.22);}
+.role-tag.hospital{background:rgba(5,150,105,.13);color:#5eead4;border:1px solid rgba(5,150,105,.22);}
+.status-tag{display:inline-flex;align-items:center;gap:.32rem;font-size:.65rem;font-weight:700;padding:.2rem .55rem;border-radius:20px;}
+.status-tag.active{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.22);}
+.status-tag.pending{background:rgba(245,158,11,.12);color:#fcd34d;border:1px solid rgba(245,158,11,.22);}
+.status-tag.rejected{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.2);}
+.action-btns{display:flex;gap:.38rem;}
+.act-btn{padding:.28rem .58rem;border-radius:7px;font-size:.68rem;font-weight:700;cursor:pointer;border:none;font-family:'Outfit',sans-serif;transition:.18s;}
+.act-btn.approve{background:rgba(16,185,129,.14);color:#34d399;border:1px solid rgba(16,185,129,.25);}
+.act-btn.approve:hover{background:rgba(16,185,129,.25);}
+.act-btn.reject{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.2);}
+.act-btn.reject:hover{background:rgba(239,68,68,.2);}
+.act-btn.view{background:rgba(255,255,255,.04);color:var(--t3);border:1px solid var(--border);}
+.act-btn.view:hover{color:var(--t1);}
+/* COMMISSION TABLE */
+.commission-row td:last-child{color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:700;}
+/* REVENUE CARD */
+.rev-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.75rem;}
+.rev-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;}
+.rev-title{font-size:.78rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.75rem;}
+.rev-n{font-size:2rem;font-weight:800;color:var(--green);letter-spacing:-.02em;}
+.rev-sub{font-size:.72rem;color:var(--t3);margin-top:.3rem;}
+.rev-breakdown{margin-top:.85rem;display:flex;flex-direction:column;gap:.42rem;}
+.rev-line{display:flex;justify-content:space-between;font-size:.75rem;}
+.rev-key{color:var(--t3);}
+.rev-val{font-weight:700;color:var(--t1);}
+/* TOAST */
+.toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;}
+.toast{padding:.7rem 1.1rem;border-radius:10px;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:.55rem;animation:slideIn .3s ease;min-width:240px;box-shadow:0 8px 24px rgba(0,0,0,.35);}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast.ok{background:#064e3b;border:1px solid rgba(16,185,129,.3);color:#34d399;}
+.toast.err{background:#450a0a;border:1px solid rgba(239,68,68,.3);color:#fca5a5;}
+.toast.info{background:#1e3a5f;border:1px solid rgba(59,130,246,.3);color:#93c5fd;}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:center;justify-content:center;padding:1.5rem;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--panel);border:1px solid var(--border);border-radius:18px;width:100%;max-width:520px;max-height:85vh;overflow-y:auto;padding:1.75rem;}
+.modal-title{font-size:1.1rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;}
+.modal-close{background:none;border:none;color:var(--t3);cursor:pointer;font-size:.95rem;}
+.modal-field{margin-bottom:.75rem;}
+.modal-label{font-size:.65rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.28rem;}
+.modal-value{font-size:.85rem;color:var(--t1);word-break:break-word;}
+.modal-actions{display:flex;gap:.65rem;margin-top:1.25rem;}
+.modal-reject-reason{width:100%;padding:.65rem .9rem;background:rgba(255,255,255,.04);border:1.5px solid rgba(239,68,68,.25);border-radius:9px;color:var(--t1);font-size:.82rem;font-family:'Outfit',sans-serif;outline:none;resize:vertical;min-height:80px;margin-top:.75rem;}
+/* EMPTY */
+.empty-state{padding:3rem;text-align:center;color:var(--t3);}
+.empty-state i{font-size:2rem;margin-bottom:.75rem;display:block;}
+.empty-state p{font-size:.85rem;}
+/* SECTION PANELS */
+.panel{display:none;}.panel.active{display:block;}
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;padding:2rem;gap:.6rem;color:var(--t3);font-size:.85rem;}
+.loading-spin{width:20px;height:20px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--teal-l);border-radius:50%;animation:spin .6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ADS SECTION */
+.ad-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:.75rem;display:flex;align-items:center;gap:1rem;}
+.ad-icon{width:44px;height:44px;border-radius:12px;background:rgba(245,158,11,.12);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fcd34d;flex-shrink:0;}
+.ad-info{flex:1;}
+.ad-name{font-size:.88rem;font-weight:700;margin-bottom:.18rem;}
+.ad-meta{font-size:.7rem;color:var(--t3);}
+.ad-status{font-size:.68rem;font-weight:700;padding:.22rem .6rem;border-radius:20px;}
+.ad-status.live{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.22);}
+.ad-status.scheduled{background:rgba(245,158,11,.12);color:#fcd34d;border:1px solid rgba(245,158,11,.22);}
+@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr);}  .pending-grid{grid-template-columns:1fr;}.rev-grid{grid-template-columns:1fr;}}
+@media(max-width:768px){.sidebar{width:60px;}.sidebar .sb-brand,.sidebar .sb-role,.sidebar .nav-item span,.sidebar .sb-uname,.sidebar .sb-uemail,.sidebar .sb-section{display:none;}.sidebar .sb-logo{padding:1rem .7rem;justify-content:center;}.nav-item{justify-content:center;padding:.6rem;}.main{margin-left:60px;}.stats-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <img src="../../assets/medfind-logo.png" alt="MedFind">
+    <div><div class="sb-brand"><span class="m">Med</span><span class="f">Find</span></div><span class="sb-role">ADMIN PANEL</span></div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Main</div>
+    <a class="nav-item active" onclick="showPanel('dashboard')" href="#"><i class="fas fa-gauge-high"></i><span>Dashboard</span></a>
+    <a class="nav-item" onclick="showPanel('pending')" href="#"><i class="fas fa-clock"></i><span>Pending Approvals</span><span class="nav-badge" id="pendingCount">0</span></a>
+
+    <div class="sb-section">Users</div>
+    <a class="nav-item" onclick="showPanel('patients')" href="#"><i class="fas fa-users"></i><span>All Patients</span></a>
+    <a class="nav-item" onclick="showPanel('doctors')" href="#"><i class="fas fa-stethoscope"></i><span>Doctors</span></a>
+    <a class="nav-item" onclick="showPanel('hospitals')" href="#"><i class="fas fa-hospital"></i><span>Hospitals</span></a>
+
+    <div class="sb-section">Revenue</div>
+    <a class="nav-item" onclick="showPanel('commission')" href="#"><i class="fas fa-percent"></i><span>Commission (5%)</span></a>
+    <a class="nav-item" onclick="showPanel('ads')" href="#"><i class="fas fa-rectangle-ad"></i><span>Advertisements</span></a>
+
+    <div class="sb-section">System</div>
+    <a class="nav-item" onclick="showPanel('activity')" href="#"><i class="fas fa-list-check"></i><span>Login Activity</span></a>
+    <a class="nav-item" href="settings.html"><i class="fas fa-gear"></i><span>Settings</span></a>
+  </nav>
+  <div class="sb-bottom">
+    <div class="sb-user">
+      <div class="sb-avatar" id="adminAvatar">A</div>
+      <div><div class="sb-uname" id="adminName">Admin</div><div class="sb-uemail" id="adminEmail">admin@medfind.com</div></div>
+    </div>
+    <button class="logout-btn" onclick="logout()"><i class="fas fa-right-from-bracket"></i><span>Logout</span></button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-title" id="topbarTitle">Dashboard Overview</div>
+    <div class="tb-right">
+      <div class="tb-notif" id="notifBtn"><i class="fas fa-bell"></i><div class="notif-dot" id="notifDot" style="display:none;"></div></div>
+      <div class="tb-admin-tag"><i class="fas fa-shield-halved"></i> Super Admin</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- ═══ DASHBOARD PANEL ═══ -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="stat-icon" style="background:rgba(26,86,219,.15);color:#93c5fd;"><i class="fas fa-users"></i></div>
+          <div class="stat-n" id="s-patients">0</div>
+          <div class="stat-l">Total Patients</div>
+          <div class="stat-change up"><i class="fas fa-arrow-trend-up"></i> <span id="s-patients-delta">Loading...</span></div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-icon" style="background:rgba(139,92,246,.15);color:#c4b5fd;"><i class="fas fa-stethoscope"></i></div>
+          <div class="stat-n" id="s-doctors">0</div>
+          <div class="stat-l">Active Doctors</div>
+          <div class="stat-change up"><i class="fas fa-arrow-trend-up"></i> <span id="s-doctors-delta">Loading...</span></div>
+        </div>
+        <div class="stat-card teal">
+          <div class="stat-icon" style="background:rgba(13,148,136,.15);color:#5eead4;"><i class="fas fa-hospital"></i></div>
+          <div class="stat-n" id="s-hospitals">0</div>
+          <div class="stat-l">Hospitals</div>
+          <div class="stat-change up"><i class="fas fa-arrow-trend-up"></i> <span id="s-hospitals-delta">Loading...</span></div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-icon" style="background:rgba(245,158,11,.12);color:#fcd34d;"><i class="fas fa-clock"></i></div>
+          <div class="stat-n" id="s-pending">0</div>
+          <div class="stat-l">Pending Approvals</div>
+          <div class="stat-change pend"><i class="fas fa-triangle-exclamation"></i> Requires action</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon" style="background:rgba(16,185,129,.12);color:#34d399;"><i class="fas fa-bangladeshi-taka-sign"></i></div>
+          <div class="stat-n" id="s-revenue">৳0</div>
+          <div class="stat-l">Total Revenue</div>
+          <div class="stat-change up"><i class="fas fa-arrow-trend-up"></i> 5% commission</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-icon" style="background:rgba(239,68,68,.1);color:#fca5a5;"><i class="fas fa-calendar-check"></i></div>
+          <div class="stat-n" id="s-appts">0</div>
+          <div class="stat-l">Total Appointments</div>
+          <div class="stat-change up"><i class="fas fa-arrow-trend-up"></i> <span id="s-appts-delta">All time</span></div>
+        </div>
+      </div>
+
+      <!-- PENDING QUICK VIEW -->
+      <div class="sec-header">
+        <div class="sec-title"><i class="fas fa-clock" style="background:rgba(245,158,11,.15);color:#fcd34d;"></i> Pending Approvals</div>
+        <button class="sec-action" onclick="showPanel('pending')">View all <i class="fas fa-arrow-right"></i></button>
+      </div>
+      <div class="pending-grid" id="dashPending">
+        <div class="loading"><div class="loading-spin"></div> Loading pending registrations...</div>
+      </div>
+
+      <!-- RECENT ACTIVITY -->
+      <div class="sec-header" style="margin-top:.5rem;">
+        <div class="sec-title"><i class="fas fa-list-check" style="background:rgba(26,86,219,.15);color:#93c5fd;"></i> Recent Login Activity</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>User</th><th>Role</th><th>Login Time</th><th>Provider</th><th>Status</th></tr></thead>
+          <tbody id="activityTable"><tr><td colspan="5" class="loading"><div class="loading-spin"></div> Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ PENDING PANEL ═══ -->
+    <div class="panel" id="panel-pending">
+      <div class="sec-header">
+        <div class="sec-title"><i class="fas fa-clock" style="background:rgba(245,158,11,.15);color:#fcd34d;"></i> All Pending Registrations</div>
+        <button class="sec-action" onclick="loadPending()"><i class="fas fa-rotate"></i> Refresh</button>
+      </div>
+      <div class="pending-grid" id="allPending">
+        <div class="loading"><div class="loading-spin"></div> Loading...</div>
+      </div>
+    </div>
+
+    <!-- ═══ PATIENTS PANEL ═══ -->
+    <div class="panel" id="panel-patients">
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search patients..." oninput="filterTable('patientsTable',this.value)"></div>
+          <button class="sec-action" style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.46rem .85rem;cursor:pointer;" onclick="exportCSV('patients')"><i class="fas fa-download"></i> Export</button>
+        </div>
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Blood</th><th>Registered</th><th>Actions</th></tr></thead>
+          <tbody id="patientsTable"><tr><td colspan="7" class="loading"><div class="loading-spin"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ DOCTORS PANEL ═══ -->
+    <div class="panel" id="panel-doctors">
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search doctors..." oninput="filterTable('doctorsTable',this.value)"></div>
+          <select class="filter-sel" onchange="filterByStatus('doctorsTable',this.value)">
+            <option value="">All Status</option><option value="active">Active</option><option value="pending">Pending</option><option value="rejected">Rejected</option>
+          </select>
+        </div>
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th>Specialization</th><th>BMDC</th><th>Hospital</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="doctorsTable"><tr><td colspan="7" class="loading"><div class="loading-spin"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ HOSPITALS PANEL ═══ -->
+    <div class="panel" id="panel-hospitals">
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search hospitals..." oninput="filterTable('hospitalsTable',this.value)"></div>
+        </div>
+        <table>
+          <thead><tr><th>#</th><th>Hospital Name</th><th>Type</th><th>District</th><th>Contact</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="hospitalsTable"><tr><td colspan="7" class="loading"><div class="loading-spin"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ COMMISSION PANEL ═══ -->
+    <div class="panel" id="panel-commission">
+      <div class="rev-grid">
+        <div class="rev-card">
+          <div class="rev-title">💰 Total Commission Earned</div>
+          <div class="rev-n" id="totalRevenue">৳0</div>
+          <div class="rev-sub">5% per appointment · all time</div>
+          <div class="rev-breakdown">
+            <div class="rev-line"><span class="rev-key">This Month</span><span class="rev-val" id="monthRevenue">৳0</span></div>
+            <div class="rev-line"><span class="rev-key">This Week</span><span class="rev-val" id="weekRevenue">৳0</span></div>
+            <div class="rev-line"><span class="rev-key">Pending Payouts</span><span class="rev-val" style="color:var(--amber);" id="pendingRevenue">৳0</span></div>
+          </div>
+        </div>
+        <div class="rev-card">
+          <div class="rev-title">📊 Revenue Breakdown</div>
+          <div class="rev-breakdown" style="gap:.6rem;">
+            <div class="rev-line"><span class="rev-key">Appointment Commissions</span><span class="rev-val" id="apptRevenue">৳0</span></div>
+            <div class="rev-line"><span class="rev-key">Advertisement Revenue</span><span class="rev-val" id="adRevenue">৳0</span></div>
+            <div class="rev-line"><span class="rev-key">Premium Listings</span><span class="rev-val" id="premRevenue">৳0</span></div>
+          </div>
+          <div style="margin-top:1rem;padding:.75rem;background:rgba(13,148,136,.06);border:1px solid rgba(13,148,136,.15);border-radius:10px;font-size:.75rem;color:rgba(240,249,255,.6);line-height:1.6;">
+            <b style="color:var(--teal-l);">Commission Model:</b> MedFind earns <b style="color:var(--t1);">5%</b> from each appointment fee collected from hospitals/doctors. Payments are processed via SSLCommerz (bKash, Nagad, Rocket, Card).
+          </div>
+        </div>
+      </div>
+      <div class="sec-header">
+        <div class="sec-title"><i class="fas fa-receipt" style="background:rgba(16,185,129,.12);color:#34d399;"></i> Commission Transactions</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Patient</th><th>Doctor</th><th>Hospital</th><th>Appointment Fee</th><th>Commission (5%)</th><th>Status</th></tr></thead>
+          <tbody id="commissionTable"><tr><td colspan="7" class="loading"><div class="loading-spin"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ ADS PANEL ═══ -->
+    <div class="panel" id="panel-ads">
+      <div class="sec-header">
+        <div class="sec-title"><i class="fas fa-rectangle-ad" style="background:rgba(245,158,11,.12);color:#fcd34d;"></i> Advertisement Management</div>
+        <button class="sec-action" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:8px;padding:.46rem .85rem;cursor:pointer;color:#fcd34d;"><i class="fas fa-plus"></i> Add Campaign</button>
+      </div>
+      <div id="adsList">
+        <div class="ad-card">
+          <div class="ad-icon"><i class="fas fa-hospital"></i></div>
+          <div class="ad-info"><div class="ad-name">Square Hospital — Premium Listing</div><div class="ad-meta">Campaign · Dhaka · ৳5,000/month · Started Jan 2026</div></div>
+          <div class="ad-status live">Live</div>
+        </div>
+        <div class="ad-card">
+          <div class="ad-icon"><i class="fas fa-stethoscope"></i></div>
+          <div class="ad-info"><div class="ad-name">Dr. Razia Sultana — Featured Doctor</div><div class="ad-meta">Promotion · Gynecology · ৳2,500/month · Starts Jun 2026</div></div>
+          <div class="ad-status scheduled">Scheduled</div>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem;padding:1rem 1.25rem;background:var(--card);border:1px solid var(--border);border-radius:14px;font-size:.82rem;color:rgba(240,249,255,.55);line-height:1.7;">
+        <b style="color:var(--t1);">Ad Pricing (Hospital/Doctor Admins):</b><br>
+        · Featured Doctor Listing — ৳2,500/month<br>
+        · Hospital Banner Ad — ৳5,000/month<br>
+        · Homepage Spotlight — ৳10,000/month<br>
+        · Search Result Priority — ৳3,000/month
+      </div>
+    </div>
+
+    <!-- ═══ ACTIVITY PANEL ═══ -->
+    <div class="panel" id="panel-activity">
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search by user or role..." oninput="filterTable('activityTable2',this.value)"></div>
+          <select class="filter-sel">
+            <option>All Roles</option><option>patient</option><option>doctor</option><option>hospital_admin</option><option>admin</option>
+          </select>
+        </div>
+        <table>
+          <thead><tr><th>User</th><th>Role</th><th>Login Time</th><th>Auth Provider</th><th>IP / Device</th><th>Status</th></tr></thead>
+          <tbody id="activityTable2"><tr><td colspan="6" class="loading"><div class="loading-spin"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-bg" id="detailModal">
+  <div class="modal">
+    <div class="modal-title"><span id="modalTitle">Registration Details</span><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+    <div id="modalContent"></div>
+    <textarea class="modal-reject-reason" id="rejectReason" placeholder="Reason for rejection (required for reject)..." style="display:none;"></textarea>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="../../assets/js/firebase-config.js"></script>
+<script src="../../assets/js/firestore.js"></script>
+<script>
+/* ── FIREBASE ── */
+let fbAuth=null,fbDB=null;
+try{if(!firebase.apps.length)firebase.initializeApp(window.MEDFIND_FIREBASE||{});fbAuth=firebase.auth();fbDB=firebase.firestore();console.log('%c✅ Admin Firebase connected','color:#34d399;font-weight:bold');}catch(e){console.warn('Firebase:',e);}
+
+/* ── AUTH GUARD ── */
+const adminUser=JSON.parse(localStorage.getItem('mf_user')||'null');
+const adminToken=localStorage.getItem('mf_token');
+if(!adminUser||!adminToken||(adminUser.role!=='admin'&&adminUser.role!=='superadmin')){
+  window.location.href='../login.html';
+}
+document.getElementById('adminName').textContent=adminUser?.full_name||'Admin';
+document.getElementById('adminEmail').textContent=adminUser?.email||'';
+document.getElementById('adminAvatar').textContent=(adminUser?.full_name||'A')[0].toUpperCase();
+
+function logout(){localStorage.removeItem('mf_token');localStorage.removeItem('mf_user');if(fbAuth)fbAuth.signOut().catch(()=>{});window.location.href='../login.html';}
+
+/* ── PANEL SWITCH ── */
+const PANEL_TITLES={dashboard:'Dashboard Overview',pending:'Pending Approvals',patients:'All Patients',doctors:'All Doctors',hospitals:'All Hospitals',commission:'Commission & Revenue',ads:'Advertisement Management',activity:'Login Activity'};
+let currentPanel='dashboard';
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"))n.classList.add('active');});
+  document.getElementById('topbarTitle').textContent=PANEL_TITLES[id]||id;
+  currentPanel=id;
+  if(id==='pending'||id==='dashboard')loadPending();
+  if(id==='patients')loadUsers('patient','patientsTable');
+  if(id==='doctors')loadPendingDoctors();
+  if(id==='hospitals')loadPendingHospitals();
+  if(id==='commission')loadCommission();
+  if(id==='activity')loadActivity('activityTable2');
+}
+
+/* ── TOAST ── */
+function toast(msg,type='ok'){
+  const t=document.createElement('div');t.className=`toast ${type}`;
+  const icons={ok:'fa-circle-check',err:'fa-circle-exclamation',info:'fa-circle-info'};
+  t.innerHTML=`<i class="fas ${icons[type]||'fa-circle-check'}"></i>${msg}`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(()=>t.remove(),3500);
+}
+
+/* ── STATS ── */
+async function loadStats(){
+  if(!fbDB){loadDemoStats();return;}
+  try{
+    const [usersSnap,pendingSnap,apptSnap]=await Promise.all([
+      fbDB.collection('users').get(),
+      fbDB.collection('pending_registrations').where('status','==','pending').get(),
+      fbDB.collection('appointments').get()
+    ]);
+    const users=usersSnap.docs.map(d=>d.data());
+    const patients=users.filter(u=>u.role==='patient').length;
+    const doctors=users.filter(u=>u.role==='doctor'&&u.isActive).length;
+    const hospitals=users.filter(u=>u.role==='hospital_admin'&&u.isActive).length;
+    const pending=pendingSnap.size;
+    const appts=apptSnap.size;
+    const revenue=apptSnap.docs.reduce((s,d)=>{const fee=d.data().consultation_fee||500;return s+fee*.05;},0);
+
+    animateNum('s-patients',patients);animateNum('s-doctors',doctors);animateNum('s-hospitals',hospitals);
+    animateNum('s-pending',pending);animateNum('s-appts',appts);
+    document.getElementById('s-revenue').textContent='৳'+Math.round(revenue).toLocaleString();
+    document.getElementById('pendingCount').textContent=pending;
+    if(pending>0)document.getElementById('notifDot').style.display='block';
+    document.getElementById('s-patients-delta').textContent=patients+' registered';
+    document.getElementById('s-doctors-delta').textContent=doctors+' verified';
+    document.getElementById('s-hospitals-delta').textContent=hospitals+' active';
+  }catch(e){loadDemoStats();}
+}
+function loadDemoStats(){
+  animateNum('s-patients',1248);animateNum('s-doctors',47);animateNum('s-hospitals',12);
+  animateNum('s-pending',3);animateNum('s-appts',892);
+  document.getElementById('s-revenue').textContent='৳44,600';
+  document.getElementById('pendingCount').textContent='3';
+  document.getElementById('notifDot').style.display='block';
+  document.getElementById('s-patients-delta').textContent='1,248 registered';
+  document.getElementById('s-doctors-delta').textContent='47 verified';
+  document.getElementById('s-hospitals-delta').textContent='12 active';
+}
+function animateNum(id,end){let n=0,s=end/50;const el=document.getElementById(id);const iv=setInterval(()=>{n=Math.min(n+s,end);el.textContent=Math.round(n);if(n>=end)clearInterval(iv);},20);}
+
+/* ── PENDING REGISTRATIONS ── */
+let pendingData=[];
+async function loadPending(){
+  const containers=['dashPending','allPending'];
+  containers.forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="loading"><div class="loading-spin"></div> Loading...</div>';});
+
+  if(!fbDB){renderDemoPending();return;}
+  try{
+    const snap=await fbDB.collection('pending_registrations').where('status','==','pending').orderBy('createdAt','desc').get();
+    pendingData=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderPending(pendingData);
+    document.getElementById('pendingCount').textContent=pendingData.length;
+  }catch(e){renderDemoPending();}
+}
+
+function renderPending(items){
+  const html=items.length===0
+    ?'<div class="empty-state"><i class="fas fa-check-circle" style="color:var(--green);"></i><p>No pending registrations</p></div>'
+    :items.map(item=>pendingCard(item)).join('');
+  ['dashPending','allPending'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html;});
+}
+
+function pendingCard(item){
+  const isDoc=item.type==='doctor';
+  return `<div class="pend-card" id="pc-${item.id}">
+    <div class="pend-header">
+      <div class="pend-avatar" style="background:${isDoc?'rgba(139,92,246,.15)':'rgba(5,150,105,.12)'};font-size:1.3rem;">${isDoc?'👨‍⚕️':'🏥'}</div>
+      <div>
+        <div class="pend-name">${esc(item.full_name||item.hospital_name||'N/A')}</div>
+        <div class="pend-meta">${esc(item.email)} · ${new Date(item.submittedAt||Date.now()).toLocaleDateString('en-BD')}</div>
+        ${isDoc?`<div class="pend-meta" style="margin-top:.18rem;">${esc(item.specialization||'')} · BMDC: ${esc(item.bmdc_number||'')}</div>`:`<div class="pend-meta" style="margin-top:.18rem;">${esc(item.hospital_type||'')} · ${esc(item.address||'')}</div>`}
+      </div>
+      <span class="pend-type ${item.type}">${item.type==='doctor'?'Doctor':'Hospital'}</span>
+    </div>
+    <div class="pend-details">
+      <div class="pend-detail"><b>Phone</b><br>${esc(item.phone||'N/A')}</div>
+      <div class="pend-detail"><b>${isDoc?'NID':'License'}</b><br>${esc(item.nid||item.registration_number||'N/A')}</div>
+      ${isDoc?`<div class="pend-detail"><b>Experience</b><br>${esc(item.experience||'N/A')}</div><div class="pend-detail"><b>Hospital</b><br>${esc(item.hospital||'N/A')}</div>`:`<div class="pend-detail"><b>Contact</b><br>${esc(item.admin_name||'N/A')}</div><div class="pend-detail"><b>Beds</b><br>${item.total_beds||'N/A'}</div>`}
+    </div>
+    <div class="pend-actions">
+      <button class="btn-approve" onclick="approveRegistration('${item.id}','${item.type}')"><i class="fas fa-check"></i> Approve</button>
+      <button class="btn-reject" onclick="rejectRegistration('${item.id}')"><i class="fas fa-times"></i> Reject</button>
+      <button class="btn-view" onclick="viewDetails('${item.id}')"><i class="fas fa-eye"></i></button>
+    </div>
+  </div>`;
+}
+
+function renderDemoPending(){
+  const demo=[
+    {id:'demo1',type:'doctor',full_name:'Dr. Farhan Ahmed',email:'dr.farhan@gmail.com',specialization:'Cardiology',bmdc_number:'A-78234',phone:'+880 1812-345678',nid:'1234567890',experience:'6–10 years',hospital:'Popular Hospital Dhaka',submittedAt:new Date().toISOString()},
+    {id:'demo2',type:'hospital',hospital_name:'Green Life Medical College',email:'info@greenlife.com.bd',hospital_type:'Private Hospital',address:'Dhaka',registration_number:'DGHS-2019-4521',phone:'+880 2-8833333',admin_name:'Mr. Kamal Hossain',total_beds:350,submittedAt:new Date(Date.now()-86400000).toISOString()},
+  ];
+  pendingData=demo;renderPending(demo);
+  document.getElementById('pendingCount').textContent=demo.length;
+}
+
+/* ── APPROVE / REJECT ── */
+async function approveRegistration(id,type){
+  if(!confirm('Approve this registration?'))return;
+  if(fbDB){
+    try{
+      await fbDB.collection('pending_registrations').doc(id).update({status:'approved',approvedAt:firebase.firestore.FieldValue.serverTimestamp(),approvedBy:adminUser.email});
+      const item=pendingData.find(p=>p.id===id);
+      if(item){
+        // Create user account in users collection
+        await fbDB.collection('users').add({
+          ...item,role:type==='doctor'?'doctor':'hospital_admin',
+          isActive:true,status:'approved',
+          approvedAt:firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+      toast(`✅ ${type==='doctor'?'Doctor':'Hospital'} registration approved!`,'ok');
+    }catch(e){toast('Firestore error: '+e.message,'err');}
+  } else {
+    toast('✅ Approved (demo mode)','ok');
+  }
+  const card=document.getElementById('pc-'+id);if(card)card.remove();
+  pendingData=pendingData.filter(p=>p.id!==id);
+  document.getElementById('pendingCount').textContent=pendingData.length;
+}
+
+async function rejectRegistration(id){
+  const reason=prompt('Enter rejection reason (required):');
+  if(!reason)return;
+  if(fbDB){
+    try{
+      await fbDB.collection('pending_registrations').doc(id).update({status:'rejected',rejectedAt:firebase.firestore.FieldValue.serverTimestamp(),rejectedBy:adminUser.email,rejectionReason:reason});
+      toast('Registration rejected','err');
+    }catch(e){toast('Error: '+e.message,'err');}
+  } else {toast('Rejected (demo mode)','info');}
+  const card=document.getElementById('pc-'+id);if(card)card.remove();
+  pendingData=pendingData.filter(p=>p.id!==id);
+  document.getElementById('pendingCount').textContent=pendingData.length;
+}
+
+function viewDetails(id){
+  const item=pendingData.find(p=>p.id===id);if(!item)return;
+  document.getElementById('modalTitle').textContent=(item.type==='doctor'?'👨‍⚕️ Doctor':'🏥 Hospital')+' Registration Details';
+  const fields=item.type==='doctor'
+    ?[['Full Name',item.full_name],['Email',item.email],['Phone',item.phone],['NID',item.nid],['BMDC Number',item.bmdc_number],['Specialization',item.specialization],['Degree',item.degree],['Experience',item.experience],['Hospital/Chamber',item.hospital],['District',item.district],['Consultation Fee','৳'+(item.consultation_fee||'N/A')]]
+    :[['Hospital Name',item.hospital_name],['Type',item.hospital_type],['License No.',item.registration_number],['Address',item.address],['Phone',item.phone],['Email',item.email],['Website',item.website],['Total Beds',item.total_beds],['Contact Person',item.admin_name],['Designation',item.admin_designation]];
+  document.getElementById('modalContent').innerHTML=fields.map(([k,v])=>`<div class="modal-field"><div class="modal-label">${k}</div><div class="modal-value">${esc(v||'N/A')}</div></div>`).join('');
+  document.getElementById('rejectReason').style.display='none';
+  document.getElementById('modalActions').innerHTML=`<button class="btn-approve" onclick="approveRegistration('${id}','${item.type}');closeModal()"><i class="fas fa-check"></i> Approve</button><button class="btn-reject" onclick="rejectRegistration('${id}');closeModal()"><i class="fas fa-times"></i> Reject</button>`;
+  document.getElementById('detailModal').classList.add('open');
+}
+function closeModal(){document.getElementById('detailModal').classList.remove('open');}
+document.getElementById('detailModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+/* ── USERS TABLE ── */
+async function loadUsers(role,tableId){
+  const tbody=document.getElementById(tableId);tbody.innerHTML='<tr><td colspan="7" class="loading"><div class="loading-spin"></div></td></tr>';
+  if(!fbDB){renderDemoUsers(role,tableId);return;}
+  try{
+    const snap=await fbDB.collection('users').where('role','==',role).limit(100).get();
+    const users=snap.docs.map((d,i)=>({i:i+1,id:d.id,...d.data()}));
+    renderUsers(users,role,tableId);
+  }catch(e){renderDemoUsers(role,tableId);}
+}
+function renderUsers(users,role,tableId){
+  if(!users.length){document.getElementById(tableId).innerHTML='<tr><td colspan="7"><div class="empty-state"><i class="fas fa-users"></i><p>No '+role+'s found</p></div></td></tr>';return;}
+  document.getElementById(tableId).innerHTML=users.map(u=>`<tr>
+    <td style="color:var(--t3);">${u.i}</td>
+    <td><b>${esc(u.full_name||u.name||'N/A')}</b></td>
+    <td style="color:var(--t3);">${esc(u.email||'')}</td>
+    <td style="color:var(--t3);">${esc(u.phone||'N/A')}</td>
+    <td>${u.blood_group||'—'}</td>
+    <td style="color:var(--t3);font-size:.72rem;">${u.createdAt?new Date(u.createdAt.seconds?u.createdAt.seconds*1000:u.createdAt).toLocaleDateString('en-BD'):'N/A'}</td>
+    <td><div class="action-btns"><button class="act-btn view" onclick="toast('View coming soon','info')"><i class="fas fa-eye"></i></button></div></td>
+  </tr>`).join('');
+}
+function renderDemoUsers(role,tableId){
+  const demos={patient:[{i:1,full_name:'Rahim Uddin',email:'rahim@gmail.com',phone:'+880 1711-123456',blood_group:'B+',createdAt:{seconds:Date.now()/1000}},{i:2,full_name:'Sadia Islam',email:'sadia@gmail.com',phone:'+880 1912-654321',blood_group:'O+',createdAt:{seconds:Date.now()/1000-86400}}],doctor:[{i:1,full_name:'Dr. Karim',email:'dr.karim@medfind.com',specialization:'Cardiology',bmdc_number:'A-12345',hospital:'DMCH',status:'active'},{i:2,full_name:'Dr. Sultana',email:'sultana@medfind.com',specialization:'Gynecology',bmdc_number:'B-45678',hospital:'Square Hospital',status:'active'}],hospital:[{i:1,hospital_name:'Square Hospital',hospital_type:'Private',address:'Dhaka',phone:'+880 2-8833333',status:'active'},{i:2,hospital_name:'Popular Hospital',hospital_type:'Private',address:'Dhaka',phone:'+880 2-9660088',status:'active'}]};
+  const users=(demos[role]||[]);
+  document.getElementById(tableId).innerHTML=users.map(u=>`<tr>
+    <td style="color:var(--t3);">${u.i||1}</td>
+    <td><b>${esc(u.full_name||u.hospital_name||'N/A')}</b></td>
+    <td style="color:var(--t3);">${esc(u.email||u.phone||'')}</td>
+    <td style="color:var(--t3);">${esc(u.specialization||u.hospital_type||u.blood_group||'—')}</td>
+    <td>${esc(u.bmdc_number||u.address||u.phone||'—')}</td>
+    <td><span class="status-tag ${u.status||'active'}">${u.status||'active'}</span></td>
+    <td><div class="action-btns"><button class="act-btn view"><i class="fas fa-eye"></i></button><button class="act-btn reject">Deactivate</button></div></td>
+  </tr>`).join('');
+}
+
+function loadPendingDoctors(){
+  const tableId='doctorsTable';
+  const tbody=document.getElementById(tableId);tbody.innerHTML='<tr><td colspan="7" class="loading"><div class="loading-spin"></div></td></tr>';
+  if(!fbDB){renderDemoUsers('doctor',tableId);return;}
+  fbDB.collection('pending_registrations').where('type','==','doctor').get().then(snap=>{
+    const items=snap.docs.map((d,i)=>({i:i+1,...d.data(),id:d.id}));
+    document.getElementById(tableId).innerHTML=items.length===0?'<tr><td colspan="7"><div class="empty-state"><i class="fas fa-stethoscope"></i><p>No doctors found</p></div></td></tr>':items.map(u=>`<tr>
+      <td>${u.i}</td><td><b>${esc(u.full_name)}</b></td><td>${esc(u.specialization||'—')}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:.75rem;">${esc(u.bmdc_number||'—')}</td>
+      <td>${esc(u.hospital||'—')}</td>
+      <td><span class="status-tag ${u.status||'pending'}">${u.status||'pending'}</span></td>
+      <td><div class="action-btns">${u.status==='pending'?`<button class="act-btn approve" onclick="approveRegistration('${u.id}','doctor')">Approve</button><button class="act-btn reject" onclick="rejectRegistration('${u.id}')">Reject</button>`:''}<button class="act-btn view" onclick="viewDetails('${u.id}')">View</button></div></td>
+    </tr>`).join('');
+  }).catch(()=>renderDemoUsers('doctor',tableId));
+}
+function loadPendingHospitals(){
+  const tableId='hospitalsTable';
+  const tbody=document.getElementById(tableId);tbody.innerHTML='<tr><td colspan="7" class="loading"><div class="loading-spin"></div></td></tr>';
+  if(!fbDB){renderDemoUsers('hospital',tableId);return;}
+  fbDB.collection('pending_registrations').where('type','==','hospital').get().then(snap=>{
+    const items=snap.docs.map((d,i)=>({i:i+1,...d.data(),id:d.id}));
+    document.getElementById(tableId).innerHTML=items.length===0?'<tr><td colspan="7"><div class="empty-state"><i class="fas fa-hospital"></i><p>No hospitals found</p></div></td></tr>':items.map(u=>`<tr>
+      <td>${u.i}</td><td><b>${esc(u.hospital_name||'—')}</b></td><td>${esc(u.hospital_type||'—')}</td>
+      <td>${esc((u.address||'').split(',')[0]||'—')}</td><td>${esc(u.phone||'—')}</td>
+      <td><span class="status-tag ${u.status||'pending'}">${u.status||'pending'}</span></td>
+      <td><div class="action-btns">${u.status==='pending'?`<button class="act-btn approve" onclick="approveRegistration('${u.id}','hospital')">Approve</button><button class="act-btn reject" onclick="rejectRegistration('${u.id}')">Reject</button>`:''}<button class="act-btn view" onclick="viewDetails('${u.id}')">View</button></div></td>
+    </tr>`).join('');
+  }).catch(()=>renderDemoUsers('hospital',tableId));
+}
+
+/* ── COMMISSION ── */
+function loadCommission(){
+  const demoTx=[
+    {date:'2026-04-28',patient:'Rahim Uddin',doctor:'Dr. Karim',hospital:'DMCH',fee:800,commission:40,status:'paid'},
+    {date:'2026-04-27',patient:'Sadia Islam',doctor:'Dr. Sultana',hospital:'Square',fee:1500,commission:75,status:'paid'},
+    {date:'2026-04-26',patient:'Hasan Ahmed',doctor:'Dr. Farhan',hospital:'Popular',fee:1200,commission:60,status:'pending'},
+    {date:'2026-04-25',patient:'Rimi Akter',doctor:'Dr. Alam',hospital:'Green Life',fee:600,commission:30,status:'paid'},
+  ];
+  const total=demoTx.reduce((s,t)=>s+t.commission,0);
+  const pending=demoTx.filter(t=>t.status==='pending').reduce((s,t)=>s+t.commission,0);
+  document.getElementById('totalRevenue').textContent='৳'+total.toLocaleString();
+  document.getElementById('monthRevenue').textContent='৳'+total;
+  document.getElementById('weekRevenue').textContent='৳'+(total*.4).toFixed(0);
+  document.getElementById('pendingRevenue').textContent='৳'+pending;
+  document.getElementById('apptRevenue').textContent='৳'+total;
+  document.getElementById('adRevenue').textContent='৳7,500';
+  document.getElementById('premRevenue').textContent='৳3,000';
+  document.getElementById('commissionTable').innerHTML=demoTx.map(t=>`<tr class="commission-row">
+    <td style="color:var(--t3);font-size:.78rem;">${t.date}</td>
+    <td>${esc(t.patient)}</td><td>${esc(t.doctor)}</td><td>${esc(t.hospital)}</td>
+    <td>৳${t.fee}</td><td>৳${t.commission}</td>
+    <td><span class="status-tag ${t.status==='paid'?'active':'pending'}">${t.status}</span></td>
+  </tr>`).join('');
+}
+
+/* ── ACTIVITY ── */
+function loadActivity(tableId){
+  const demo=[
+    {user:'Dr. Karim',role:'doctor',time:new Date(Date.now()-1800000).toLocaleString('en-BD'),provider:'Email/Password',status:'success'},
+    {user:'Rahim Uddin',role:'patient',time:new Date(Date.now()-3600000).toLocaleString('en-BD'),provider:'Google OAuth',status:'success'},
+    {user:'admin@medfind.com',role:'superadmin',time:new Date(Date.now()-7200000).toLocaleString('en-BD'),provider:'Email/Password',status:'success'},
+    {user:'unknown@test.com',role:'—',time:new Date(Date.now()-10800000).toLocaleString('en-BD'),provider:'Email/Password',status:'failed'},
+  ];
+  ['activityTable','activityTable2'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.innerHTML=demo.map(a=>`<tr>
+      <td><b>${esc(a.user)}</b></td>
+      <td><span class="role-tag ${a.role.replace('_admin','').replace('super','')}">${a.role}</span></td>
+      <td style="font-size:.75rem;color:var(--t3);">${a.time}</td>
+      <td style="font-size:.75rem;">${a.provider}</td>
+      <td style="font-size:.72rem;color:var(--t3);">—</td>
+      <td><span class="status-tag ${a.status==='success'?'active':'rejected'}">${a.status}</span></td>
+    </tr>`).join('');
+  });
+}
+
+/* ── SEARCH / FILTER ── */
+function filterTable(tableId,q){
+  const rows=document.getElementById(tableId).querySelectorAll('tr');
+  const qL=q.toLowerCase();
+  rows.forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(qL)?'':'none';});
+}
+function filterByStatus(tableId,status){
+  const rows=document.getElementById(tableId).querySelectorAll('tr');
+  rows.forEach(r=>{r.style.display=(!status||r.textContent.toLowerCase().includes(status))?'':'none';});
+}
+function exportCSV(type){toast('CSV export feature coming soon','info');}
+
+/* ── UTILS ── */
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ── INIT ── */
+loadStats();
+loadPending();
+loadActivity('activityTable');
+</script>
+</body>
+</html>

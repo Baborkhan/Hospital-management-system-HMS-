@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Bangladesh Drug Information Directory - Search medicines, dosages, side effects, Bangladeshi brands and BDT prices.">
+<title>Drug Directory — MedFind Bangladesh</title>
+<link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--pri:#1a56db;--pri-d:#1342b0;--pri-l:#dbeafe;--teal:#0d9488;--em:#10b981;--warn:#f59e0b;--danger:#ef4444;--purple:#7c3aed;--bg:#f0f4ff;--card:#fff;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;--subtle:#94a3b8;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);}
+/* NAV */
+.nav{background:#fff;border-bottom:1px solid var(--border);height:62px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.nav-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+.nav-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--pri),var(--teal));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;}
+.nav-name{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--pri);}
+.nav-links{display:flex;gap:.2rem;}
+.nav-links a{font-size:.84rem;color:var(--muted);text-decoration:none;font-weight:500;padding:.4rem .8rem;border-radius:8px;transition:.2s;}
+.nav-links a:hover,.nav-links a.active{background:var(--bg);color:var(--pri);}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:10px;font-weight:600;font-size:.84rem;cursor:pointer;border:none;text-decoration:none;transition:.2s;font-family:'DM Sans',sans-serif;}
+.btn-pri{background:var(--pri);color:#fff;}.btn-pri:hover{background:var(--pri-d);}
+.btn-out{border:1.5px solid var(--border);color:var(--muted);background:#fff;}.btn-out:hover{border-color:var(--pri);color:var(--pri);}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0f172a,#1a2e5a,#0d3d3a);padding:3.5rem 2rem 5rem;color:#fff;text-align:center;position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;opacity:.04;background-image:linear-gradient(rgba(255,255,255,.8) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.8) 1px,transparent 1px);background-size:40px 40px;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(13,148,136,.2);border:1px solid rgba(13,148,136,.4);color:#5eead4;padding:.35rem 1rem;border-radius:100px;font-size:.8rem;font-weight:600;margin-bottom:1rem;position:relative;}
+.hero h1{font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;line-height:1.15;margin-bottom:.6rem;position:relative;}
+.hero h1 em{background:linear-gradient(135deg,#7dd3fc,#5eead4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal;}
+.hero p{font-size:.95rem;color:rgba(255,255,255,.7);max-width:520px;margin:0 auto 2rem;position:relative;}
+/* SEARCH BOX */
+.search-wrap{max-width:680px;margin:0 auto;position:relative;z-index:10;}
+.search-box{display:flex;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.3);}
+.search-input{flex:1;padding:1.1rem 1.5rem;border:none;outline:none;font-size:1rem;font-family:'DM Sans',sans-serif;color:var(--text);}
+.search-input::placeholder{color:var(--subtle);}
+.search-btn{background:var(--pri);color:#fff;border:none;padding:0 2rem;font-weight:700;font-size:.95rem;cursor:pointer;display:flex;align-items:center;gap:.5rem;transition:.2s;}
+.search-btn:hover{background:var(--pri-d);}
+.search-note{font-size:.78rem;color:rgba(255,255,255,.5);margin-top:.75rem;text-align:center;position:relative;}
+/* QUICK PILLS */
+.quick-pills{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;position:relative;}
+.qp{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);padding:.3rem .85rem;border-radius:100px;font-size:.78rem;font-weight:600;cursor:pointer;transition:.2s;}
+.qp:hover{background:rgba(255,255,255,.15);color:#fff;}
+
+/* MAIN CONTENT */
+.main{max-width:1100px;margin:-3rem auto 0;padding:0 1.5rem 3rem;position:relative;z-index:10;}
+
+/* AI RESULT CARD */
+.ai-result{background:#fff;border-radius:20px;box-shadow:0 8px 40px rgba(0,0,0,.1);margin-bottom:2rem;overflow:hidden;display:none;}
+.ai-result.show{display:block;}
+.ar-head{background:linear-gradient(135deg,var(--pri),var(--teal));padding:1.25rem 1.75rem;color:#fff;display:flex;align-items:center;justify-content:space-between;}
+.ar-head-left{display:flex;align-items:center;gap:.75rem;}
+.ar-drug-icon{width:48px;height:48px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.ar-drug-name{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;}
+.ar-drug-generic{font-size:.82rem;opacity:.85;margin-top:.1rem;}
+.ar-category{background:rgba(255,255,255,.2);padding:.3rem .8rem;border-radius:100px;font-size:.78rem;font-weight:700;}
+.ar-body{padding:1.75rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.ar-section{background:var(--bg);border-radius:14px;padding:1.25rem;}
+.ar-section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.85rem;display:flex;align-items:center;gap:.4rem;}
+.ar-row{display:flex;flex-direction:column;gap:.1rem;margin-bottom:.75rem;}
+.ar-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--subtle);}
+.ar-val{font-size:.88rem;color:var(--text);line-height:1.5;}
+.ar-warn{background:#fef3c7;border:1.5px solid #fde68a;border-radius:10px;padding:.85rem 1rem;display:flex;gap:.6rem;align-items:flex-start;}
+.ar-warn-icon{font-size:1rem;flex-shrink:0;margin-top:.1rem;}
+.ar-warn-text{font-size:.82rem;color:#92400e;line-height:1.5;}
+.ar-avail{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem;}
+.avail-chip{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:#065f46;font-size:.75rem;font-weight:600;padding:.2rem .6rem;border-radius:100px;}
+.ai-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:var(--purple);font-size:.72rem;font-weight:700;padding:.2rem .6rem;border-radius:100px;}
+.ar-actions{padding:0 1.75rem 1.75rem;display:flex;gap:.75rem;}
+.ar-action-btn{flex:1;padding:.65rem;border-radius:10px;font-weight:700;font-size:.85rem;cursor:pointer;border:none;transition:.2s;display:flex;align-items:center;justify-content:center;gap:.4rem;}
+.ar-action-btn.pri{background:var(--pri);color:#fff;}.ar-action-btn.pri:hover{background:var(--pri-d);}
+.ar-action-btn.sec{background:var(--bg);color:var(--text);border:1.5px solid var(--border);}.ar-action-btn.sec:hover{border-color:var(--pri);color:var(--pri);}
+
+/* LOADING */
+.ai-loading{background:#fff;border-radius:20px;padding:2.5rem;text-align:center;display:none;margin-bottom:2rem;box-shadow:0 8px 40px rgba(0,0,0,.1);}
+.ai-loading.show{display:block;}
+.loading-dots{display:flex;justify-content:center;gap:.4rem;margin-bottom:.75rem;}
+.ld{width:10px;height:10px;border-radius:50%;background:var(--pri);animation:ldPulse 1.4s ease infinite;}
+.ld:nth-child(2){animation-delay:.2s;background:var(--teal);}
+.ld:nth-child(3){animation-delay:.4s;background:var(--purple);}
+@keyframes ldPulse{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+/* CATEGORIES BROWSE */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+.section-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem;margin-bottom:2rem;}
+.cat-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:1.1rem;text-align:center;cursor:pointer;transition:.2s;text-decoration:none;color:inherit;}
+.cat-card:hover{border-color:var(--pri);box-shadow:0 4px 16px rgba(26,86,219,.1);transform:translateY(-2px);}
+.cc-icon{font-size:1.75rem;margin-bottom:.5rem;}
+.cc-name{font-weight:700;font-size:.85rem;}
+.cc-count{font-size:.72rem;color:var(--muted);margin-top:.15rem;}
+
+/* DRUG LIST */
+.drug-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;}
+.drug-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:1.25rem;cursor:pointer;transition:.2s;}
+.drug-card:hover{border-color:var(--pri);box-shadow:0 4px 20px rgba(26,86,219,.1);}
+.dc-top{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.75rem;}
+.dc-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.dc-info{flex:1;}
+.dc-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;}
+.dc-generic{font-size:.75rem;color:var(--muted);margin-top:.1rem;}
+.dc-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+.dc-tag{font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:100px;}
+.dc-tag.cat{background:var(--pri-l);color:var(--pri);}
+.dc-tag.rx{background:#fee2e2;color:var(--danger);}
+.dc-tag.otc{background:#dcfce7;color:#166534;}
+.dc-use{font-size:.8rem;color:var(--muted);margin-top:.5rem;line-height:1.5;}
+.dc-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--bg);}
+.dc-avail{font-size:.72rem;color:var(--em);font-weight:600;}
+.dc-search-btn{font-size:.75rem;font-weight:700;color:var(--pri);border:none;background:none;cursor:pointer;display:flex;align-items:center;gap:.3rem;}
+
+/* INTERACTION CHECKER */
+.interact-card{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:1.5rem;margin-top:2rem;}
+.ic-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;margin-bottom:1rem;}
+.ic-row{display:flex;gap:.75rem;align-items:center;}
+.ic-inp{flex:1;padding:.6rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-size:.88rem;font-family:'DM Sans',sans-serif;outline:none;}
+.ic-inp:focus{border-color:var(--pri);}
+.ic-check-btn{background:var(--purple);color:#fff;border:none;padding:.6rem 1.25rem;border-radius:10px;font-weight:700;font-size:.85rem;cursor:pointer;white-space:nowrap;}
+.ic-result{margin-top:1rem;border-radius:12px;padding:1rem;display:none;}
+.ic-result.show{display:block;}
+.ic-result.safe{background:#f0fdf4;border:1.5px solid #bbf7d0;}
+.ic-result.caution{background:#fffbeb;border:1.5px solid #fde68a;}
+.ic-result.danger{background:#fef2f2;border:1.5px solid #fecaca;}
+
+/* DISCLAIMER */
+.disclaimer{background:#fef3c7;border:1.5px solid #fde68a;border-radius:14px;padding:1rem 1.25rem;display:flex;gap:.75rem;align-items:flex-start;margin-top:2rem;}
+.disc-icon{font-size:1.2rem;flex-shrink:0;}
+.disc-text{font-size:.82rem;color:#92400e;line-height:1.6;}
+
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:100px;}
+@media(max-width:768px){.hero h1{font-size:1.9rem;}.ar-body{grid-template-columns:1fr;}.cat-grid{grid-template-columns:repeat(3,1fr);}.nav-links{display:none;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="../../index.html"><img src="../../assets/medfind-logo.png" alt="MedFind Bangladesh" style="height:44px;width:auto;object-fit:contain;"></a>
+  <div class="nav-links">
+    <a href="../symptoms/index.html">Symptoms</a>
+    <a href="../doctors/search.html">Doctors</a>
+    <a href="../treatments/index.html">Treatments</a>
+    <a href="index.html" class="active">Drugs</a>
+  </div>
+  <div style="display:flex;gap:.5rem">
+    <a class="btn btn-out" href="../login.html">Login</a>
+    <a class="btn btn-pri" href="../doctors/search.html"><i class="fas fa-user-md"></i> Find Doctor</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-badge"><i class="fas fa-pills"></i> AI-Powered Drug Database · Bangladesh</div>
+  <h1>Find <em>Medicine Info</em><br>Dosage, Uses & Interactions</h1>
+  <p>Search any medicine by brand name or generic name. Get AI-powered information including dosage, side effects, and availability in Bangladesh.</p>
+  <div class="search-wrap">
+    <div class="search-box">
+      <input type="text" class="search-input" id="drugSearch" placeholder="Search medicine... e.g. Napa, Amoxicillin, Metformin" onkeydown="if(event.key==='Enter')searchDrug()">
+      <button class="search-btn" onclick="searchDrug()"><i class="fas fa-search"></i> Search</button>
+    </div>
+    <div class="search-note">🧠 AI-Powered · Bangladesh Drug Database (DGDA/WHO) · For prescriptions, visit <a href="https://medex.com.bd" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;opacity:.8">Medex.com.bd</a></div>
+    <div class="quick-pills">
+      <span class="qp" onclick="quickSearch('Napa Paracetamol')">💊 Napa</span>
+      <span class="qp" onclick="quickSearch('Amoxicillin')">💉 Amoxicillin</span>
+      <span class="qp" onclick="quickSearch('Metformin diabetes')">🩸 Metformin</span>
+      <span class="qp" onclick="quickSearch('Omeprazole acidity')">🟡 Omeprazole</span>
+      <span class="qp" onclick="quickSearch('Amlodipine blood pressure')">❤️ Amlodipine</span>
+      <span class="qp" onclick="quickSearch('Azithromycin antibiotic')">🧬 Azithromycin</span>
+      <span class="qp" onclick="quickSearch('Cetirizine allergy')">🌿 Cetirizine</span>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <!-- AI LOADING -->
+  <div class="ai-loading" id="aiLoading">
+    <div class="loading-dots"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text)">MedFind AI is searching drug database...</div>
+    <div style="font-size:.82rem;color:var(--muted);margin-top:.35rem">Fetching dosage, interactions & Bangladesh availability</div>
+  </div>
+
+  <!-- AI RESULT -->
+  <div class="ai-result" id="aiResult">
+    <div class="ar-head">
+      <div class="ar-head-left">
+        <div class="ar-drug-icon" id="arIcon">💊</div>
+        <div>
+          <div class="ar-drug-name" id="arName">Drug Name</div>
+          <div class="ar-drug-generic" id="arGeneric">Generic Name</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem">
+        <span class="ar-category" id="arCat">Category</span>
+        <span class="ai-badge"><i class="fas fa-brain"></i> AI Result · Claude</span>
+      </div>
+    </div>
+    <div class="ar-body">
+      <div>
+        <div class="ar-section">
+          <div class="ar-section-title"><i class="fas fa-info-circle" style="color:var(--pri)"></i> Overview & Uses</div>
+          <div id="arUses" style="font-size:.88rem;line-height:1.6;color:var(--text)"></div>
+        </div>
+        <div class="ar-section" style="margin-top:.75rem">
+          <div class="ar-section-title"><i class="fas fa-prescription-bottle-alt" style="color:var(--teal)"></i> Dosage Guide</div>
+          <div class="ar-row"><div class="ar-label">Adults</div><div class="ar-val" id="arAdultDose"></div></div>
+          <div class="ar-row"><div class="ar-label">Children</div><div class="ar-val" id="arChildDose"></div></div>
+          <div class="ar-row"><div class="ar-label">Duration</div><div class="ar-val" id="arDuration"></div></div>
+          <div class="ar-row"><div class="ar-label">Route</div><div class="ar-val" id="arRoute"></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="ar-section">
+          <div class="ar-section-title"><i class="fas fa-exclamation-triangle" style="color:var(--warn)"></i> Warnings & Side Effects</div>
+          <div class="ar-warn">
+            <div class="ar-warn-icon">⚠️</div>
+            <div class="ar-warn-text" id="arWarnings"></div>
+          </div>
+          <div style="margin-top:.75rem">
+            <div class="ar-label" style="margin-bottom:.4rem">Common Side Effects</div>
+            <div id="arSideEffects" style="font-size:.82rem;color:var(--muted);line-height:1.6;"></div>
+          </div>
+        </div>
+        <div class="ar-section" style="margin-top:.75rem">
+          <div class="ar-section-title"><i class="fas fa-store" style="color:var(--em)"></i> Bangladesh Availability</div>
+          <div id="arAvailText" style="font-size:.82rem;color:var(--muted);margin-bottom:.5rem;"></div>
+          <div class="ar-avail" id="arBrands"></div>
+        </div>
+      </div>
+    </div>
+    <div class="ar-actions">
+      <button class="ar-action-btn pri" onclick="window.location='../doctors/search.html'"><i class="fas fa-user-md"></i> Find Prescribing Doctor</button>
+      <button class="ar-action-btn sec" id="arTreatLink"><i class="fas fa-book-medical"></i> See Related Treatments</button>
+      <button class="ar-action-btn sec" onclick="checkInteraction()"><i class="fas fa-pills"></i> Check Drug Interaction</button>
+    </div>
+  </div>
+
+  <!-- DRUG CATEGORIES -->
+  <div class="section-head"><span class="section-title">Browse by Category</span></div>
+  <div class="cat-grid">
+    <div class="cat-card" onclick="searchDrugCat('antibiotics')"><div class="cc-icon">🧬</div><div class="cc-name">Antibiotics</div><div class="cc-count">120+ drugs</div></div>
+    <div class="cat-card" onclick="searchDrugCat('painkillers analgesics')"><div class="cc-icon">💊</div><div class="cc-name">Painkillers</div><div class="cc-count">80+ drugs</div></div>
+    <div class="cat-card" onclick="searchDrugCat('antihypertensive blood pressure')"><div class="cc-icon">❤️</div><div class="cc-name">Heart & BP</div><div class="cc-count">95+ drugs</div></div>
+    <div class="cat-card" onclick="searchDrugCat('diabetes antidiabetic')"><div class="cc-icon">🩸</div><div class="cc-name">Diabetes</div><div class="cc-count">60+ drugs</div></div>
+    <div class="cat-card" onclick="searchDrugCat('antacid gastrointestinal')"><div class="cc-icon">🫃</div><div class="cc-name">Gastro / Antacid</div><div class="cc-count">70+ drugs</div></div>
+    <div class="cat-card" onclick="searchDrugCat('antihistamine allergy')"><div class="cc-icon">🌿</div><div class="cc-name">Allergy</div><div class="cc-count">45+ drugs</div></div>
+    <div class="cat-card" onclick="searchDrugCat('respiratory bronchodilator')"><div class="cc-icon">🫁</div><div class="cc-name">Respiratory</div><div class="cc-count">55+ drugs</div></div>
+    <div class="cat-card" onclick="searchDrugCat('vitamin supplement Bangladesh')"><div class="cc-icon">⚡</div><div class="cc-name">Vitamins</div><div class="cc-count">90+ drugs</div></div>
+    <div class="cat-card" onclick="searchDrugCat('antifungal antiviral')"><div class="cc-icon">🦠</div><div class="cc-name">Antifungal/viral</div><div class="cc-count">40+ drugs</div></div>
+    <div class="cat-card" onclick="searchDrugCat('psychiatric antidepressant')"><div class="cc-icon">🧠</div><div class="cc-name">Psychiatric</div><div class="cc-count">50+ drugs</div></div>
+    <div class="cat-card" onclick="searchDrugCat('thyroid hormones endocrine')"><div class="cc-icon">🦋</div><div class="cc-name">Hormones</div><div class="cc-count">35+ drugs</div></div>
+    <div class="cat-card" onclick="searchDrugCat('eye drops ophthalmic')"><div class="cc-icon">👁️</div><div class="cc-name">Eye Drops</div><div class="cc-count">30+ drugs</div></div>
+  </div>
+
+  <!-- COMMON DRUGS -->
+  <div class="section-head"><span class="section-title">Commonly Used Medicines in Bangladesh</span><span style="font-size:.8rem;color:var(--muted)">Click any to get AI info</span></div>
+  <div class="drug-grid" id="drugGrid">
+    <div class="drug-card" onclick="quickSearch('Paracetamol Napa 500mg')">
+      <div class="dc-top"><div class="dc-icon" style="background:#fef3c7">💊</div><div class="dc-info"><div class="dc-name">Napa / Paracetamol</div><div class="dc-generic">Generic: Paracetamol 500mg</div></div></div>
+      <div class="dc-row"><span class="dc-tag cat">Analgesic</span><span class="dc-tag otc">OTC</span></div>
+      <div class="dc-use">Fever, headache, mild to moderate pain relief</div>
+      <div class="dc-footer"><span class="dc-avail">✅ Widely available</span><button class="dc-search-btn"><i class="fas fa-search"></i> Full Info</button></div>
+    </div>
+    <div class="drug-card" onclick="quickSearch('Amoxicillin antibiotic 500mg')">
+      <div class="dc-top"><div class="dc-icon" style="background:#dbeafe">🧬</div><div class="dc-info"><div class="dc-name">Amoxicillin 500mg</div><div class="dc-generic">Generic: Amoxicillin trihydrate</div></div></div>
+      <div class="dc-row"><span class="dc-tag cat">Antibiotic</span><span class="dc-tag rx">Rx Only</span></div>
+      <div class="dc-use">Bacterial infections — throat, chest, ear, UTI</div>
+      <div class="dc-footer"><span class="dc-avail">✅ All pharmacies</span><button class="dc-search-btn"><i class="fas fa-search"></i> Full Info</button></div>
+    </div>
+    <div class="drug-card" onclick="quickSearch('Metformin 500mg diabetes')">
+      <div class="dc-top"><div class="dc-icon" style="background:#dcfce7">🩸</div><div class="dc-info"><div class="dc-name">Metformin 500/850mg</div><div class="dc-generic">Generic: Metformin HCl</div></div></div>
+      <div class="dc-row"><span class="dc-tag cat">Antidiabetic</span><span class="dc-tag rx">Rx Only</span></div>
+      <div class="dc-use">Type 2 diabetes blood sugar management</div>
+      <div class="dc-footer"><span class="dc-avail">✅ Widely available</span><button class="dc-search-btn"><i class="fas fa-search"></i> Full Info</button></div>
+    </div>
+    <div class="drug-card" onclick="quickSearch('Omeprazole 20mg acidity GERD')">
+      <div class="dc-top"><div class="dc-icon" style="background:#fef3c7">🟡</div><div class="dc-info"><div class="dc-name">Omeprazole 20mg</div><div class="dc-generic">Generic: Omeprazole</div></div></div>
+      <div class="dc-row"><span class="dc-tag cat">PPI / Antacid</span><span class="dc-tag otc">OTC</span></div>
+      <div class="dc-use">Acidity, GERD, gastric ulcer prevention</div>
+      <div class="dc-footer"><span class="dc-avail">✅ All pharmacies</span><button class="dc-search-btn"><i class="fas fa-search"></i> Full Info</button></div>
+    </div>
+    <div class="drug-card" onclick="quickSearch('Amlodipine 5mg blood pressure')">
+      <div class="dc-top"><div class="dc-icon" style="background:#fee2e2">❤️</div><div class="dc-info"><div class="dc-name">Amlodipine 5mg</div><div class="dc-generic">Generic: Amlodipine besylate</div></div></div>
+      <div class="dc-row"><span class="dc-tag cat">CCB / Antihypertensive</span><span class="dc-tag rx">Rx Only</span></div>
+      <div class="dc-use">High blood pressure, angina pectoris</div>
+      <div class="dc-footer"><span class="dc-avail">✅ All pharmacies</span><button class="dc-search-btn"><i class="fas fa-search"></i> Full Info</button></div>
+    </div>
+    <div class="drug-card" onclick="quickSearch('Azithromycin 500mg antibiotic')">
+      <div class="dc-top"><div class="dc-icon" style="background:#f3e8ff">🧬</div><div class="dc-info"><div class="dc-name">Azithromycin 500mg</div><div class="dc-generic">Generic: Azithromycin dihydrate</div></div></div>
+      <div class="dc-row"><span class="dc-tag cat">Macrolide Antibiotic</span><span class="dc-tag rx">Rx Only</span></div>
+      <div class="dc-use">Respiratory infections, typhoid, STIs</div>
+      <div class="dc-footer"><span class="dc-avail">✅ All pharmacies</span><button class="dc-search-btn"><i class="fas fa-search"></i> Full Info</button></div>
+    </div>
+  </div>
+
+  <!-- DRUG INTERACTION CHECKER -->
+  <div class="interact-card">
+    <div class="ic-title"><i class="fas fa-exchange-alt" style="color:var(--purple)"></i> Drug Interaction Checker <span class="ai-badge" style="margin-left:.5rem"><i class="fas fa-brain"></i> AI-Powered</span></div>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">Check if two medicines are safe to take together</p>
+    <div class="ic-row">
+      <input type="text" class="ic-inp" id="drug1" placeholder="First medicine (e.g. Metformin)">
+      <span style="font-weight:700;color:var(--muted)">+</span>
+      <input type="text" class="ic-inp" id="drug2" placeholder="Second medicine (e.g. Glibenclamide)">
+      <button class="ic-check-btn" onclick="checkDrugInteraction()"><i class="fas fa-search"></i> Check</button>
+    </div>
+    <div class="ic-result" id="icResult"></div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <div class="disc-icon">⚕️</div>
+    <div class="disc-text"><strong>Medical Disclaimer:</strong> Drug information is AI-generated using clinical pharmacology knowledge and Bangladesh DGDA guidelines. It is for general educational purposes only — not a substitute for professional advice. Always verify with a licensed pharmacist or doctor. For official BD drug registration details and manufacturer info, visit <a href="https://medex.com.bd" target="_blank" rel="noopener" style="color:var(--pri);font-weight:600;">Medex.com.bd</a> — Bangladesh's official online medicine index.</div>
+  </div>
+</div>
+
+<script src="../../assets/js/config.js"></script>
+  <script>
+// ── API KEY: Set in config.js or window.MEDFIND_CONFIG.ANTHROPIC_KEY ──
+// For production: NEVER expose key in frontend. Route via /api/v1/ai/drug-info/ instead.
+const ANTHROPIC_API = 'https://api.anthropic.com/v1/messages';
+const ANTHROPIC_KEY = (window.MEDFIND_CONFIG && window.MEDFIND_CONFIG.ANTHROPIC_KEY) || '';
+
+async function callClaude(systemPrompt, userMessage) {
+  // Try backend proxy first (production-safe — key stays server-side)
+<<<<<<< HEAD
+  const backendBase = (window.MEDFIND_CONFIG && window.MEDFIND_CONFIG.API_BASE) || 'https://medfind-bangladesh-ai-healthcare-platform.onrender.com/api/v1';
+=======
+  const backendBase = (window.MEDFIND_CONFIG && window.MEDFIND_CONFIG.API_BASE) || '/api/v1';
+>>>>>>> 58c405af0447997e6cf8a412fa3573bac7007072
+  try {
+    const res = await fetch(backendBase + '/ai/drug-info/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ system: systemPrompt, message: userMessage })
+    });
+    if (res.ok) {
+      const d = await res.json();
+      if (d.content) return d.content;
+    }
+  } catch(e) {}
+
+  // Fallback: direct Anthropic call (dev/demo mode only — requires ANTHROPIC_KEY in config)
+  if (!ANTHROPIC_KEY) throw new Error('No API key configured. Set MEDFIND_CONFIG.ANTHROPIC_KEY or deploy backend proxy.');
+  const res = await fetch(ANTHROPIC_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 2000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMessage }]
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error?.message || 'API error');
+  }
+  const data = await res.json();
+  return data.content.map(c => c.text || '').join('');
+}
+
+async function searchDrug() {
+  const q = document.getElementById('drugSearch').value.trim();
+  if (!q) return;
+  await fetchDrugInfo(q);
+}
+
+async function quickSearch(q) {
+  document.getElementById('drugSearch').value = q;
+  await fetchDrugInfo(q);
+}
+
+async function searchDrugCat(cat) {
+  document.getElementById('drugSearch').value = cat;
+  await fetchDrugInfo('List common ' + cat + ' medications used in Bangladesh');
+}
+
+async function fetchDrugInfo(query) {
+  const loading = document.getElementById('aiLoading');
+  const result = document.getElementById('aiResult');
+  loading.classList.add('show');
+  result.classList.remove('show');
+  window.scrollTo({top: document.querySelector('.main').offsetTop - 80, behavior: 'smooth'});
+
+  const systemPrompt = `You are a senior clinical pharmacist and drug information specialist in Bangladesh, trained in DGDA (Directorate General of Drug Administration) regulations, WHO Essential Medicines List, and Bangladesh National Formulary.
+
+Respond ONLY in valid JSON (no markdown, no backticks, no commentary). Be medically accurate and Bangladesh-specific.
+
+{
+  "name": "Most commonly used brand name in Bangladesh",
+  "generic": "International Non-proprietary Name (INN)",
+  "icon": "single relevant emoji",
+  "category": "Drug class (e.g. NSAID, Macrolide antibiotic, PPI)",
+  "dgdaApproved": true,
+  "uses": "Comprehensive 2-3 sentence description of therapeutic uses including Bangladesh-prevalent conditions",
+  "mechanism": "Brief plain-language mechanism of action (1-2 sentences)",
+  "adultDose": "Standard adult dosing with frequency (e.g. 500mg orally 3 times daily)",
+  "childDose": "Pediatric dose by weight or age, or 'Consult pediatrician'",
+  "renalDose": "Dose adjustment for kidney impairment, or 'No adjustment needed'",
+  "hepaticDose": "Dose adjustment for liver impairment, or 'Use with caution'",
+  "elderlyCaution": "Special considerations for patients over 65",
+  "duration": "Typical treatment duration (e.g. 5-7 days for infections, chronic for hypertension)",
+  "route": "Route(s): oral / injection / topical / inhaled / IV",
+  "maxDailyDose": "Maximum safe daily dose for adults",
+  "foodInteraction": "Take with food / empty stomach / no restriction — and why",
+  "warnings": "Key contraindications and black-box warnings",
+  "sideEffects": "Common side effects (>5% frequency) and serious rare effects to watch for",
+  "drugInteractions": ["Drug interaction 1 — effect", "Drug interaction 2 — effect", "Drug interaction 3 — effect"],
+  "pregnancy": "Pregnancy safety category and guidance (e.g. FDA Cat B — generally safe, avoid in 3rd trimester)",
+  "breastfeeding": "Safety during breastfeeding",
+  "storage": "Storage conditions (temperature, light, humidity)",
+  "overdoseSymptoms": "Signs of overdose and what to do",
+  "availability": "Availability in Bangladesh — widely available at pharmacies / prescription only / hospital only",
+  "brands": ["Top Bangladeshi brand 1", "Brand 2", "Brand 3", "Brand 4"],
+  "approxCost": "Approximate retail cost per tablet/dose in Bangladesh (BDT)",
+  "prescriptionOnly": true or false,
+  "otcNotes": "If OTC, when to see a doctor anyway; if prescription, why it requires one",
+  "relatedCondition": "Primary condition this drug treats",
+  "alternatives": ["Alternative generic 1", "Alternative generic 2"],
+  "whenToStop": "Warning signs that indicate you must stop taking it and seek care immediately",
+  "monitoringRequired": "Any tests or monitoring needed while on this drug (e.g. LFTs, CBC, serum K+)",
+  "patientCounselling": "3-4 key points a pharmacist would tell a patient receiving this drug"
+}
+
+Rules:
+- Be Bangladesh-specific: mention DGDA status, Bangladeshi brands (Square Pharma, Beximco, ACI, Eskayef, Opsonin, Renata, Incepta)
+- Costs should be realistic 2024-2025 BDT prices
+- For common drugs (Paracetamol, Amoxicillin, Metformin etc.) be very precise and authoritative
+- For rare drugs, note if specialist consultation is strongly recommended
+- Always include at least 3 Bangladeshi brand names where they exist
+- Drug interactions should list the 3 most clinically significant ones
+- Pregnancy and breastfeeding info must follow current guidelines (LactMed, WHO)`;
+
+  try {
+    const raw = await callClaude(systemPrompt, `Drug info for Bangladesh: ${query}`);
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const d = JSON.parse(clean);
+    
+    document.getElementById('arIcon').textContent = d.icon || '💊';
+    document.getElementById('arName').textContent = d.name || query;
+    document.getElementById('arGeneric').textContent = 'Generic: ' + (d.generic || '');
+    document.getElementById('arCat').textContent = d.category || '';
+    document.getElementById('arUses').textContent = d.uses || '';
+    document.getElementById('arAdultDose').textContent = d.adultDose || 'See prescribing information';
+    document.getElementById('arChildDose').textContent = d.childDose || 'Consult pediatrician';
+    document.getElementById('arDuration').textContent = d.duration || 'As prescribed';
+    document.getElementById('arRoute').textContent = d.route || 'Oral';
+    document.getElementById('arWarnings').textContent = d.warnings || '';
+    document.getElementById('arSideEffects').textContent = d.sideEffects || '';
+    document.getElementById('arAvailText').textContent = d.availability || '';
+    document.getElementById('arBrands').innerHTML = (d.brands || []).map(b =>
+      `<span class="avail-chip">${b}</span>`
+    ).join('');
+    document.getElementById('arTreatLink').onclick = () =>
+      window.location = `../treatments/index.html?condition=${encodeURIComponent(d.relatedCondition || query)}`;
+
+    loading.classList.remove('show');
+    result.classList.add('show');
+  } catch(e) {
+    loading.classList.remove('show');
+    // Fallback static result
+    showFallbackResult(query);
+  }
+}
+
+function showFallbackResult(query) {
+  // Show AI badge with fallback note
+  document.getElementById('arIcon').textContent = '💊';
+  document.getElementById('arName').textContent = query;
+  document.getElementById('arGeneric').textContent = 'Search result';
+  document.getElementById('arCat').textContent = 'Medicine';
+  document.getElementById('arUses').textContent = 'Please check your internet connection and API key, or visit a pharmacist for accurate information about this medicine.';
+  document.getElementById('arAdultDose').textContent = 'See prescribing information';
+  document.getElementById('arChildDose').textContent = 'Consult pediatrician';
+  document.getElementById('arDuration').textContent = 'As prescribed by doctor';
+  document.getElementById('arRoute').textContent = 'Oral';
+  document.getElementById('arWarnings').textContent = 'Always take medicines as prescribed. Do not self-medicate with prescription drugs.';
+  document.getElementById('arSideEffects').textContent = 'See package insert for complete side effects';
+  document.getElementById('arAvailText').textContent = 'Available at pharmacies — ask your pharmacist';
+  document.getElementById('arBrands').innerHTML = '';
+  document.getElementById('aiResult').classList.add('show');
+}
+
+async function checkDrugInteraction() {
+  const d1 = document.getElementById('drug1').value.trim();
+  const d2 = document.getElementById('drug2').value.trim();
+  if (!d1 || !d2) { alert('Enter both medicines'); return; }
+  
+  const resEl = document.getElementById('icResult');
+  resEl.className = 'ic-result show caution';
+  resEl.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Checking interaction...';
+
+  try {
+    const sys = `You are a clinical pharmacist. Respond ONLY in JSON: {"level":"safe"|"caution"|"danger","title":"short summary","explanation":"2-3 sentences","recommendation":"what to do"}`;
+    const raw = await callClaude(sys, `Drug interaction between ${d1} and ${d2} — Bangladesh context`);
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const d = JSON.parse(clean);
+    const icons = {safe:'✅',caution:'⚠️',danger:'🚨'};
+    resEl.className = `ic-result show ${d.level}`;
+    resEl.innerHTML = `<strong>${icons[d.level]} ${d.title}</strong><br><span style="font-size:.85rem;line-height:1.6">${d.explanation}</span><br><em style="font-size:.82rem;margin-top:.35rem;display:block;font-weight:600">${d.recommendation}</em>`;
+  } catch(e) {
+    resEl.className = 'ic-result show caution';
+    resEl.innerHTML = `⚠️ Could not fetch interaction data. Please consult a pharmacist or doctor about taking ${d1} with ${d2}.`;
+  }
+}
+
+function checkInteraction() {
+  const name = document.getElementById('arName').textContent;
+  document.getElementById('drug1').value = name;
+  document.getElementById('drug2').focus();
+  document.querySelector('.interact-card').scrollIntoView({behavior:'smooth'});
+}
+
+// Auto-search from URL param
+window.addEventListener('load', () => {
+  const p = new URLSearchParams(location.search);
+  const q = p.get('q') || p.get('drug');
+  if (q) { document.getElementById('drugSearch').value = q; fetchDrugInfo(q); }
+});
+</script>
+
+<!-- MEDFIND FOOTER -->
+<footer style="background:#0f172a;border-top:1px solid rgba(255,255,255,.07);padding:2.5rem 2rem 1.5rem;margin-top:4rem;">
+  <div style="max-width:1160px;margin:0 auto;">
+    <div style="display:flex;flex-wrap:wrap;gap:2rem;justify-content:space-between;margin-bottom:2rem;">
+      <div>
+        <img src="../../assets/medfind-logo.png" alt="MedFind Bangladesh" style="height:44px;width:auto;object-fit:contain;">
+        <p style="color:#64748b;font-size:.82rem;max-width:260px;line-height:1.6;">Bangladesh's digital healthcare platform. Connecting patients with doctors, donors, and AI health tools.</p>
+      </div>
+      <div style="display:flex;gap:3rem;flex-wrap:wrap;">
+        <div>
+          <div style="color:#f8fafc;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Platform</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="/pages/symptoms/index.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Symptom Checker</a>
+            <a href="/pages/drugs/index.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Drug Directory</a>
+            <a href="/pages/treatments/index.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Treatment Guide</a>
+            <a href="/pages/blood-donor/search.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Blood Donors</a>
+            <a href="/pages/doctors/search.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Find Doctors</a>
+            <a href="/pages/hospital/list.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Hospitals</a>
+          </div>
+        </div>
+        <div>
+          <div style="color:#f8fafc;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Legal</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="/pages/privacy.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Privacy Policy</a>
+            <a href="/pages/terms.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Terms of Service</a>
+            <a href="/pages/medical-disclaimer.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Medical Disclaimer</a>
+            <a href="/pages/consent-forms.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Consent Forms</a>
+            <a href="/pages/data-backup-policy.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Data & Security</a>
+            <a href="/pages/cookies.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Cookie Policy</a>
+          </div>
+        </div>
+        <div>
+          <div style="color:#f8fafc;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Emergency</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="tel:999" style="color:#fca5a5;font-size:.82rem;font-weight:700;text-decoration:none;">🚨 999 — National Emergency</a>
+            <a href="tel:+8801772172829" style="color:#fca5a5;font-size:.82rem;text-decoration:none;">📞 MedFind: 01772-172829</a>
+            <a href="tel:029667722" style="color:#94a3b8;font-size:.82rem;text-decoration:none;">🏥 Dhaka Medical: 02-9667722</a>
+            <a href="mailto:medfindbd2026@gmail.com" style="color:#94a3b8;font-size:.82rem;text-decoration:none;">✉️ medfindbd2026@gmail.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.07);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
+      <p style="color:#475569;font-size:.78rem;">© 2026 MedFind Bangladesh. All rights reserved. Not a substitute for professional medical advice.</p>
+      <p style="color:#475569;font-size:.78rem;">🇧🇩 Made for Bangladesh | DGHS Compliant</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Doctor Appointment Schedule - Manage and book medical appointments in Bangladesh.">
+<title>Doctor Schedule - MedFind</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;--secondary:#0d9488;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--purple:#7c3aed;--white:#fff;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-500:#6b7280;--gray-700:#374151;--gray-800:#1f2937;--gray-900:#111827;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:#f1f5f9;color:var(--gray-800);}
+        .navbar{background:var(--white);height:64px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:100;}
+        .nav-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+        .nav-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;}
+        .nav-text{font-size:1.2rem;font-weight:800;color:var(--primary);}
+        .nav-links{display:flex;gap:1rem;}
+        .nav-links a{font-size:.875rem;color:var(--gray-700);text-decoration:none;font-weight:500;padding:.4rem .75rem;border-radius:8px;transition:.2s;}
+        .nav-links a:hover{color:var(--primary);background:var(--gray-50);}
+        .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.1rem;border-radius:10px;font-weight:600;font-size:.85rem;cursor:pointer;border:none;text-decoration:none;transition:.2s;}
+        .btn-primary{background:var(--primary);color:#fff;}
+        .btn-primary:hover{background:var(--primary-dark);}
+
+        /* HERO */
+        .schedule-hero{background:linear-gradient(135deg,#1e3a5f,var(--primary),var(--secondary));padding:2.5rem 2rem;color:#fff;}
+        .schedule-hero h1{font-size:2rem;font-weight:800;margin-bottom:.5rem;}
+        .schedule-hero p{opacity:.9;}
+
+        /* CONTAINER */
+        .container{max-width:1300px;margin:0 auto;padding:2rem;}
+
+        /* SEARCH SECTION */
+        .search-section{background:var(--white);border-radius:20px;padding:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,.06);margin-bottom:2rem;}
+        .search-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:1rem;align-items:end;}
+        .form-group label{display:block;font-size:.8rem;font-weight:600;color:var(--gray-600);margin-bottom:.4rem;}
+        .form-group input,.form-group select{width:100%;padding:.6rem 1rem;border:1.5px solid var(--gray-200);border-radius:10px;font-size:.875rem;outline:none;transition:.2s;background:var(--white);}
+        .form-group input:focus,.form-group select:focus{border-color:var(--primary);}
+        .search-btn{padding:.65rem 1.5rem;background:var(--primary);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:.9rem;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:.5rem;white-space:nowrap;}
+        .search-btn:hover{background:var(--primary-dark);}
+
+        /* WEEK SELECTOR */
+        .week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+        .week-title{font-size:1.1rem;font-weight:700;}
+        .week-controls{display:flex;gap:.5rem;align-items:center;}
+        .week-btn{width:36px;height:36px;border:1.5px solid var(--gray-200);border-radius:8px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray-600);transition:.2s;}
+        .week-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
+        .today-btn{padding:.4rem 1rem;border:1.5px solid var(--primary);border-radius:8px;background:var(--primary-light);color:var(--primary);font-weight:600;font-size:.8rem;cursor:pointer;}
+
+        /* SCHEDULE GRID */
+        .schedule-layout{display:grid;grid-template-columns:280px 1fr;gap:1.5rem;}
+        
+        /* DOCTOR LIST */
+        .doctor-list-panel{background:var(--white);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+        .dlp-header{padding:1.1rem 1.25rem;border-bottom:1px solid var(--gray-100);font-size:.95rem;font-weight:700;}
+        .dlp-search{padding:.75rem;border-bottom:1px solid var(--gray-100);}
+        .dlp-search input{width:100%;padding:.5rem .75rem;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.85rem;outline:none;}
+        .dlp-list{overflow-y:auto;max-height:70vh;}
+        .doctor-row{display:flex;align-items:center;gap:.75rem;padding:.85rem 1.1rem;cursor:pointer;border-left:3px solid transparent;transition:.2s;}
+        .doctor-row:hover{background:var(--gray-50);}
+        .doctor-row.active{background:var(--primary-light);border-left-color:var(--primary);}
+        .dr-avatar{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.9rem;flex-shrink:0;}
+        .dr-info h4{font-size:.875rem;font-weight:600;margin-bottom:.1rem;}
+        .dr-info p{font-size:.78rem;color:var(--gray-500);}
+        .dr-avail{width:8px;height:8px;border-radius:50%;margin-left:auto;flex-shrink:0;}
+        .dr-avail.on{background:var(--success);}
+        .dr-avail.off{background:var(--gray-300);}
+
+        /* CALENDAR / SCHEDULE */
+        .schedule-panel{background:var(--white);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.05);overflow:hidden;}
+        .sp-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;}
+        .doctor-summary{display:flex;align-items:center;gap:1rem;}
+        .ds-avatar{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;font-weight:700;}
+        .ds-name{font-size:1rem;font-weight:700;}
+        .ds-spec{font-size:.83rem;color:var(--primary);font-weight:600;}
+        .ds-hosp{font-size:.8rem;color:var(--gray-500);}
+        .sp-actions{display:flex;gap:.5rem;}
+        .sp-btn{padding:.45rem .9rem;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:.2s;}
+        .sp-btn-book{background:var(--primary);color:#fff;}
+        .sp-btn-video{background:#f3e8ff;color:var(--purple);}
+
+        /* DAYS ROW */
+        .days-row{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--gray-100);}
+        .day-col-header{padding:.75rem;text-align:center;border-right:1px solid var(--gray-100);}
+        .day-col-header:last-child{border-right:none;}
+        .day-name{font-size:.75rem;font-weight:700;text-transform:uppercase;color:var(--gray-500);letter-spacing:.5px;}
+        .day-date{font-size:1rem;font-weight:800;color:var(--gray-900);margin-top:.2rem;}
+        .day-date.today{background:var(--primary);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:.2rem auto 0;}
+
+        /* SCHEDULE SLOTS */
+        .schedule-body{display:grid;grid-template-columns:repeat(7,1fr);min-height:400px;}
+        .day-schedule{border-right:1px solid var(--gray-100);padding:.5rem;min-height:300px;}
+        .day-schedule:last-child{border-right:none;}
+        .day-working{background:linear-gradient(180deg,#eff6ff,var(--white));}
+        .day-off{background:var(--gray-50);}
+        .off-label{text-align:center;padding:2rem .5rem;color:var(--gray-400);font-size:.78rem;}
+
+        .slot-item{margin-bottom:.4rem;border-radius:8px;padding:.4rem .5rem;font-size:.75rem;font-weight:600;border-left:3px solid;}
+        .slot-item.available{background:#d1fae5;color:#065f46;border-left-color:var(--success);}
+        .slot-item.booked{background:#fee2e2;color:#991b1b;border-left-color:var(--danger);}
+        .slot-item.blocked{background:var(--gray-100);color:var(--gray-400);border-left-color:var(--gray-300);text-decoration:line-through;}
+        .slot-item.emergency{background:#fef3c7;color:#92400e;border-left-color:var(--warning);}
+
+        /* LEGEND */
+        .legend{display:flex;gap:1.5rem;padding:1rem 1.5rem;border-top:1px solid var(--gray-100);background:var(--gray-50);}
+        .legend-item{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--gray-600);}
+        .legend-dot{width:10px;height:10px;border-radius:2px;}
+
+        /* STATS ROW */
+        .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+        .stat-c{background:var(--white);border-radius:12px;padding:1rem 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.05);display:flex;align-items:center;gap:.75rem;}
+        .stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+        .stat-info h3{font-size:1.3rem;font-weight:800;}
+        .stat-info p{font-size:.78rem;color:var(--gray-500);}
+
+        @media(max-width:1024px){.schedule-layout{grid-template-columns:1fr;}.schedule-body,.days-row{grid-template-columns:repeat(7,minmax(90px,1fr));overflow-x:auto;}}
+        @media(max-width:768px){.search-row{grid-template-columns:1fr 1fr;}.stats-row{grid-template-columns:repeat(2,1fr);}}
+    </style>
+</head>
+<body>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="../../index.html" class="nav-brand"><img src="../../assets/medfind-logo.png" alt="MedFind Bangladesh" style="height:44px;width:auto;object-fit:contain;"></a>
+    <div class="nav-links">
+        <a href="../patients/dashboard.html">Dashboard</a>
+        <a href="search.html">Find Doctor</a>
+        <a href="../hospital/list.html">Hospitals</a>
+        <a href="../lab/tests.html">Lab Tests</a>
+    </div>
+    <a href="../patients/dashboard.html" class="btn btn-primary"><i class="fas fa-user-circle"></i> My Account</a>
+</nav>
+
+<!-- HERO -->
+<div class="schedule-hero">
+    <h1><i class="fas fa-calendar-alt"></i> Doctor Schedule</h1>
+    <p>Real-time doctor availability across all hospitals — book the right slot instantly</p>
+</div>
+
+<div class="container">
+    <!-- SEARCH -->
+    <div class="search-section">
+        <div class="search-row">
+            <div class="form-group">
+                <label>Doctor Name or Specialty</label>
+                <input type="text" id="schedSearchQ" placeholder="e.g. Cardiology, Dr. Rahman...">
+            </div>
+            <div class="form-group">
+                <label>Hospital</label>
+                <select id="schedHospital">
+                    <option value="">All Hospitals</option>
+                    <option>BSMMU, Dhaka</option>
+                    <option>Dhaka Medical College Hospital</option>
+                    <option>Square Hospitals</option>
+                    <option>Evercare Hospital</option>
+                    <option>Popular Diagnostic</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Division</label>
+                <select>
+                    <option>All Bangladesh</option>
+                    <option selected>Dhaka</option>
+                    <option>Chittagong</option>
+                    <option>Rajshahi</option>
+                    <option>Khulna</option>
+                    <option>Sylhet</option>
+                </select>
+            </div>
+            <button class="search-btn" onclick="loadSchedule()"><i class="fas fa-search"></i> Find Schedule</button>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+        <div class="stat-c">
+            <div class="stat-icon" style="background:#dbeafe;color:var(--primary)"><i class="fas fa-user-md"></i></div>
+            <div class="stat-info"><h3>248</h3><p>Doctors Available Today</p></div>
+        </div>
+        <div class="stat-c">
+            <div class="stat-icon" style="background:#d1fae5;color:var(--success)"><i class="fas fa-calendar-check"></i></div>
+            <div class="stat-info"><h3 id="openSlots">1,240</h3><p>Open Slots This Week</p></div>
+        </div>
+        <div class="stat-c">
+            <div class="stat-icon" style="background:#f3e8ff;color:var(--purple)"><i class="fas fa-video"></i></div>
+            <div class="stat-info"><h3>85</h3><p>Video Consult Slots Today</p></div>
+        </div>
+        <div class="stat-c">
+            <div class="stat-icon" style="background:#fef3c7;color:var(--warning)"><i class="fas fa-clock"></i></div>
+            <div class="stat-info"><h3 id="liveTime">--:--</h3><p>Live Server Time</p></div>
+        </div>
+    </div>
+
+    <!-- SCHEDULE LAYOUT -->
+    <div class="schedule-layout">
+        <!-- DOCTOR LIST -->
+        <div class="doctor-list-panel">
+            <div class="dlp-header"><i class="fas fa-user-md" style="color:var(--primary)"></i> Select a Doctor</div>
+            <div class="dlp-search">
+                <input type="text" placeholder="Search doctors..." oninput="filterDocList(this.value)">
+            </div>
+            <div class="dlp-list" id="docList">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+
+        <!-- SCHEDULE PANEL -->
+        <div class="schedule-panel" id="schedulePanel">
+            <div class="sp-header">
+                <div class="doctor-summary">
+                    <div class="ds-avatar" id="selectedAvatar" style="background:linear-gradient(135deg,#2563eb,#3b82f6)">KH</div>
+                    <div>
+                        <div class="ds-name" id="selectedName">Dr. Karimul Hasan</div>
+                        <div class="ds-spec" id="selectedSpec">Cardiology · BMDC Verified</div>
+                        <div class="ds-hosp" id="selectedHosp"><i class="fas fa-hospital"></i> BSMMU, Dhaka</div>
+                    </div>
+                </div>
+                <div class="sp-actions">
+                    <button class="sp-btn sp-btn-video" onclick="window.location='../../telemedicine.html'"><i class="fas fa-video"></i> Video</button>
+                    <button class="sp-btn sp-btn-book" onclick="window.location='search.html'"><i class="fas fa-calendar-plus"></i> Book Now</button>
+                </div>
+            </div>
+
+            <!-- WEEK NAV -->
+            <div style="padding:1rem 1.5rem;border-bottom:1px solid var(--gray-100)">
+                <div class="week-nav">
+                    <div class="week-title" id="weekTitle">Week of April 14 – April 20, 2025</div>
+                    <div class="week-controls">
+                        <button class="today-btn" onclick="goToday()">Today</button>
+                        <button class="week-btn" onclick="changeWeek(-1)"><i class="fas fa-chevron-left"></i></button>
+                        <button class="week-btn" onclick="changeWeek(1)"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DAYS ROW -->
+            <div class="days-row" id="daysRow"></div>
+
+            <!-- SCHEDULE BODY -->
+            <div class="schedule-body" id="scheduleBody"></div>
+
+            <!-- LEGEND -->
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div> Available</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div> Booked</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#9ca3af"></div> Day Off</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div> Emergency</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../assets/js/config.js"></script>
+  <script>
+const doctors = [
+    {id:1,initials:'KH',name:'Dr. Karimul Hasan',spec:'Cardiology',hospital:'BSMMU, Dhaka',color:'linear-gradient(135deg,#2563eb,#3b82f6)',available:true,workDays:['Saturday','Sunday','Monday','Tuesday','Wednesday'],startTime:'9:00 AM',endTime:'2:00 PM',slotsPerDay:20,video:true},
+    {id:2,initials:'SB',name:'Dr. Sultana Begum',spec:'Neurology',hospital:'Square Hospital, Dhaka',color:'linear-gradient(135deg,#7c3aed,#8b5cf6)',available:true,workDays:['Sunday','Monday','Wednesday','Thursday'],startTime:'10:00 AM',endTime:'3:00 PM',slotsPerDay:16,video:true},
+    {id:3,initials:'RK',name:'Dr. Rahman Kabir',spec:'Internal Medicine',hospital:'BSMMU, Dhaka',color:'linear-gradient(135deg,#059669,#10b981)',available:true,workDays:['Saturday','Monday','Wednesday','Thursday'],startTime:'8:00 AM',endTime:'1:00 PM',slotsPerDay:18,video:true},
+    {id:4,initials:'NI',name:'Dr. Nadia Islam',spec:'Pediatrics',hospital:'Dhaka Children Hospital',color:'linear-gradient(135deg,#d97706,#f59e0b)',available:true,workDays:['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday'],startTime:'9:00 AM',endTime:'4:00 PM',slotsPerDay:24,video:false},
+    {id:5,initials:'RA',name:'Dr. Rina Akter',spec:'Gynecology',hospital:'Evercare Hospital',color:'linear-gradient(135deg,#be185d,#ec4899)',available:true,workDays:['Sunday','Monday','Tuesday','Thursday'],startTime:'10:00 AM',endTime:'2:00 PM',slotsPerDay:12,video:false},
+    {id:6,initials:'AB',name:'Dr. Akash Bose',spec:'Pulmonology',hospital:'NIDCH, Dhaka',color:'linear-gradient(135deg,#0284c7,#38bdf8)',available:false,workDays:['Saturday','Sunday','Wednesday'],startTime:'9:00 AM',endTime:'12:00 PM',slotsPerDay:10,video:true},
+    {id:7,initials:'FK',name:'Dr. Farida Khanam',spec:'Endocrinology',hospital:'BIRDEM, Dhaka',color:'linear-gradient(135deg,#dc2626,#ef4444)',available:true,workDays:['Sunday','Monday','Tuesday','Wednesday'],startTime:'8:30 AM',endTime:'1:30 PM',slotsPerDay:16,video:true},
+];
+
+let currentWeekOffset = 0;
+let selectedDoc = doctors[0];
+
+const DAYS_BD = ['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'];
+const SLOTS = [
+    '8:00 AM','8:30 AM','9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM',
+    '12:00 PM','12:30 PM','1:00 PM','1:30 PM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM'
+];
+
+// Pre-booked slots (simulated)
+const bookedSlots = {
+    0: ['9:00 AM','10:00 AM'],
+    1: ['9:30 AM'],
+    2: ['10:00 AM','11:00 AM','12:00 PM'],
+    3: [],
+    4: ['9:00 AM'],
+    5: [],
+    6: []
+};
+
+function getWeekDates() {
+    const today = new Date();
+    // Bangladesh week starts Saturday
+    const dayOfWeek = today.getDay();
+    const diffToSat = (dayOfWeek - 6 + 7) % 7;
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - diffToSat + (currentWeekOffset * 7));
+    return Array.from({length:7}, (_, i) => {
+        const d = new Date(weekStart);
+        d.setDate(weekStart.getDate() + i);
+        return d;
+    });
+}
+
+function isToday(date) {
+    const t = new Date();
+    return date.getDate() === t.getDate() && date.getMonth() === t.getMonth() && date.getFullYear() === t.getFullYear();
+}
+
+function renderDocList() {
+    const container = document.getElementById('docList');
+    container.innerHTML = doctors.map(d => `
+        <div class="doctor-row ${d.id === selectedDoc.id ? 'active' : ''}" onclick="selectDoc(${d.id})">
+            <div class="dr-avatar" style="background:${d.color}">${d.initials}</div>
+            <div class="dr-info">
+                <h4>${d.name}</h4>
+                <p>${d.spec}</p>
+            </div>
+            <div class="dr-avail ${d.available ? 'on' : 'off'}"></div>
+        </div>
+    `).join('');
+}
+
+function renderSchedule() {
+    const dates = getWeekDates();
+    const months = dates.map(d => d.toLocaleDateString('en-BD',{month:'long'}));
+    document.getElementById('weekTitle').textContent = `Week of ${dates[0].toLocaleDateString('en-BD',{month:'short',day:'numeric'})} – ${dates[6].toLocaleDateString('en-BD',{month:'short',day:'numeric'})}, ${dates[0].getFullYear()}`;
+
+    // Days row
+    const daysRow = document.getElementById('daysRow');
+    daysRow.innerHTML = DAYS_BD.map((day, i) => {
+        const date = dates[i];
+        const today = isToday(date);
+        return `
+            <div class="day-col-header">
+                <div class="day-name">${day.substring(0,3)}</div>
+                <div class="day-date ${today ? 'today' : ''}">${date.getDate()}</div>
+            </div>
+        `;
+    }).join('');
+
+    // Schedule body
+    const body = document.getElementById('scheduleBody');
+    body.innerHTML = DAYS_BD.map((day, dayIdx) => {
+        const isWorkDay = selectedDoc.workDays.includes(day);
+        const date = dates[dayIdx];
+        const isPast = date < new Date(new Date().setHours(0,0,0,0));
+
+        if (!isWorkDay) {
+            return `<div class="day-schedule day-off"><div class="off-label"><i class="fas fa-moon"></i><br>Day Off</div></div>`;
+        }
+
+        // Generate slots between start and end time
+        const docSlots = SLOTS.filter(s => {
+            const sIdx = SLOTS.indexOf(selectedDoc.startTime);
+            const eIdx = SLOTS.indexOf(selectedDoc.endTime);
+            return SLOTS.indexOf(s) >= sIdx && SLOTS.indexOf(s) < eIdx;
+        });
+
+        const booked = bookedSlots[dayIdx] || [];
+        const slotsHtml = docSlots.map((slot, si) => {
+            const isBooked = booked.includes(slot) || (si % 5 === 3);
+            const isBlocked = isPast;
+            const cls = isBlocked ? 'blocked' : isBooked ? 'booked' : 'available';
+            const icon = isBlocked ? '🔒' : isBooked ? '🔴' : '🟢';
+            return `<div class="slot-item ${cls}" title="${slot}" onclick="${cls==='available'?`bookSlot('${day}','${slot}')`:''}">${icon} ${slot}</div>`;
+        }).join('');
+
+        return `<div class="day-schedule day-working">${slotsHtml}</div>`;
+    }).join('');
+
+    // Update doctor header
+    document.getElementById('selectedAvatar').textContent = selectedDoc.initials;
+    document.getElementById('selectedAvatar').style.background = selectedDoc.color;
+    document.getElementById('selectedName').textContent = selectedDoc.name;
+    document.getElementById('selectedSpec').textContent = selectedDoc.spec + ' · BMDC Verified';
+    document.getElementById('selectedHosp').innerHTML = `<i class="fas fa-hospital"></i> ${selectedDoc.hospital} · ${selectedDoc.startTime} – ${selectedDoc.endTime}`;
+}
+
+function selectDoc(id) {
+    selectedDoc = doctors.find(d => d.id === id);
+    renderDocList();
+    renderSchedule();
+    // API: GET /api/v1/doctors/{id}/schedule/?week=
+    console.log(`Fetching schedule: /api/v1/doctors/${id}/schedule/?week=${currentWeekOffset}`);
+}
+
+function changeWeek(dir) {
+    currentWeekOffset += dir;
+    renderSchedule();
+}
+
+function goToday() { currentWeekOffset = 0; renderSchedule(); }
+
+function filterDocList(q) {
+    const rows = document.querySelectorAll('.doctor-row');
+    rows.forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? 'flex' : 'none';
+    });
+}
+
+function bookSlot(day, slot) {
+    if (confirm(`Book appointment with ${selectedDoc.name}?\n\nDay: ${day}\nTime: ${slot}\nFee: ৳1,200\n\nConfirm?`)) {
+        // POST /api/v1/appointments/
+        if(window.MFC) MFC.toast(`Appointment booked with ${selectedDoc.name} — ${day} at ${slot}`, 'success', '✅ Booked!', 5000);
+        renderSchedule();
+    }
+}
+
+function loadSchedule() {
+    const q = document.getElementById('schedSearchQ').value.toLowerCase();
+    const filtered = doctors.filter(d => !q || d.name.toLowerCase().includes(q) || d.spec.toLowerCase().includes(q));
+    if (filtered.length) { selectDoc(filtered[0].id); }
+}
+
+// CLOCK
+function updateClock() {
+    const now = new Date();
+    document.getElementById('liveTime').textContent = now.toLocaleTimeString('en-BD',{hour:'2-digit',minute:'2-digit'});
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// INIT
+renderDocList();
+renderSchedule();
+
+// Simulate real-time slot updates
+setInterval(() => {
+    const count = parseInt(document.getElementById('openSlots').textContent.replace(',',''));
+    document.getElementById('openSlots').textContent = (count - Math.floor(Math.random()*2)).toLocaleString();
+}, 30000);
+</script>
+<script src="../../assets/js/components.js"></script>
+<script src="../../services/api.js"></script>
+</body>
+</html>
