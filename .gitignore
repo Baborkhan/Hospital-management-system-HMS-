@@ -1,0 +1,113 @@
+# ── Python / Django ─────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+*.so
+env/
+venv/
+.venv/
+ENV/
+
+# ── Django specific ──────────────────────────────────────────
+*.log
+*.pot
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+static_root/
+
+# ── Environment files (NEVER commit these) ───────────────────
+.env
+.env.*
+!.env.example
+*.env
+backend/.env
+backend/.env.local
+backend/.env.production
+
+# ── Database ─────────────────────────────────────────────────
+*.db
+*.sqlite
+dump.rdb
+*.dump
+
+# ── Node / Frontend build ────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn
+dist/
+.cache/
+*.min.js.map
+
+# ── IDE / Editor ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── OS ───────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# ── Testing ──────────────────────────────────────────────────
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+*.cover
+.hypothesis/
+
+# ── Celery ───────────────────────────────────────────────────
+celerybeat-schedule
+celerybeat.pid
+
+# ── Media / uploads (don't commit user files) ───────────────
+media/
+uploads/
+backend/media/
+
+# ── Secrets / Keys ───────────────────────────────────────────
+*.pem
+*.key
+*.cert
+*.p12
+secrets.json
+service-account.json
+
+# ── Temporary ────────────────────────────────────────────────
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# ── ZIP files (use GitHub Releases instead) ─────────────────
+*.zip
+*.tar.gz
+*.rar
+
+# ── Logs ─────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
