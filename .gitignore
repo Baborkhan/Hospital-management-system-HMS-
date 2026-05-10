@@ -1,0 +1,111 @@
+# ── Python ──────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+pip-wheel-metadata/
+
+# ── Virtual Environments ─────────────────────────────────────────────
+venv/
+env/
+.venv/
+ENV/
+.env/
+virtualenv/
+
+# ── Django ───────────────────────────────────────────────────────────
+*.sqlite3
+*.sqlite3-journal
+backend/staticfiles/
+backend/media/
+backend/logs/
+backend/backups/
+backend/celerybeat-schedule
+backend/celerybeat.pid
+
+# ── Environment & Secrets — NEVER COMMIT ────────────────────────────
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.staging
+*.pem
+*.key
+service-account*.json
+*-credentials.json
+gcp-key*.json
+firebase-adminsdk*.json
+
+# ── IDE & Editors ────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ── Operating System ─────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ── Node.js ──────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ── Firebase ─────────────────────────────────────────────────────────
+.firebase/
+firebase-debug.log
+.firebaserc.bak
+
+# ── Google Cloud ─────────────────────────────────────────────────────
+# Block all JSON (secrets) EXCEPT known-safe config files
+*.json
+!package.json
+!firebase.json
+!deployment/**/*.json
+!frontend/assets/**/*.json
+
+# ── Logs ─────────────────────────────────────────────────────────────
+*.log
+logs/
+log/
+
+# ── Test & Coverage ──────────────────────────────────────────────────
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+coverage.xml
+*.cover
+
+# ── Docker ───────────────────────────────────────────────────────────
+.dockerignore
+
+# ── Backup Files ─────────────────────────────────────────────────────
+*.bak
+*.backup
+*.orig
+*.tmp
+<<<<<<< HEAD
+
+# Backend env
+backend/.env
+=======
+>>>>>>> 58c405af0447997e6cf8a412fa3573bac7007072

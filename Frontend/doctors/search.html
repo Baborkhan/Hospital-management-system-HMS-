@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/assets/medfind-logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Find Doctors in Bangladesh - Search by specialty, district and availability. Book appointments online.">
+<title>Find a Doctor - MedFind Bangladesh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{--primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;--secondary:#0d9488;--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--white:#fff;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;--gray-500:#6b7280;--gray-700:#374151;--gray-800:#1f2937;--gray-900:#111827;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:#f1f5f9;color:var(--gray-800);}
+
+        /* NAVBAR */
+        .navbar{background:var(--white);height:64px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:200;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+        .nav-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+        .nav-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;}
+        .nav-text{font-size:1.2rem;font-weight:800;color:var(--primary);}
+        .nav-links{display:flex;gap:1rem;}
+        .nav-links a{font-size:.875rem;color:var(--gray-700);text-decoration:none;font-weight:500;padding:.4rem .75rem;border-radius:8px;transition:.2s;}
+        .nav-links a:hover{background:var(--gray-100);color:var(--primary);}
+        .nav-btns{display:flex;gap:.5rem;}
+        .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.1rem;border-radius:10px;font-weight:600;font-size:.85rem;cursor:pointer;border:none;text-decoration:none;transition:.2s;}
+        .btn-primary{background:var(--primary);color:#fff;}
+        .btn-primary:hover{background:var(--primary-dark);}
+        .btn-outline{border:1.5px solid var(--primary);color:var(--primary);background:var(--white);}
+        .btn-outline:hover{background:var(--primary-light);}
+
+        /* HERO SEARCH */
+        .hero{background:linear-gradient(135deg,#1e3a5f,#2563eb,#0d9488);padding:3rem 2rem;color:#fff;}
+        .hero-content{max-width:900px;margin:0 auto;text-align:center;}
+        .hero h1{font-size:2.4rem;font-weight:800;margin-bottom:.75rem;}
+        .hero p{font-size:1rem;opacity:.9;margin-bottom:2rem;}
+        .main-search{background:var(--white);border-radius:16px;padding:1rem;display:flex;gap:.75rem;box-shadow:0 8px 30px rgba(0,0,0,.15);}
+        .ms-field{flex:1;display:flex;align-items:center;gap:.6rem;background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:10px;padding:.6rem 1rem;}
+        .ms-field input,select{flex:1;border:none;background:none;outline:none;font-size:.9rem;color:var(--gray-900);font-family:'Inter',sans-serif;}
+        .ms-field select{cursor:pointer;}
+        .ms-divider{width:1px;background:var(--gray-200);}
+        .hero-search-btn{background:var(--primary);color:#fff;border:none;padding:.7rem 2rem;border-radius:10px;font-weight:700;font-size:.95rem;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:.5rem;}
+        .hero-search-btn:hover{background:var(--primary-dark);}
+        .quick-specialties{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:1.25rem;}
+        .qs-chip{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:.3rem .85rem;border-radius:100px;font-size:.8rem;font-weight:500;cursor:pointer;transition:.2s;}
+        .qs-chip:hover{background:rgba(255,255,255,.3);}
+
+        /* STATS BAR */
+        .stats-bar{background:var(--white);border-bottom:1px solid var(--gray-200);padding:.75rem 2rem;}
+        .stats-inner{max-width:1400px;margin:0 auto;display:flex;gap:3rem;align-items:center;}
+        .stat-item{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--gray-600);}
+        .stat-item strong{color:var(--gray-900);font-weight:700;}
+
+        /* MAIN LAYOUT */
+        .main-layout{max-width:1400px;margin:0 auto;padding:1.5rem 2rem;display:grid;grid-template-columns:280px 1fr;gap:1.5rem;}
+
+        /* FILTERS SIDEBAR */
+        .filters-sidebar{position:sticky;top:80px;height:fit-content;}
+        .filter-card{background:var(--white);border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.05);overflow:hidden;}
+        .filter-header{padding:1.1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--gray-100);}
+        .filter-title{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:.5rem;}
+        .clear-all{font-size:.8rem;color:var(--primary);cursor:pointer;font-weight:600;border:none;background:none;}
+        .filter-section{padding:1rem 1.25rem;border-bottom:1px solid var(--gray-100);}
+        .filter-section-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-500);margin-bottom:.75rem;}
+        .filter-options{display:flex;flex-direction:column;gap:.4rem;}
+        .filter-opt{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:.3rem 0;}
+        .filter-opt label{display:flex;align-items:center;gap:.5rem;font-size:.875rem;cursor:pointer;}
+        .filter-opt input[type=checkbox]{width:15px;height:15px;accent-color:var(--primary);}
+        .filter-count{background:var(--gray-100);color:var(--gray-600);font-size:.72rem;padding:.1rem .45rem;border-radius:100px;font-weight:600;}
+        .filter-range{display:flex;flex-direction:column;gap:.5rem;}
+        .filter-range input[type=range]{width:100%;accent-color:var(--primary);}
+        .range-labels{display:flex;justify-content:space-between;font-size:.78rem;color:var(--gray-500);}
+        .rating-stars{display:flex;gap:.3rem;}
+        .rating-star{width:28px;height:28px;border:1.5px solid var(--gray-200);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;transition:.2s;}
+        .rating-star.active{background:#fef3c7;border-color:#f59e0b;color:#d97706;}
+        .apply-btn{width:100%;padding:.75rem;background:var(--primary);color:#fff;border:none;border-radius:0 0 16px 16px;font-weight:700;font-size:.9rem;cursor:pointer;transition:.2s;}
+        .apply-btn:hover{background:var(--primary-dark);}
+
+        /* RESULTS AREA */
+        .results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+        .results-count{font-size:.9rem;font-weight:600;color:var(--gray-700);}
+        .sort-row{display:flex;align-items:center;gap:.5rem;}
+        .sort-select{padding:.45rem .75rem;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.85rem;outline:none;background:var(--white);cursor:pointer;}
+        .view-toggle{display:flex;border:1.5px solid var(--gray-200);border-radius:8px;overflow:hidden;}
+        .vt-btn{padding:.4rem .65rem;border:none;background:var(--white);cursor:pointer;color:var(--gray-500);font-size:.85rem;transition:.2s;}
+        .vt-btn.active{background:var(--primary);color:#fff;}
+
+        /* DOCTOR CARDS */
+        .doctors-grid{display:flex;flex-direction:column;gap:1rem;}
+        .doctor-card{background:var(--white);border-radius:18px;border:1.5px solid var(--gray-200);padding:1.5rem;display:flex;gap:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.04);transition:.3s;position:relative;}
+        .doctor-card:hover{border-color:var(--primary);box-shadow:0 6px 25px rgba(37,99,235,.1);transform:translateY(-1px);}
+        .doctor-card.featured{border-color:#f59e0b;background:linear-gradient(135deg,#fffbeb,var(--white));}
+        .featured-badge{position:absolute;top:-8px;left:1.25rem;background:linear-gradient(90deg,#f59e0b,#d97706);color:#fff;font-size:.7rem;font-weight:700;padding:.2rem .75rem;border-radius:100px;text-transform:uppercase;letter-spacing:.5px;}
+        .doctor-avatar{width:90px;height:90px;border-radius:16px;background:linear-gradient(135deg,var(--primary),#3b82f6);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;color:#fff;flex-shrink:0;position:relative;}
+        .availability-dot{position:absolute;bottom:4px;right:4px;width:14px;height:14px;border-radius:50%;border:2px solid var(--white);}
+        .availability-dot.available{background:var(--success);}
+        .availability-dot.busy{background:var(--warning);}
+        .availability-dot.offline{background:var(--gray-400);}
+        .doctor-main{flex:1;}
+        .doctor-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;}
+        .doctor-name{font-size:1.1rem;font-weight:800;color:var(--gray-900);}
+        .doctor-verified{color:var(--primary);font-size:.85rem;margin-left:.4rem;}
+        .doctor-specialty{font-size:.875rem;color:var(--primary);font-weight:600;margin-bottom:.3rem;}
+        .doctor-hospital{font-size:.83rem;color:var(--gray-500);display:flex;align-items:center;gap:.4rem;margin-bottom:.6rem;}
+        .doctor-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem;}
+        .doc-tag{background:var(--gray-100);color:var(--gray-700);padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:500;}
+        .doc-tag.lang{background:#dbeafe;color:#1e40af;}
+        .doc-tag.exp{background:#d1fae5;color:#065f46;}
+        .doc-tag.video{background:#f3e8ff;color:#6b21a8;}
+        .doctor-stats{display:flex;gap:1.5rem;margin-bottom:.85rem;}
+        .ds-item{display:flex;flex-direction:column;align-items:center;gap:.1rem;}
+        .ds-val{font-size:1rem;font-weight:800;color:var(--gray-900);}
+        .ds-lbl{font-size:.7rem;color:var(--gray-500);}
+        .ds-divider{width:1px;background:var(--gray-200);}
+        .doctor-schedule{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.85rem;}
+        .sch-day{padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600;}
+        .sch-day.today{background:var(--success);color:#fff;}
+        .sch-day.available{background:#d1fae5;color:#065f46;}
+        .sch-day.unavail{background:var(--gray-100);color:var(--gray-400);text-decoration:line-through;}
+        .doctor-actions{display:flex;gap:.6rem;flex-shrink:0;flex-direction:column;align-items:flex-end;justify-content:space-between;}
+        .fee-display{text-align:right;}
+        .fee-label{font-size:.75rem;color:var(--gray-500);}
+        .fee-amount{font-size:1.3rem;font-weight:800;color:var(--gray-900);}
+        .fee-amount small{font-size:.75rem;font-weight:500;color:var(--gray-500);}
+        .rating-display{display:flex;align-items:center;gap:.3rem;justify-content:flex-end;}
+        .rating-stars-display{color:#f59e0b;font-size:.85rem;}
+        .rating-num{font-size:.85rem;font-weight:700;}
+        .rating-reviews{font-size:.75rem;color:var(--gray-500);}
+        .action-btns{display:flex;flex-direction:column;gap:.5rem;}
+        .book-btn{background:var(--primary);color:#fff;border:none;padding:.6rem 1.25rem;border-radius:10px;font-weight:700;font-size:.875rem;cursor:pointer;transition:.2s;white-space:nowrap;}
+        .book-btn:hover{background:var(--primary-dark);}
+        .video-btn{background:#f3e8ff;color:#7c3aed;border:none;padding:.55rem 1rem;border-radius:10px;font-weight:600;font-size:.8rem;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:.4rem;}
+        .video-btn:hover{background:#e9d5ff;}
+        .profile-link{text-align:center;font-size:.78rem;color:var(--primary);text-decoration:none;font-weight:500;}
+
+        /* PAGINATION */
+        .pagination{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:2rem 0;}
+        .page-btn{width:36px;height:36px;border:1.5px solid var(--gray-200);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.875rem;font-weight:600;background:var(--white);color:var(--gray-700);transition:.2s;}
+        .page-btn:hover,.page-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+        /* APPOINTMENT MODAL */
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem;}
+        .modal-overlay.show{display:flex;}
+        .modal{background:var(--white);border-radius:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;}
+        .modal-header{padding:1.5rem;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;}
+        .modal-header h2{font-size:1.1rem;font-weight:700;}
+        .modal-close{background:var(--gray-100);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;color:var(--gray-600);}
+        .modal-body{padding:1.5rem;}
+        .form-group{margin-bottom:1rem;}
+        .form-group label{display:block;font-size:.85rem;font-weight:600;color:var(--gray-700);margin-bottom:.4rem;}
+        .form-group input,.form-group select,.form-group textarea{width:100%;padding:.6rem 1rem;border:1.5px solid var(--gray-200);border-radius:10px;font-size:.875rem;outline:none;font-family:'Inter',sans-serif;transition:.2s;}
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+        .slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.5rem;}
+        .slot-btn{padding:.45rem .5rem;border:1.5px solid var(--gray-200);border-radius:8px;font-size:.8rem;font-weight:500;cursor:pointer;background:var(--white);transition:.2s;text-align:center;}
+        .slot-btn:hover,.slot-btn.selected{background:var(--primary);color:#fff;border-color:var(--primary);}
+        .slot-btn.booked{background:var(--gray-100);color:var(--gray-400);cursor:not-allowed;text-decoration:line-through;}
+        .modal-footer{padding:1.25rem 1.5rem;border-top:1px solid var(--gray-200);display:flex;gap:.75rem;}
+        .modal-footer button{flex:1;padding:.75rem;border-radius:10px;font-weight:700;font-size:.9rem;cursor:pointer;border:none;}
+        .btn-cancel{background:var(--gray-100);color:var(--gray-700);}
+        .btn-confirm{background:var(--primary);color:#fff;}
+
+        @media(max-width:1024px){.main-layout{grid-template-columns:1fr;}.filters-sidebar{position:relative;top:0;}}
+        @media(max-width:768px){.doctor-card{flex-direction:column;}.doctor-actions{flex-direction:row;align-items:center;}.main-search{flex-direction:column;}.hero h1{font-size:1.8rem;}}
+    </style>
+</head>
+<body>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="../../index.html" class="nav-brand"><img src="../../assets/medfind-logo.png" alt="MedFind Bangladesh" style="height:44px;width:auto;object-fit:contain;"></a>
+    <div class="nav-links">
+        <a href="../patients/dashboard.html">Dashboard</a>
+        <a href="../hospital/list.html">Hospitals</a>
+        <a href="search.html" style="color:var(--primary)">Find Doctor</a>
+        <a href="../lab/tests.html">Lab Tests</a>
+        <a href="../billing/pharmacy.html">Pharmacy</a>
+    </div>
+    <div class="nav-btns">
+        <a href="schedule.html" class="btn btn-outline"><i class="fas fa-calendar-alt"></i> Doctor Schedule</a>
+        <a href="../patients/dashboard.html" class="btn btn-primary"><i class="fas fa-user-circle"></i> My Account</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-content">
+        <h1><i class="fas fa-user-md"></i> Find the Right Doctor</h1>
+        <p>Search from 2,000+ verified specialist doctors across all 8 divisions of Bangladesh</p>
+        <div class="main-search">
+            <div class="ms-field">
+                <i class="fas fa-search" style="color:var(--gray-400)"></i>
+                <input type="text" id="searchQ" placeholder="Doctor name, specialty, condition...">
+            </div>
+            <div class="ms-divider"></div>
+            <div class="ms-field">
+                <i class="fas fa-map-marker-alt" style="color:var(--gray-400)"></i>
+                <select id="divisionSel">
+                    <option value="">All Divisions</option>
+                    <option value="Dhaka">Dhaka</option>
+                    <option value="Chittagong">Chittagong</option>
+                    <option value="Rajshahi">Rajshahi</option>
+                    <option value="Khulna">Khulna</option>
+                    <option value="Sylhet">Sylhet</option>
+                    <option value="Barisal">Barisal</option>
+                    <option value="Rangpur">Rangpur</option>
+                    <option value="Mymensingh">Mymensingh</option>
+                </select>
+            </div>
+            <div class="ms-divider"></div>
+            <div class="ms-field">
+                <i class="fas fa-stethoscope" style="color:var(--gray-400)"></i>
+                <select id="specSel">
+                    <option value="">All Specialties</option>
+                    <option>Cardiology</option><option>Neurology</option><option>Orthopedics</option>
+                    <option>Gynecology</option><option>Pediatrics</option><option>Dermatology</option>
+                    <option>Psychiatry</option><option>Gastroenterology</option><option>Nephrology</option>
+                    <option>Oncology</option><option>Ophthalmology</option><option>ENT</option>
+                    <option>Urology</option><option>Endocrinology</option><option>Pulmonology</option>
+                </select>
+            </div>
+            <button class="hero-search-btn" onclick="applyFilters()"><i class="fas fa-search"></i> Search Doctors</button>
+        </div>
+        <div class="quick-specialties">
+            <div class="qs-chip" onclick="setSpec('Cardiology')">❤️ Cardiology</div>
+            <div class="qs-chip" onclick="setSpec('Neurology')">🧠 Neurology</div>
+            <div class="qs-chip" onclick="setSpec('Pediatrics')">👶 Pediatrics</div>
+            <div class="qs-chip" onclick="setSpec('Gynecology')">♀️ Gynecology</div>
+            <div class="qs-chip" onclick="setSpec('Orthopedics')">🦴 Orthopedics</div>
+            <div class="qs-chip" onclick="setSpec('Dermatology')">🩺 Dermatology</div>
+            <div class="qs-chip" onclick="setSpec('Psychiatry')">🧠 Psychiatry</div>
+        </div>
+    </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+    <div class="stats-inner">
+        <div class="stat-item"><strong id="totalDocs">2,400+</strong> Verified Doctors</div>
+        <div class="stat-item"><strong>150+</strong> Specialties</div>
+        <div class="stat-item"><strong>64</strong> Districts Covered</div>
+        <div class="stat-item"><strong>500+</strong> Video Consult Available</div>
+        <div class="stat-item" style="margin-left:auto"><i class="fas fa-filter"></i> Showing: <strong id="showingCount">20</strong> results</div>
+    </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+    <!-- FILTERS -->
+    <aside class="filters-sidebar">
+        <div class="filter-card">
+            <div class="filter-header">
+                <span class="filter-title"><i class="fas fa-sliders-h" style="color:var(--primary)"></i> Advanced Filters</span>
+                <button class="clear-all" onclick="clearFilters()">Clear All</button>
+            </div>
+            <div class="filter-section">
+                <div class="filter-section-title">Availability</div>
+                <div class="filter-options">
+                    <div class="filter-opt"><label><input type="checkbox" id="fAvailToday"> Available Today</label></div>
+                    <div class="filter-opt"><label><input type="checkbox" id="fVideo"> Video Consultation</label></div>
+                    <div class="filter-opt"><label><input type="checkbox" id="fEmergency"> Emergency Available</label></div>
+                    <div class="filter-opt"><label><input type="checkbox" id="fHomeVisit"> Home Visit</label></div>
+                </div>
+            </div>
+            <div class="filter-section">
+                <div class="filter-section-title">Hospital</div>
+                <div class="filter-options">
+                    <div class="filter-opt"><label><input type="checkbox"> BSMMU</label><span class="filter-count">48</span></div>
+                    <div class="filter-opt"><label><input type="checkbox"> Dhaka Medical College</label><span class="filter-count">62</span></div>
+                    <div class="filter-opt"><label><input type="checkbox"> Square Hospitals</label><span class="filter-count">35</span></div>
+                    <div class="filter-opt"><label><input type="checkbox"> Evercare Hospital</label><span class="filter-count">40</span></div>
+                    <div class="filter-opt"><label><input type="checkbox"> Ibn Sina Hospital</label><span class="filter-count">28</span></div>
+                </div>
+            </div>
+            <div class="filter-section">
+                <div class="filter-section-title">Consultation Fee (৳)</div>
+                <div class="filter-range">
+                    <input type="range" id="feeRange" min="200" max="5000" value="3000" step="100" oninput="updateFeeLabel(this.value)">
+                    <div class="range-labels"><span>৳200</span><span id="feeLabel">Up to ৳3,000</span></div>
+                </div>
+            </div>
+            <div class="filter-section">
+                <div class="filter-section-title">Minimum Rating</div>
+                <div class="rating-stars" id="ratingFilter">
+                    <div class="rating-star" onclick="setRating(3)" title="3+">3+</div>
+                    <div class="rating-star" onclick="setRating(3.5)" title="3.5+">3.5+</div>
+                    <div class="rating-star active" onclick="setRating(4)" title="4+">4+</div>
+                    <div class="rating-star" onclick="setRating(4.5)" title="4.5+">4.5+</div>
+                    <div class="rating-star" onclick="setRating(5)" title="5">5★</div>
+                </div>
+            </div>
+            <div class="filter-section">
+                <div class="filter-section-title">Experience</div>
+                <div class="filter-options">
+                    <div class="filter-opt"><label><input type="radio" name="exp" value="0"> Any Experience</label></div>
+                    <div class="filter-opt"><label><input type="radio" name="exp" value="5"> 5+ Years</label></div>
+                    <div class="filter-opt"><label><input type="radio" name="exp" value="10"> 10+ Years</label></div>
+                    <div class="filter-opt"><label><input type="radio" name="exp" value="15"> 15+ Years</label></div>
+                </div>
+            </div>
+            <div class="filter-section" style="border-bottom:none">
+                <div class="filter-section-title">Language</div>
+                <div class="filter-options">
+                    <div class="filter-opt"><label><input type="checkbox" checked> Bengali</label></div>
+                    <div class="filter-opt"><label><input type="checkbox"> English</label></div>
+                    <div class="filter-opt"><label><input type="checkbox"> Arabic</label></div>
+                </div>
+            </div>
+            <button class="apply-btn" onclick="applyFilters()"><i class="fas fa-search"></i> Apply Filters</button>
+        </div>
+    </aside>
+
+    <!-- RESULTS -->
+    <div class="results-area">
+        <div class="results-header">
+            <div class="results-count" id="resultHeader">Found <strong>24</strong> doctors matching your criteria</div>
+            <div class="sort-row">
+                <select class="sort-select" onchange="sortDoctors(this.value)">
+                    <option value="rating">Sort: Highest Rated</option>
+                    <option value="fee_low">Fee: Low to High</option>
+                    <option value="fee_high">Fee: High to Low</option>
+                    <option value="exp">Most Experienced</option>
+                    <option value="patients">Most Patients</option>
+                </select>
+                <div class="view-toggle">
+                    <button class="vt-btn active" title="List View"><i class="fas fa-list"></i></button>
+                    <button class="vt-btn" title="Grid View"><i class="fas fa-th"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="doctors-grid" id="doctorsGrid">
+            <!-- Populated by JS -->
+        </div>
+
+        <div class="pagination">
+            <div class="page-btn"><i class="fas fa-chevron-left"></i></div>
+            <div class="page-btn active">1</div>
+            <div class="page-btn">2</div>
+            <div class="page-btn">3</div>
+            <span style="color:var(--gray-400)">...</span>
+            <div class="page-btn">12</div>
+            <div class="page-btn"><i class="fas fa-chevron-right"></i></div>
+        </div>
+    </div>
+</div>
+
+<!-- APPOINTMENT MODAL -->
+<div class="modal-overlay" id="apptModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="modalDoctorName">Book Appointment</h2>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div style="background:var(--gray-50);border-radius:12px;padding:1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem">
+                <div id="modalDoctorAvatar" style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--primary),#3b82f6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;font-weight:700"></div>
+                <div>
+                    <div id="modalDoctorSpec" style="font-size:.8rem;color:var(--primary);font-weight:600"></div>
+                    <div id="modalDoctorHosp" style="font-size:.8rem;color:var(--gray-500)"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Select Date</label>
+                <input type="date" id="apptDate" min="" onchange="loadSlots(this.value)">
+            </div>
+            <div class="form-group">
+                <label>Available Time Slots</label>
+                <div class="slot-grid" id="slotGrid">
+                    <div class="slot-btn" onclick="selectSlot(this)">9:00 AM</div>
+                    <div class="slot-btn" onclick="selectSlot(this)">9:30 AM</div>
+                    <div class="slot-btn booked">10:00 AM</div>
+                    <div class="slot-btn" onclick="selectSlot(this)">10:30 AM</div>
+                    <div class="slot-btn" onclick="selectSlot(this)">11:00 AM</div>
+                    <div class="slot-btn booked">11:30 AM</div>
+                    <div class="slot-btn" onclick="selectSlot(this)">2:00 PM</div>
+                    <div class="slot-btn" onclick="selectSlot(this)">2:30 PM</div>
+                    <div class="slot-btn" onclick="selectSlot(this)">3:00 PM</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Appointment Type</label>
+                <select>
+                    <option>In-Person Consultation</option>
+                    <option>Online Video Consultation</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Reason / Chief Complaint</label>
+                <textarea rows="3" placeholder="Briefly describe your symptoms or reason for visit..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Patient Name</label>
+                <input type="text" value="Rafiqul Alam" placeholder="Full name">
+            </div>
+            <div style="background:#d1fae5;border-radius:10px;padding:.75rem;font-size:.8rem;color:#065f46">
+                <i class="fas fa-info-circle"></i> Consultation fee will be collected at the hospital. Online payment available.
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <button class="btn-confirm" onclick="confirmAppointment()"><i class="fas fa-check"></i> Confirm Appointment</button>
+        </div>
+    </div>
+</div>
+
+<script src="../../assets/js/config.js"></script>
+  <script>
+const doctorsData = [
+    {id:1,name:'Dr. Karimul Hasan',initials:'KH',specialty:'Cardiology',hospital:'BSMMU, Dhaka',division:'Dhaka',experience:18,fee:1200,videoFee:800,rating:4.9,reviews:312,patients:4200,languages:['Bengali','English'],days:['Sat','Sun','Mon','Tue','Wed'],video:true,available:true,featured:true,bmdc:'BMDC-12345',qualification:'MBBS, FCPS (Cardiology)'},
+    {id:2,name:'Dr. Sultana Begum',initials:'SB',specialty:'Neurology',hospital:'Square Hospital, Dhaka',division:'Dhaka',experience:14,fee:1500,videoFee:1000,rating:4.8,reviews:245,patients:3100,languages:['Bengali','English'],days:['Sun','Mon','Wed','Thu'],video:true,available:true,featured:false,bmdc:'BMDC-23456',qualification:'MBBS, MD (Neurology)'},
+    {id:3,name:'Dr. Rahman Kabir',initials:'RK',specialty:'Internal Medicine',hospital:'BSMMU, Dhaka',division:'Dhaka',experience:20,fee:1000,videoFee:700,rating:4.7,reviews:520,patients:8500,languages:['Bengali','English','Arabic'],days:['Sat','Mon','Wed','Thu'],video:true,available:true,featured:false,bmdc:'BMDC-34567',qualification:'MBBS, MD (Internal Medicine), MRCP'},
+    {id:4,name:'Dr. Nadia Islam',initials:'NI',specialty:'Pediatrics',hospital:'Dhaka Children Hospital',division:'Dhaka',experience:12,fee:800,videoFee:500,rating:4.9,reviews:680,patients:5200,languages:['Bengali','English'],days:['Sat','Sun','Mon','Tue','Wed','Thu'],video:true,available:true,featured:false,bmdc:'BMDC-45678',qualification:'MBBS, DCH, FCPS (Pediatrics)'},
+    {id:5,name:'Dr. Rina Akter',initials:'RA',specialty:'Gynecology & Obstetrics',hospital:'Evercare Hospital, Dhaka',division:'Dhaka',experience:16,fee:1800,videoFee:1200,rating:4.8,reviews:410,patients:6800,languages:['Bengali','English'],days:['Sun','Mon','Tue','Thu'],video:false,available:true,featured:false,bmdc:'BMDC-56789',qualification:'MBBS, FCPS (OB/GYN), FRCOG'},
+    {id:6,name:'Dr. Akash Bose',initials:'AB',specialty:'Pulmonology',hospital:'National Institute of Diseases of the Chest',division:'Dhaka',experience:11,fee:900,videoFee:600,rating:4.6,reviews:189,patients:2900,languages:['Bengali','English'],days:['Sat','Sun','Wed','Thu'],video:true,available:false,featured:false,bmdc:'BMDC-67890',qualification:'MBBS, MD (Chest Diseases)'},
+    {id:7,name:'Dr. Farida Khanam',initials:'FK',specialty:'Endocrinology',hospital:'BIRDEM, Dhaka',division:'Dhaka',experience:13,fee:1100,videoFee:750,rating:4.7,reviews:298,patients:3800,languages:['Bengali','English'],days:['Sun','Mon','Tue','Wed'],video:true,available:true,featured:false,bmdc:'BMDC-78901',qualification:'MBBS, MD (Endocrinology)'},
+    {id:8,name:'Dr. Moinul Ahsan',initials:'MA',specialty:'Nephrology',hospital:'National Kidney Foundation Hospital',division:'Dhaka',experience:15,fee:1300,videoFee:900,rating:4.8,reviews:176,patients:2200,languages:['Bengali','English'],days:['Sat','Mon','Thu'],video:false,available:true,featured:false,bmdc:'BMDC-89012',qualification:'MBBS, MD (Nephrology), MRCP'},
+];
+
+const colors = ['linear-gradient(135deg,#2563eb,#3b82f6)','linear-gradient(135deg,#7c3aed,#8b5cf6)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#dc2626,#ef4444)','linear-gradient(135deg,#0d9488,#14b8a6)','linear-gradient(135deg,#d97706,#f59e0b)'];
+
+function renderDoctors(docs) {
+    const grid = document.getElementById('doctorsGrid');
+    if (!docs.length) { grid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--gray-500)"><i class="fas fa-user-md" style="font-size:3rem;margin-bottom:1rem"></i><p>No doctors found matching your criteria.</p></div>'; return; }
+    grid.innerHTML = docs.map((d, i) => `
+        <div class="doctor-card ${d.featured?'featured':''}">
+            ${d.featured?'<div class="featured-badge">⭐ Featured Doctor</div>':''}
+            <div class="doctor-avatar" style="background:${colors[i%colors.length]}">
+                ${d.initials}
+                <div class="availability-dot ${d.available?'available':'offline'}"></div>
+            </div>
+            <div class="doctor-main">
+                <div class="doctor-top">
+                    <div>
+                        <div class="doctor-name">${d.name} <i class="fas fa-check-circle doctor-verified" title="BMDC Verified"></i></div>
+                        <div class="doctor-specialty">${d.specialty}</div>
+                        <div class="doctor-hospital"><i class="fas fa-hospital"></i> ${d.hospital}</div>
+                    </div>
+                </div>
+                <div class="doctor-tags">
+                    <span class="doc-tag exp"><i class="fas fa-briefcase-medical"></i> ${d.experience} yrs exp</span>
+                    ${d.video?'<span class="doc-tag video"><i class="fas fa-video"></i> Video Available</span>':''}
+                    ${d.languages.map(l=>`<span class="doc-tag lang">${l}</span>`).join('')}
+                    <span class="doc-tag">${d.qualification.split(',')[1]||d.qualification}</span>
+                </div>
+                <div class="doctor-stats">
+                    <div class="ds-item"><div class="ds-val">⭐ ${d.rating}</div><div class="ds-lbl">Rating</div></div>
+                    <div class="ds-divider"></div>
+                    <div class="ds-item"><div class="ds-val">${d.reviews}</div><div class="ds-lbl">Reviews</div></div>
+                    <div class="ds-divider"></div>
+                    <div class="ds-item"><div class="ds-val">${d.patients.toLocaleString()}</div><div class="ds-lbl">Patients</div></div>
+                    <div class="ds-divider"></div>
+                    <div class="ds-item"><div class="ds-val">${d.experience}+</div><div class="ds-lbl">Years</div></div>
+                </div>
+                <div class="doctor-schedule">
+                    ${['Sat','Sun','Mon','Tue','Wed','Thu','Fri'].map(day => {
+                        const isToday = day === new Date().toLocaleDateString('en-US',{weekday:'short'}).substring(0,3);
+                        const hasDay = d.days.includes(day);
+                        return `<span class="sch-day ${hasDay&&isToday?'today':hasDay?'available':'unavail'}">${day}</span>`;
+                    }).join('')}
+                </div>
+            </div>
+            <div class="doctor-actions">
+                <div class="fee-display">
+                    <div class="fee-label">Consultation Fee</div>
+                    <div class="fee-amount">৳${d.fee.toLocaleString()}<small>/visit</small></div>
+                    ${d.video?`<div style="font-size:.75rem;color:#7c3aed;margin-top:.2rem"><i class="fas fa-video"></i> Video: ৳${d.videoFee}</div>`:''}
+                </div>
+                <div class="rating-display">
+                    <span class="rating-stars-display">${'★'.repeat(Math.floor(d.rating))}${'☆'.repeat(5-Math.floor(d.rating))}</span>
+                    <span class="rating-num">${d.rating}</span>
+                    <span class="rating-reviews">(${d.reviews})</span>
+                </div>
+                <div class="action-btns">
+                    <button class="book-btn" onclick="openBookingModal(${d.id})"><i class="fas fa-calendar-plus"></i> Book Appointment</button>
+                    ${d.video?`<button class="video-btn" onclick="startVideo(${d.id})"><i class="fas fa-video"></i> Video Consult</button>`:''}
+                    <a href="../hospital/profile.html?doc=${d.id}" class="profile-link">View Full Profile →</a>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+let allDoctors = [...doctorsData];
+let selectedRating = 4;
+let selectedSlot = '';
+let currentDoctorId = null;
+
+function applyFilters() {
+    const q = document.getElementById('searchQ').value.toLowerCase();
+    const division = document.getElementById('divisionSel').value;
+    const spec = document.getElementById('specSel').value;
+    const availToday = document.getElementById('fAvailToday').checked;
+    const videoOnly = document.getElementById('fVideo').checked;
+    const maxFee = parseInt(document.getElementById('feeRange').value);
+
+    let filtered = doctorsData.filter(d => {
+        if (q && !d.name.toLowerCase().includes(q) && !d.specialty.toLowerCase().includes(q)) return false;
+        if (division && d.division !== division) return false;
+        if (spec && d.specialty !== spec) return false;
+        if (availToday && !d.available) return false;
+        if (videoOnly && !d.video) return false;
+        if (d.fee > maxFee) return false;
+        if (d.rating < selectedRating) return false;
+        return true;
+    });
+
+    allDoctors = filtered;
+    renderDoctors(filtered);
+    document.getElementById('resultHeader').innerHTML = `Found <strong>${filtered.length}</strong> doctors matching your criteria`;
+    document.getElementById('showingCount').textContent = filtered.length;
+}
+
+function sortDoctors(by) {
+    const sorted = [...allDoctors].sort((a, b) => {
+        if (by === 'rating') return b.rating - a.rating;
+        if (by === 'fee_low') return a.fee - b.fee;
+        if (by === 'fee_high') return b.fee - a.fee;
+        if (by === 'exp') return b.experience - a.experience;
+        if (by === 'patients') return b.patients - a.patients;
+        return 0;
+    });
+    renderDoctors(sorted);
+}
+
+function setSpec(spec) { document.getElementById('specSel').value = spec; applyFilters(); }
+function clearFilters() { document.getElementById('searchQ').value=''; document.getElementById('divisionSel').value=''; document.getElementById('specSel').value=''; selectedRating=0; renderDoctors(doctorsData); }
+function updateFeeLabel(v) { document.getElementById('feeLabel').textContent = `Up to ৳${parseInt(v).toLocaleString()}`; }
+function setRating(r) { selectedRating=r; document.querySelectorAll('.rating-star').forEach((s,i)=>s.classList.toggle('active',i===[3,3.5,4,4.5,5].indexOf(r))); }
+
+function openBookingModal(docId) {
+    currentDoctorId = docId;
+    const doc = doctorsData.find(d => d.id === docId);
+    document.getElementById('modalDoctorName').textContent = `Book with ${doc.name}`;
+    document.getElementById('modalDoctorAvatar').textContent = doc.initials;
+    document.getElementById('modalDoctorSpec').textContent = doc.specialty + ' · ৳' + doc.fee;
+    document.getElementById('modalDoctorHosp').textContent = doc.hospital;
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('apptDate').min = today;
+    document.getElementById('apptDate').value = today;
+    document.getElementById('apptModal').classList.add('show');
+}
+
+function closeModal() { document.getElementById('apptModal').classList.remove('show'); }
+
+function selectSlot(el) {
+    document.querySelectorAll('.slot-btn:not(.booked)').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedSlot = el.textContent;
+}
+
+function loadSlots(date) {
+    // API: GET /api/v1/appointments/available-slots/?doctor=&date=
+    console.log(`Loading slots for date: ${date}, doctor: ${currentDoctorId}`);
+}
+
+function confirmAppointment() {
+    if (!selectedSlot) { if(window.MFC) MFC.toast('Please select a time slot first','warning'); return; }
+    // POST /api/v1/appointments/
+    const docName = doctorsData.find(d=>d.id===currentDoctorId)?.name || 'Doctor';
+    if(window.MFC) MFC.toast(`Appointment with ${docName} at ${selectedSlot}. SMS sent!`, 'success', '✅ Appointment Booked', 5000);
+    closeModal();
+}
+
+function startVideo(docId) {
+    // Patient books video appointment — doctor will initiate the call
+    window.location.href = `../patients/appointments.html?doctor=${docId}&type=video`;
+}
+
+function openDoctorConsole(docId) {
+    window.location.href = `console.html?doctor=${docId}`;
+}
+
+// Initial render
+renderDoctors(doctorsData);
+
+// Trigger API fetch
+async function fetchDoctors() {
+    try {
+        // const res = await fetch('/api/v1/doctors/?' + new URLSearchParams({...params}));
+        // const data = await res.json();
+        console.log('API: GET /api/v1/doctors/');
+    } catch(e) { console.warn('API unavailable — using local data'); }
+}
+fetchDoctors();
+</script>
+<script src="../../assets/js/components.js"></script>
+<script src="../../services/api.js"></script>
+
+<!-- MEDFIND FOOTER -->
+<footer style="background:#0f172a;border-top:1px solid rgba(255,255,255,.07);padding:2.5rem 2rem 1.5rem;margin-top:4rem;">
+  <div style="max-width:1160px;margin:0 auto;">
+    <div style="display:flex;flex-wrap:wrap;gap:2rem;justify-content:space-between;margin-bottom:2rem;">
+      <div>
+        <img src="../../assets/medfind-logo.png" alt="MedFind Bangladesh" style="height:44px;width:auto;object-fit:contain;">
+        <p style="color:#64748b;font-size:.82rem;max-width:260px;line-height:1.6;">Bangladesh's digital healthcare platform. Connecting patients with doctors, donors, and AI health tools.</p>
+      </div>
+      <div style="display:flex;gap:3rem;flex-wrap:wrap;">
+        <div>
+          <div style="color:#f8fafc;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Platform</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="/pages/symptoms/index.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Symptom Checker</a>
+            <a href="/pages/drugs/index.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Drug Directory</a>
+            <a href="/pages/treatments/index.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Treatment Guide</a>
+            <a href="/pages/blood-donor/search.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Blood Donors</a>
+            <a href="/pages/doctors/search.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Find Doctors</a>
+            <a href="/pages/hospital/list.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Hospitals</a>
+          </div>
+        </div>
+        <div>
+          <div style="color:#f8fafc;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Legal</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="/pages/privacy.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Privacy Policy</a>
+            <a href="/pages/terms.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Terms of Service</a>
+            <a href="/pages/medical-disclaimer.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Medical Disclaimer</a>
+            <a href="/pages/consent-forms.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Consent Forms</a>
+            <a href="/pages/data-backup-policy.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Data & Security</a>
+            <a href="/pages/cookies.html" style="color:#64748b;font-size:.82rem;text-decoration:none;">Cookie Policy</a>
+          </div>
+        </div>
+        <div>
+          <div style="color:#f8fafc;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">Emergency</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <a href="tel:999" style="color:#fca5a5;font-size:.82rem;font-weight:700;text-decoration:none;">🚨 999 — National Emergency</a>
+            <a href="tel:+8801772172829" style="color:#fca5a5;font-size:.82rem;text-decoration:none;">📞 MedFind: 01772-172829</a>
+            <a href="tel:029667722" style="color:#94a3b8;font-size:.82rem;text-decoration:none;">🏥 Dhaka Medical: 02-9667722</a>
+            <a href="mailto:medfindbd2026@gmail.com" style="color:#94a3b8;font-size:.82rem;text-decoration:none;">✉️ medfindbd2026@gmail.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.07);padding-top:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
+      <p style="color:#475569;font-size:.78rem;">© 2026 MedFind Bangladesh. All rights reserved. Not a substitute for professional medical advice.</p>
+      <p style="color:#475569;font-size:.78rem;">🇧🇩 Made for Bangladesh | DGHS Compliant</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
