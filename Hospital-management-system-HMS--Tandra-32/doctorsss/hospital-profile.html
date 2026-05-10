@@ -1,0 +1,3265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+  <title>Premium Hospital Profile System | MedFind</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* ===== RESET & VARIABLES ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #dbeafe;
+      --primary-soft: #3b82f6;
+      --secondary: #10b981;
+      --secondary-dark: #059669;
+      --accent: #8b5cf6;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --info: #3b82f6;
+      --dark: #1e293b;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --gray-900: #0f172a;
+      --white: #ffffff;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+      --shadow-xl: 0 20px 25px rgba(0,0,0,0.15);
+      --shadow-2xl: 0 25px 50px rgba(0,0,0,0.2);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-2xl: 32px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-800);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 30px;
+    }
+
+    /* ===== ADMIN TOGGLE (ONLY FOR HOSPITAL STAFF) ===== */
+    .admin-toggle {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 9999;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-2xl);
+      transition: var(--transition);
+      border: 3px solid white;
+    }
+
+    .admin-toggle:hover {
+      transform: scale(1.1) rotate(90deg);
+      background: linear-gradient(135deg, var(--primary-dark), var(--accent));
+    }
+
+    .admin-toggle i {
+      font-size: 28px;
+    }
+
+    .admin-panel {
+      position: fixed;
+      top: 0;
+      right: -550px;
+      width: 500px;
+      height: 100vh;
+      background: white;
+      box-shadow: var(--shadow-2xl);
+      z-index: 10000;
+      transition: var(--transition);
+      overflow-y: auto;
+      padding: 30px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .admin-panel.active {
+      right: 0;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--gray-200);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      margin: -30px -30px 30px -30px;
+      padding: 30px;
+      color: white;
+    }
+
+    .admin-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-admin {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      color: white;
+      font-size: 20px;
+    }
+
+    .close-admin:hover {
+      background: rgba(255,255,255,0.3);
+      transform: rotate(90deg);
+    }
+
+    .admin-section {
+      margin-bottom: 30px;
+      padding: 25px;
+      background: var(--gray-50);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--gray-200);
+    }
+
+    .admin-section h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .admin-input-group {
+      margin-bottom: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200);
+    }
+
+    .admin-input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .admin-input-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .admin-input-group input:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      background: var(--white);
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 15px 0;
+    }
+
+    .navbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .logo i {
+      font-size: 32px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-highlight {
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .location-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gray-100);
+      padding: 8px 16px;
+      border-radius: 40px;
+    }
+
+    .location-selector select {
+      border: none;
+      background: transparent;
+      font-weight: 500;
+      color: var(--gray-700);
+      cursor: pointer;
+      outline: none;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: var(--white);
+      border: 2px solid var(--gray-200);
+      border-radius: 40px;
+      overflow: hidden;
+      width: 400px;
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 12px 20px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .search-bar input:focus {
+      border-color: var(--primary);
+    }
+
+    .search-btn {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .search-btn:hover {
+      background: linear-gradient(135deg, var(--primary-dark), var(--accent));
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      box-shadow: 0 8px 16px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--gray-200);
+      color: var(--gray-700);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-lg {
+      padding: 16px 32px;
+      font-size: 16px;
+    }
+
+    .btn-icon {
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .btn-icon:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.1);
+    }
+
+    /* ===== HOSPITAL SELECTOR ===== */
+    .hospital-selector {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 20px 30px;
+      margin: 20px 0;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      border: 1px solid var(--gray-200);
+    }
+
+    .hospital-selector label {
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+    }
+
+    .hospital-selector select {
+      flex: 1;
+      min-width: 400px;
+      padding: 14px 20px;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      font-size: 15px;
+      outline: none;
+      background: white;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .hospital-selector select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    /* ===== HOSPITAL HEADER ===== */
+    .hospital-header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+      padding: 50px 0;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 0 50px 50px;
+    }
+
+    .hospital-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hospital-header::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -5%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hospital-basic-info {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .hospital-logo {
+      width: 120px;
+      height: 120px;
+      background: white;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: var(--shadow-2xl);
+      border: 4px solid rgba(255,255,255,0.2);
+    }
+
+    .hospital-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hospital-details h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .hospital-meta {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hospital-meta span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      background: rgba(255,255,255,0.1);
+      padding: 8px 16px;
+      border-radius: 40px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .hospital-rating {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stars {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stars i {
+      color: #fbbf24;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
+    .rating-number {
+      font-size: 20px;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+
+    .rating-count {
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+    }
+
+    .verified-badge {
+      background: rgba(16, 185, 129, 0.2);
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 14px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .hospital-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* ===== RATE CARDS ===== */
+    .rate-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      margin: 30px 0;
+    }
+
+    .rate-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 30px;
+      box-shadow: var(--shadow-xl);
+      text-align: center;
+      transition: var(--transition);
+      border: 1px solid var(--gray-200);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rate-card::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 100px;
+      height: 100px;
+      background: var(--primary-light);
+      border-radius: 50%;
+      opacity: 0.3;
+    }
+
+    .rate-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-2xl);
+    }
+
+    .rate-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, var(--primary-light), white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      color: var(--primary);
+      font-size: 30px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .rate-card h3 {
+      font-size: 16px;
+      color: var(--gray-600);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .rate-value {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+
+    .rate-updated {
+      font-size: 12px;
+      color: var(--gray-500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    /* ===== TABS ===== */
+    .hospital-tabs {
+      background: white;
+      border-radius: 60px;
+      padding: 10px;
+      margin: 40px 0 30px;
+      box-shadow: var(--shadow-xl);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border: 1px solid var(--gray-200);
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 130px;
+      padding: 16px 24px;
+      background: transparent;
+      border: none;
+      border-radius: 50px;
+      font-weight: 600;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      white-space: nowrap;
+      font-size: 15px;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+      background: var(--gray-50);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    .tab-btn i {
+      font-size: 16px;
+    }
+
+    /* ===== TAB CONTENT ===== */
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: white;
+      border-radius: var(--radius-2xl);
+      padding: 35px;
+      box-shadow: var(--shadow-xl);
+      margin-bottom: 30px;
+      border: 1px solid var(--gray-200);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-2xl);
+    }
+
+    .card-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 25px;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .card-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 4px;
+    }
+
+    /* ===== GRID SYSTEM ===== */
+    .row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 30px;
+    }
+
+    .col-8 { grid-column: span 8; }
+    .col-4 { grid-column: span 4; }
+
+    /* ===== SPECIALTIES ===== */
+    .specialty-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .tag {
+      background: linear-gradient(135deg, var(--primary-light), #eff6ff);
+      color: var(--primary);
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: var(--transition);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tag:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(37, 99, 235, 0.2);
+    }
+
+    /* ===== TIMINGS ===== */
+    .timing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .timing-item {
+      background: var(--gray-50);
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200);
+      transition: var(--transition);
+    }
+
+    .timing-item:hover {
+      border-color: var(--primary);
+      transform: translateX(5px);
+    }
+
+    .day {
+      font-weight: 600;
+      color: var(--gray-700);
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .time {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* ===== EMERGENCY INFO ===== */
+    .emergency-info {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    .emergency-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: var(--gray-50);
+      padding: 25px;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--gray-200);
+      transition: var(--transition);
+    }
+
+    .emergency-item:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .emergency-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--danger), #f87171);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 28px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .emergency-number {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--danger);
+    }
+
+    /* ===== STATS ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: linear-gradient(135deg, var(--primary-light), #eff6ff);
+      padding: 20px;
+      border-radius: var(--radius-xl);
+      transition: var(--transition);
+    }
+
+    .stat-item:hover {
+      transform: translateX(5px);
+    }
+
+    .stat-item i {
+      font-size: 36px;
+      color: var(--primary);
+    }
+
+    .stat-item h3 {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--gray-800);
+      line-height: 1.2;
+    }
+
+    .stat-item p {
+      color: var(--gray-600);
+      font-size: 14px;
+    }
+
+    /* ===== CONTACT ===== */
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 15px;
+      border-radius: var(--radius-lg);
+      transition: var(--transition);
+    }
+
+    .contact-item:hover {
+      background: var(--gray-50);
+      transform: translateX(5px);
+    }
+
+    .contact-item i {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+
+    .contact-item span {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .contact-item p {
+      font-weight: 600;
+      color: var(--gray-700);
+      font-size: 15px;
+    }
+
+    /* ===== APPOINTMENT CTA ===== */
+    .appointment-cta {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .appointment-cta p {
+      color: var(--gray-600);
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .appointment-methods {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .method {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--gray-600);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .method:hover {
+      color: var(--primary);
+      transform: translateY(-5px);
+    }
+
+    .method i {
+      font-size: 28px;
+    }
+
+    .method span {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* ===== DOCTORS SECTION ===== */
+    .doctors-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .doctors-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+
+    .doctor-filters {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .filter-select, .filter-input {
+      padding: 14px 20px;
+      border: 2px solid var(--gray-200);
+      border-radius: 50px;
+      font-size: 14px;
+      outline: none;
+      background: white;
+      min-width: 180px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-select:focus, .filter-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .doctors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .doctor-card {
+      background: white;
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      transition: var(--transition);
+      border: 1px solid var(--gray-200);
+    }
+
+    .doctor-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-2xl);
+      border-color: var(--primary);
+    }
+
+    .doctor-image {
+      height: 240px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .doctor-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .doctor-card:hover .doctor-image img {
+      transform: scale(1.1);
+    }
+
+    .doctor-info {
+      padding: 25px;
+    }
+
+    .doctor-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 4px;
+    }
+
+    .doctor-specialty {
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: inline-block;
+      background: var(--primary-light);
+      padding: 5px 15px;
+      border-radius: 40px;
+      font-size: 13px;
+    }
+
+    .doctor-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .experience, .qualification {
+      color: var(--gray-600);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .doctor-rating {
+      color: #fbbf24;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .doctor-availability {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 10px 0;
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .availability-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .availability-badge.available {
+      color: var(--success);
+    }
+
+    .fees {
+      background: var(--primary-light);
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 16px;
+    }
+
+    .doctor-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-sm {
+      padding: 10px 20px;
+      font-size: 13px;
+      border-radius: 30px;
+    }
+
+    /* ===== FACILITIES GRID ===== */
+    .facilities-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
+    }
+
+    .facility-card {
+      background: white;
+      padding: 30px 25px;
+      border-radius: var(--radius-xl);
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      transition: var(--transition);
+      border: 1px solid var(--gray-200);
+    }
+
+    .facility-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-2xl);
+    }
+
+    .facility-icon {
+      font-size: 52px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+
+    .facility-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .facility-card p {
+      color: var(--gray-600);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ===== LABORATORY ===== */
+    .lab-info {
+      margin-bottom: 40px;
+    }
+
+    .lab-info h2 {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .lab-tests {
+      margin-bottom: 40px;
+    }
+
+    .test-categories {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    .test-category {
+      background: white;
+      padding: 25px;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--gray-200);
+    }
+
+    .test-category h4 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .test-category ul {
+      list-style: none;
+    }
+
+    .test-category li {
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      color: var(--gray-700);
+      font-size: 14px;
+    }
+
+    .test-category li:last-child {
+      border-bottom: none;
+    }
+
+    .lab-booking {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 40px;
+      border-radius: var(--radius-2xl);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lab-booking h3 {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .lab-booking p {
+      margin-bottom: 24px;
+      opacity: 0.9;
+    }
+
+    .lab-booking .btn {
+      background: white;
+      color: var(--primary);
+      padding: 16px 40px;
+      font-weight: 700;
+    }
+
+    /* ===== WARD MANAGEMENT ===== */
+    .ward-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .ward-stat {
+      background: white;
+      padding: 25px;
+      border-radius: var(--radius-xl);
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--gray-200);
+    }
+
+    .ward-stat h3 {
+      font-size: 14px;
+      color: var(--gray-600);
+      margin-bottom: 12px;
+    }
+
+    .stat-number {
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .stat-number.available {
+      color: var(--success);
+    }
+
+    .stat-number.occupied {
+      color: var(--danger);
+    }
+
+    .ward-types {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .ward-type {
+      background: white;
+      padding: 25px;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--gray-200);
+    }
+
+    .ward-type h4 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .ward-type p {
+      color: var(--gray-600);
+      margin-bottom: 16px;
+    }
+
+    .bed-status {
+      height: 8px;
+      background: var(--gray-200);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .bed-available {
+      height: 100%;
+      background: var(--success);
+    }
+
+    .bed-occupied {
+      height: 100%;
+      background: var(--danger);
+    }
+
+    /* ===== REVIEWS ===== */
+    .reviews-summary {
+      background: white;
+      border-radius: var(--radius-2xl);
+      padding: 30px;
+      margin-bottom: 30px;
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 40px;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--gray-200);
+    }
+
+    .overall-rating {
+      text-align: center;
+    }
+
+    .overall-rating h2 {
+      font-size: 52px;
+      font-weight: 800;
+      color: var(--gray-800);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .overall-rating small {
+      font-size: 18px;
+      color: var(--gray-500);
+    }
+
+    .rating-breakdown {
+      flex: 1;
+    }
+
+    .rating-bar {
+      display: grid;
+      grid-template-columns: 60px 1fr 40px;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+
+    .bar {
+      height: 8px;
+      background: var(--gray-200);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    }
+
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .review-card {
+      background: white;
+      border-radius: var(--radius-2xl);
+      padding: 25px;
+      box-shadow: var(--shadow-lg);
+      transition: var(--transition);
+      border: 1px solid var(--gray-200);
+    }
+
+    .review-card:hover {
+      transform: translateX(8px);
+      border-color: var(--primary);
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .reviewer-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .reviewer-info img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary-light);
+    }
+
+    .review-date {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .review-content h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .review-content p {
+      color: var(--gray-600);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .review-tags {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    /* ===== WRITE REVIEW ===== */
+    .write-review {
+      background: white;
+      border-radius: var(--radius-2xl);
+      padding: 30px;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .write-review textarea {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      margin: 20px 0;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 120px;
+      font-size: 14px;
+    }
+
+    .write-review textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .review-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .rating-input {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 6px;
+      color: #d1d5db;
+      font-size: 22px;
+    }
+
+    .star-rating i {
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .star-rating i:hover {
+      color: #fbbf24;
+      transform: scale(1.2);
+    }
+
+    /* ===== MODAL ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius-2xl);
+      max-width: 500px;
+      width: 90%;
+      padding: 40px;
+      position: relative;
+      animation: modalSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-2xl);
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 28px;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      background: var(--gray-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      color: var(--gray-600);
+    }
+
+    .close-modal:hover {
+      background: var(--gray-200);
+      transform: rotate(90deg);
+      color: var(--danger);
+    }
+
+    .doctor-modal-content {
+      padding: 20px;
+    }
+
+    .doctor-modal-header {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .doctor-modal-header img {
+      width: 120px;
+      height: 120px;
+      border-radius: 30px;
+      object-fit: cover;
+      border: 4px solid var(--primary-light);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200);
+    }
+
+    .detail-item i {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 30px;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: var(--gray-900);
+      color: white;
+      padding: 70px 0 30px;
+      margin-top: 80px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 50px;
+      margin-bottom: 50px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: white;
+    }
+
+    .footer-description {
+      color: var(--gray-400);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .footer-col h4 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 25px;
+      color: white;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 15px;
+    }
+
+    .footer-links a {
+      color: var(--gray-400);
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-links a:hover {
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .social-links a {
+      width: 45px;
+      height: 45px;
+      background: var(--gray-800);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 20px;
+    }
+
+    .social-links a:hover {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      transform: translateY(-5px);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 40px;
+      border-top: 1px solid var(--gray-800);
+      color: var(--gray-500);
+      font-size: 14px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1200px) {
+      .doctors-grid,
+      .facilities-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .test-categories {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .hospital-basic-info {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      
+      .hospital-logo {
+        margin: 0 auto;
+      }
+      
+      .hospital-meta {
+        justify-content: center;
+      }
+      
+      .hospital-rating {
+        justify-content: center;
+      }
+      
+      .hospital-actions {
+        justify-content: center;
+      }
+      
+      .row {
+        grid-template-columns: 1fr;
+      }
+      
+      .doctors-grid,
+      .facilities-grid,
+      .test-categories,
+      .ward-types,
+      .beds-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .ward-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .reviews-summary {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .search-bar {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar .container {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .nav-center {
+        width: 100%;
+      }
+      
+      .search-bar {
+        width: 100%;
+      }
+      
+      .emergency-info {
+        grid-template-columns: 1fr;
+      }
+      
+      .hospital-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding: 8px;
+      }
+      
+      .tab-btn {
+        min-width: auto;
+        padding: 12px 20px;
+        font-size: 13px;
+      }
+      
+      .doctor-modal-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-actions {
+        flex-direction: column;
+      }
+      
+      .admin-panel {
+        width: 100%;
+      }
+      
+      .hospital-selector select {
+        min-width: 100%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .container {
+        padding: 0 20px;
+      }
+      
+      .rate-cards {
+        grid-template-columns: 1fr;
+      }
+      
+      .ward-stats {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .doctor-actions {
+        flex-direction: column;
+      }
+      
+      .review-actions {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Admin Toggle - Only visible to hospital staff -->
+  <div class="admin-toggle" id="adminToggle" title="Hospital Staff Panel">
+    <i class="fas fa-cog"></i>
+  </div>
+
+  <!-- Admin Panel - For hospital staff only -->
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-header">
+      <h2>
+        <i class="fas fa-hospital"></i>
+        <span id="adminHospitalName">Rajshahi Medical College</span>
+      </h2>
+      <div class="close-admin" id="closeAdmin">
+        <i class="fas fa-times"></i>
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <h3><i class="fas fa-user-md"></i> Doctor Consultation Fees</h3>
+      <div id="doctorRatesContainer">
+        <!-- Doctor rates will be populated dynamically -->
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <h3><i class="fas fa-flask"></i> Lab Test Prices</h3>
+      <div id="testRatesContainer">
+        <!-- Test rates will be populated dynamically -->
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <h3><i class="fas fa-bed"></i> Bed Charges (Per Day)</h3>
+      <div id="bedRatesContainer">
+        <!-- Bed rates will be populated dynamically -->
+      </div>
+    </div>
+
+    <button class="save-btn" id="saveRates">
+      <i class="fas fa-save"></i> Save All Changes
+    </button>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-left">
+        <a href="../index.html" class="logo">
+          <i class="fas fa-hospital-alt"></i>
+          <span>Med<span class="logo-highlight">Find</span></span>
+        </a>
+      </div>
+      <div class="nav-center" style="display: flex; gap: 15px; align-items: center;">
+        <div class="location-selector">
+          <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i>
+          <select id="locationSelect">
+            <option value="dhaka">Dhaka</option>
+            <option value="chittagong">Chittagong</option>
+            <option value="rajshahi" selected>Rajshahi</option>
+            <option value="khulna">Khulna</option>
+            <option value="sylhet">Sylhet</option>
+            <option value="barisal">Barisal</option>
+            <option value="rangpur">Rangpur</option>
+            <option value="mymensingh">Mymensingh</option>
+          </select>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search hospital, doctor, or specialization...">
+          <button class="search-btn" onclick="performSearch()"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+      <div class="nav-right">
+        <a href="../login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="../register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Register</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hospital Selector -->
+  <div class="container">
+    <div class="hospital-selector">
+      <label>
+        <i class="fas fa-building"></i>
+        Select Hospital:
+      </label>
+      <select id="hospitalSelect">
+        <option value="rmch">🏥 Rajshahi Medical College Hospital</option>
+        <option value="dmch">🏥 Dhaka Medical College Hospital</option>
+        <option value="cmch">🏥 Chittagong Medical College Hospital</option>
+        <option value="united">🏥 United Hospital Ltd. (Dhaka)</option>
+        <option value="square">🏥 Square Hospital (Dhaka)</option>
+        <option value="apollo">🏥 Apollo Hospital (Dhaka)</option>
+        <option value="smch">🏥 Sylhet MAG Osmani Medical College</option>
+        <option value="kmch">🏥 Khulna Medical College Hospital</option>
+        <option value="bmch">🏥 Barisal Medical College Hospital</option>
+        <option value="rmc">🏥 Rangpur Medical College Hospital</option>
+        <option value="mmch">🏥 Mymensingh Medical College Hospital</option>
+        <option value="ibh">🏥 Islami Bank Hospital (Rajshahi)</option>
+        <option value="rch">🏥 Rajshahi Children Hospital</option>
+        <option value="popular">🏥 Popular Diagnostic Center (Dhaka)</option>
+        <option value="ibnsina">🏥 Ibn Sina Hospital (Dhaka)</option>
+        <option value="birdem">🏥 BIRDEM Hospital (Dhaka)</option>
+        <option value="labaid">🏥 Labaid Hospital (Dhaka)</option>
+        <option value="evercare">🏥 Evercare Hospital (Dhaka)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Hospital Header -->
+  <header class="hospital-header" id="hospitalHeader">
+    <div class="container">
+      <div class="hospital-basic-info">
+        <div class="hospital-logo">
+          <img id="hospitalLogo" src="https://images.unsplash.com/photo-1587351021759-3772687fae8a?w=200&h=200&fit=crop" alt="Hospital Logo">
+        </div>
+        <div class="hospital-details">
+          <h1 id="hospitalName">Rajshahi Medical College Hospital</h1>
+          <div class="hospital-meta">
+            <span id="hospitalType"><i class="fas fa-building"></i> Government Hospital</span>
+            <span id="hospitalAddress"><i class="fas fa-map-marker-alt"></i> Medical College Road, Rajshahi 6000</span>
+            <span id="hospitalPhone"><i class="fas fa-phone"></i> 0721-761201</span>
+            <span id="hospitalEst"><i class="fas fa-calendar"></i> Established 1958</span>
+          </div>
+          <div class="hospital-rating">
+            <div class="stars" id="hospitalStars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+              <span class="rating-number" id="hospitalRating">4.5</span>
+              <span class="rating-count" id="reviewCount">(2,345 reviews)</span>
+            </div>
+            <span class="verified-badge"><i class="fas fa-check-circle"></i> Verified Hospital</span>
+            <span class="verified-badge" style="background: rgba(245,158,11,0.2);"><i class="fas fa-award"></i> Top 10 in Bangladesh</span>
+          </div>
+        </div>
+        <div class="hospital-actions">
+          <button class="btn btn-primary btn-lg" onclick="bookAppointment()"><i class="fas fa-calendar-check"></i> Book Appointment</button>
+          <button class="btn btn-outline" style="background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.3);" onclick="getDirections()"><i class="fas fa-directions"></i> Directions</button>
+          <button class="btn btn-icon" onclick="shareHospital()"><i class="fas fa-share-alt"></i></button>
+          <button class="btn btn-icon" id="favoriteBtn" onclick="toggleFavorite()"><i class="far fa-heart"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Quick Rate Cards -->
+    <div class="rate-cards" id="rateCards">
+      <div class="rate-card">
+        <div class="rate-icon">
+          <i class="fas fa-user-md"></i>
+        </div>
+        <h3>Average Doctor Visit</h3>
+        <div class="rate-value" id="avgDoctorRate">৳ 833</div>
+        <div class="rate-updated">
+          <i class="fas fa-clock"></i>
+          <span id="doctorRateUpdated">Updated today</span>
+        </div>
+      </div>
+      <div class="rate-card">
+        <div class="rate-icon">
+          <i class="fas fa-flask"></i>
+        </div>
+        <h3>Average Test Price</h3>
+        <div class="rate-value" id="avgTestRate">৳ 500</div>
+        <div class="rate-updated">
+          <i class="fas fa-clock"></i>
+          <span id="testRateUpdated">Updated today</span>
+        </div>
+      </div>
+      <div class="rate-card">
+        <div class="rate-icon">
+          <i class="fas fa-bed"></i>
+        </div>
+        <h3>General Ward Bed</h3>
+        <div class="rate-value" id="bedRate">৳ 500</div>
+        <div class="rate-updated">
+          <i class="fas fa-clock"></i>
+          <span>per day</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="hospital-tabs">
+      <button class="tab-btn active" data-tab="overview"><i class="fas fa-info-circle"></i> Overview</button>
+      <button class="tab-btn" data-tab="doctors"><i class="fas fa-user-md"></i> Doctors <span class="doctor-count-badge" id="doctorCount">(245)</span></button>
+      <button class="tab-btn" data-tab="facilities"><i class="fas fa-clinic-medical"></i> Facilities</button>
+      <button class="tab-btn" data-tab="labs"><i class="fas fa-flask"></i> Laboratory</button>
+      <button class="tab-btn" data-tab="pharmacy"><i class="fas fa-pills"></i> Pharmacy</button>
+      <button class="tab-btn" data-tab="wards"><i class="fas fa-bed"></i> Wards & Beds</button>
+      <button class="tab-btn" data-tab="reviews"><i class="fas fa-star"></i> Reviews</button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Overview Tab -->
+      <div id="overview" class="tab-pane active">
+        <div class="row">
+          <div class="col-8">
+            <div class="card">
+              <h2 class="card-title">About Hospital</h2>
+              <p class="hospital-description" id="hospitalDescription" style="font-size: 16px; line-height: 1.8; margin-bottom: 30px;">
+                Rajshahi Medical College Hospital (RMCH) is one of the largest and oldest government hospitals in Northern Bangladesh. 
+                Established in <strong>1958</strong>, it serves as the main tertiary care referral center for Rajshahi division and 
+                surrounding areas. The hospital has <strong>1,000+ beds</strong> with state-of-the-art medical equipment and facilities.
+              </p>
+              
+              <div class="specialties">
+                <h3 style="font-size: 20px; margin-bottom: 16px;">Specialties & Departments</h3>
+                <div class="specialty-tags" id="specialtyTags">
+                  <!-- Will be populated dynamically -->
+                </div>
+              </div>
+              
+              <div class="timings" style="margin-top: 30px;">
+                <h3 style="font-size: 20px; margin-bottom: 16px;">Hospital Timings</h3>
+                <div class="timing-grid" id="timingGrid">
+                  <!-- Will be populated dynamically -->
+                </div>
+              </div>
+            </div>
+            
+            <div class="card">
+              <h2 class="card-title">Emergency Services</h2>
+              <div class="emergency-info" id="emergencyInfo">
+                <!-- Will be populated dynamically -->
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-4">
+            <div class="card">
+              <h2 class="card-title">Quick Stats</h2>
+              <div class="stats-grid" id="statsGrid">
+                <!-- Will be populated dynamically -->
+              </div>
+            </div>
+            
+            <div class="card">
+              <h2 class="card-title">Contact Information</h2>
+              <div class="contact-list" id="contactList">
+                <!-- Will be populated dynamically -->
+              </div>
+            </div>
+            
+            <div class="card">
+              <h2 class="card-title">Book Appointment</h2>
+              <div class="appointment-cta">
+                <p style="margin-bottom: 20px;">Book appointment with our specialist doctors</p>
+                <button class="btn btn-primary btn-block" style="border-radius: 40px;" onclick="bookAppointment()">
+                  <i class="fas fa-calendar-plus"></i> Book Now
+                </button>
+                <div class="appointment-methods">
+                  <a href="#" class="method" onclick="bookViaPhone()">
+                    <i class="fas fa-phone"></i>
+                    <span>Call</span>
+                  </a>
+                  <a href="#" class="method" onclick="bookViaApp()">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>App</span>
+                  </a>
+                  <a href="#" class="method" onclick="bookViaWeb()">
+                    <i class="fas fa-desktop"></i>
+                    <span>Online</span>
+                  </a>
+                  <a href="#" class="method" onclick="bookViaWhatsApp()">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Doctors Tab -->
+      <div id="doctors" class="tab-pane">
+        <div class="doctors-header">
+          <h2>Doctors at <span id="doctorHospitalName">Rajshahi Medical College Hospital</span> <span style="color: var(--primary);" id="doctorTotalCount">(245)</span></h2>
+          <div class="doctor-filters">
+            <select class="filter-select" id="specialtyFilter" onchange="filterDoctors()">
+              <option value="">All Specialties</option>
+              <option value="Cardiology">Cardiology</option>
+              <option value="Neurology">Neurology</option>
+              <option value="Orthopedics">Orthopedics</option>
+              <option value="General Surgery">General Surgery</option>
+              <option value="Gynaecology">Gynaecology</option>
+              <option value="Pediatrics">Pediatrics</option>
+            </select>
+            <select class="filter-select" id="availabilityFilter" onchange="filterDoctors()">
+              <option value="">All Availability</option>
+              <option value="today">Available Today</option>
+              <option value="week">Available This Week</option>
+            </select>
+            <input type="text" placeholder="Search doctor by name..." class="filter-input" id="doctorSearch" onkeyup="filterDoctors()">
+          </div>
+        </div>
+        
+        <div class="doctors-grid" id="doctorsGrid">
+          <!-- Doctors will be loaded dynamically -->
+        </div>
+        
+        <div class="text-center" style="margin-top: 40px;">
+          <button class="btn btn-outline" style="padding: 16px 40px;" onclick="loadMoreDoctors()">
+            <i class="fas fa-spinner"></i> Load More Doctors
+          </button>
+        </div>
+      </div>
+      
+      <!-- Facilities Tab -->
+      <div id="facilities" class="tab-pane">
+        <div class="facilities-grid" id="facilitiesGrid">
+          <!-- Facilities will be loaded dynamically -->
+        </div>
+      </div>
+      
+      <!-- Laboratory Tab -->
+      <div id="labs" class="tab-pane">
+        <div class="lab-info">
+          <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 12px;">Hospital Laboratory Services</h2>
+          <p style="font-size: 16px; color: var(--gray-600); margin-bottom: 30px;">Fully equipped diagnostic laboratory with modern equipment and trained technicians. Reports available within 4-24 hours.</p>
+          <div class="lab-timing" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 20px; border-radius: var(--radius-lg); margin-bottom: 30px;">
+            <h4 style="font-size: 18px; margin-bottom: 8px;"><i class="fas fa-clock"></i> Lab Timings</h4>
+            <p id="labTimings">Sample Collection: 8:00 AM - 8:00 PM (Everyday)</p>
+            <p id="emergencyLabTiming">Emergency Lab: 24 Hours Open</p>
+          </div>
+        </div>
+        
+        <div class="lab-tests">
+          <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 25px;">Available Tests & Prices</h3>
+          <div class="test-categories" id="testCategories">
+            <!-- Tests will be loaded dynamically -->
+          </div>
+        </div>
+        
+        <div class="lab-booking">
+          <h3>Book Lab Test Online</h3>
+          <p>Book lab tests online and get reports digitally. Home sample collection available.</p>
+          <button class="btn btn-lg" onclick="bookLabTest()"><i class="fas fa-flask"></i> Book Lab Test</button>
+        </div>
+      </div>
+      
+      <!-- Pharmacy Tab -->
+      <div id="pharmacy" class="tab-pane">
+        <div class="pharmacy-info" style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+          <div>
+            <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 20px;">Hospital Pharmacy</h2>
+            <div class="pharmacy-status" style="background: linear-gradient(135deg, var(--success), #34d399); color: white; padding: 20px; border-radius: var(--radius-lg); margin-bottom: 30px;">
+              <span class="status-badge" style="font-size: 18px;"><i class="fas fa-check-circle"></i> <span id="pharmacyStatus">Open Now</span></span>
+              <p style="margin-top: 8px;" id="pharmacyTimings">Timings: 8:00 AM - 10:00 PM (Everyday)</p>
+              <p id="emergencyPharmacy">Emergency Counter: 24 Hours Open</p>
+            </div>
+            
+            <div class="medicine-search" style="display: flex; gap: 12px; margin-bottom: 30px;">
+              <input type="text" placeholder="Search medicine by name..." style="flex: 1; padding: 14px; border: 2px solid var(--gray-200); border-radius: 40px;" id="medicineSearch">
+              <button class="btn btn-primary" style="border-radius: 40px;" onclick="searchMedicine()"><i class="fas fa-search"></i> Search</button>
+            </div>
+            
+            <div class="medicine-categories">
+              <h3 style="font-size: 20px; margin-bottom: 16px;">Medicine Categories Available</h3>
+              <div class="specialty-tags" id="medicineCategories">
+                <!-- Medicine categories will be loaded dynamically -->
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="card">
+              <h2 class="card-title">Pharmacy Services</h2>
+              <ul style="list-style: none;" id="pharmacyServices">
+                <!-- Pharmacy services will be loaded dynamically -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Wards Tab -->
+      <div id="wards" class="tab-pane">
+        <div class="wards-management">
+          <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 30px;">Ward & Bed Management</h2>
+          
+          <div class="ward-stats" id="wardStats">
+            <!-- Ward stats will be loaded dynamically -->
+          </div>
+          
+          <div class="ward-types" id="wardTypes">
+            <!-- Ward types will be loaded dynamically -->
+          </div>
+          
+          <div class="admission-process" style="margin-top: 40px;">
+            <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 25px;">Admission Process</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+              <div class="process-step" style="text-align: center;">
+                <span style="width: 50px; height: 50px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 24px; font-weight: 700;">1</span>
+                <h4 style="margin-bottom: 8px;">Doctor's Recommendation</h4>
+                <p style="color: var(--gray-600); font-size: 14px;">Get admission recommendation from doctor</p>
+              </div>
+              <div class="process-step" style="text-align: center;">
+                <span style="width: 50px; height: 50px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 24px; font-weight: 700;">2</span>
+                <h4 style="margin-bottom: 8px;">Admission Counter</h4>
+                <p style="color: var(--gray-600); font-size: 14px;">Complete admission formalities</p>
+              </div>
+              <div class="process-step" style="text-align: center;">
+                <span style="width: 50px; height: 50px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 24px; font-weight: 700;">3</span>
+                <h4 style="margin-bottom: 8px;">Bed Allocation</h4>
+                <p style="color: var(--gray-600); font-size: 14px;">Get bed allocation based on availability</p>
+              </div>
+              <div class="process-step" style="text-align: center;">
+                <span style="width: 50px; height: 50px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 24px; font-weight: 700;">4</span>
+                <h4 style="margin-bottom: 8px;">Start Treatment</h4>
+                <p style="color: var(--gray-600); font-size: 14px;">Begin your treatment</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Reviews Tab -->
+      <div id="reviews" class="tab-pane">
+        <div class="reviews-summary">
+          <div class="overall-rating">
+            <h2 id="overallRating">4.5 <small>/5</small></h2>
+            <div class="stars" style="justify-content: center;" id="overallStars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+            <p style="margin-top: 10px;" id="totalReviews">2,345 Verified Reviews</p>
+          </div>
+          <div class="rating-breakdown" id="ratingBreakdown">
+            <!-- Rating breakdown will be loaded dynamically -->
+          </div>
+        </div>
+        
+        <div class="reviews-list" id="reviewsList">
+          <!-- Reviews will be loaded dynamically -->
+        </div>
+        
+        <div class="write-review">
+          <h3 style="font-size: 20px; font-weight: 600;">Write a Review</h3>
+          <p style="color: var(--gray-600); margin-top: 8px;">Share your experience with <span id="reviewHospitalName">Rajshahi Medical College Hospital</span></p>
+          <textarea placeholder="Write your detailed experience..." id="reviewText"></textarea>
+          <div class="review-actions">
+            <div class="rating-input">
+              <span>Your Rating:</span>
+              <div class="star-rating" id="starRating">
+                <i class="far fa-star" data-rating="1"></i>
+                <i class="far fa-star" data-rating="2"></i>
+                <i class="far fa-star" data-rating="3"></i>
+                <i class="far fa-star" data-rating="4"></i>
+                <i class="far fa-star" data-rating="5"></i>
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="submitReview()">Submit Review</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Success Modal -->
+  <div class="modal" id="successModal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal('successModal')">&times;</span>
+      <div style="text-align: center;">
+        <i class="fas fa-check-circle" style="font-size: 60px; color: var(--success); margin-bottom: 20px;"></i>
+        <h3 style="margin-bottom: 10px;">Rates Updated Successfully!</h3>
+        <p id="successMessage">All changes have been saved for this hospital.</p>
+        <button class="btn btn-primary" onclick="closeModal('successModal')" style="margin-top: 20px;">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-logo">
+            <i class="fas fa-hospital-alt"></i>
+            <span>MedFind</span>
+          </div>
+          <p class="footer-description">
+            Find the best hospitals and doctors in Bangladesh. Book appointments online, check bed availability, and get quality healthcare services at your fingertips.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="../hospitals/hospital-list.html"><i class="fas fa-chevron-right"></i> Find Hospitals</a></li>
+            <li><a href="../doctors/doctor-popup.html"><i class="fas fa-chevron-right"></i> Find Doctors</a></li>
+            <li><a href="../patients/appointment-booking.html"><i class="fas fa-chevron-right"></i> Book Appointment</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Emergency Services</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Health Blog</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Terms of Service</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Cookie Policy</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Disclaimer</a></li>
+            <li><a href="#"><i class="fas fa-chevron-right"></i> Refund Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact Us</h4>
+          <div class="contact-info">
+            <p style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;"><i class="fas fa-phone" style="color: var(--primary);"></i> 16263 (Health Helpline)</p>
+            <p style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;"><i class="fas fa-envelope" style="color: var(--primary);"></i> support@medfind.bd</p>
+            <p style="display: flex; align-items: center; gap: 10px;"><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Dhaka, Bangladesh</p>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 MedFind Bangladesh. All rights reserved. Made with <i class="fas fa-heart" style="color: var(--danger);"></i> for better healthcare</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Doctor Profile Modal -->
+  <div class="modal" id="doctorModal">
+    <div class="modal-content" style="max-width: 700px;">
+      <span class="close-modal" onclick="closeModal('doctorModal')">&times;</span>
+      <div class="modal-body" id="doctorModalBody">
+        <!-- Doctor profile will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== COMPLETE HOSPITAL DATABASE =====
+    const hospitalDatabase = {
+      rmch: {
+        name: 'Rajshahi Medical College Hospital',
+        type: 'Government Hospital',
+        address: 'Medical College Road, Rajshahi 6000',
+        phone: '0721-761201',
+        established: '1958',
+        rating: 4.5,
+        reviewCount: 2345,
+        logo: 'https://images.unsplash.com/photo-1587351021759-3772687fae8a?w=200&h=200&fit=crop',
+        description: 'Rajshahi Medical College Hospital (RMCH) is one of the largest and oldest government hospitals in Northern Bangladesh. Established in 1958, it serves as the main tertiary care referral center for Rajshahi division and surrounding areas. The hospital has 1,000+ beds with state-of-the-art medical equipment and facilities.',
+        specialties: [
+          'Cardiology', 'Neurology', 'Orthopedics', 'General Surgery', 'Gynaecology',
+          'Pediatrics', 'Ophthalmology', 'ENT', 'Dermatology', 'Psychiatry',
+          'Nephrology', 'Urology', 'Gastroenterology', 'Endocrinology', 'Neonatology'
+        ],
+        timings: [
+          { day: 'OPD Hours', time: '8:00 AM - 8:00 PM' },
+          { day: 'Emergency', time: '24 Hours Open' },
+          { day: 'Pharmacy', time: '8:00 AM - 10:00 PM' },
+          { day: 'Visiting Hours', time: '4:00 PM - 7:00 PM' }
+        ],
+        emergency: {
+          hotline: '0721-761777',
+          icuBeds: 25,
+          icuOccupied: 15,
+          emergencyDoctors: 12
+        },
+        stats: [
+          { icon: 'fa-bed', number: '1000+', label: 'Total Beds' },
+          { icon: 'fa-user-md', number: '250+', label: 'Doctors' },
+          { icon: 'fa-procedures', number: '45', label: 'OT Rooms' },
+          { icon: 'fa-users', number: '5000+', label: 'Monthly Patients' }
+        ],
+        contacts: [
+          { icon: 'fa-phone-alt', label: 'Emergency', value: '0721-761777' },
+          { icon: 'fa-phone', label: 'Information', value: '0721-761201' },
+          { icon: 'fa-envelope', label: 'Email', value: 'info@rmch.gov.bd' },
+          { icon: 'fa-globe', label: 'Website', value: 'www.rmch.gov.bd' },
+          { icon: 'fa-map-marker-alt', label: 'Address', value: 'Medical College Road, Rajshahi 6000, Bangladesh' }
+        ],
+        doctors: [
+          { 
+            id: 1,
+            name: 'Prof. Dr. Ahmed Hossain', 
+            specialty: 'Cardiology', 
+            fee: 800, 
+            rating: 4.9,
+            reviews: 324,
+            image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop',
+            experience: '25 Years',
+            qualification: 'MBBS, MD, FRCP',
+            available: true,
+            about: 'Professor Dr. Ahmed Hossain is a renowned cardiologist with 25 years of experience in interventional cardiology. He has performed over 5000+ successful angioplasties and cardiac surgeries.',
+            education: ['MBBS - Dhaka Medical College', 'MD Cardiology - BSMMU', 'FRCP - Royal College of Physicians, London'],
+            schedule: 'Monday-Friday, 10 AM - 4 PM'
+          },
+          { 
+            id: 2,
+            name: 'Dr. Fatima Begum', 
+            specialty: 'Gynaecology', 
+            fee: 700, 
+            rating: 4.8,
+            reviews: 256,
+            image: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop',
+            experience: '18 Years',
+            qualification: 'MBBS, FCPS, MS',
+            available: true,
+            about: 'Dr. Fatima Begum is an expert in gynaecology and obstetrics with 18 years of experience. She specializes in high-risk pregnancies, laparoscopic surgeries, and infertility treatments.',
+            education: ['MBBS - Rajshahi Medical College', 'FCPS - BCPS', 'MS - BSMMU'],
+            schedule: 'Saturday-Thursday, 9 AM - 1 PM'
+          },
+          { 
+            id: 3,
+            name: 'Prof. Dr. Kamal Uddin', 
+            specialty: 'Neurosurgery', 
+            fee: 1000, 
+            rating: 4.9,
+            reviews: 189,
+            image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop',
+            experience: '22 Years',
+            qualification: 'MBBS, FCPS, FRCS',
+            available: true,
+            about: 'Professor Dr. Kamal Uddin is a leading neurosurgeon in Bangladesh. He specializes in brain tumor surgeries, spinal surgeries, and stroke management.',
+            education: ['MBBS - Dhaka Medical College', 'FCPS - BCPS', 'FRCS - Royal College of Surgeons, Edinburgh'],
+            schedule: 'Monday, Wednesday, Friday - 2 PM to 6 PM'
+          }
+        ],
+        facilities: [
+          { icon: 'fa-ambulance', name: '24x7 Ambulance', description: 'Emergency ambulance service with trained paramedics' },
+          { icon: 'fa-procedures', name: 'Operation Theater', description: '45 modern OT rooms with advanced equipment' },
+          { icon: 'fa-bed', name: 'ICU & CCU', description: '25 ICU and 20 CCU beds with monitoring' },
+          { icon: 'fa-x-ray', name: 'Diagnostic Center', description: 'CT Scan, MRI, X-ray, Ultrasound facilities' },
+          { icon: 'fa-flask', name: 'Pathology Lab', description: 'Fully equipped laboratory for all tests' },
+          { icon: 'fa-pills', name: '24x7 Pharmacy', description: 'All medicines available at government rates' },
+          { icon: 'fa-utensils', name: 'Cafeteria', description: 'Clean and hygienic food service' },
+          { icon: 'fa-parking', name: 'Parking', description: 'Secure parking for 200+ vehicles' }
+        ],
+        tests: [
+          { name: 'CBC (Complete Blood Count)', fee: 300, category: 'Blood Tests' },
+          { name: 'Blood Sugar (Fasting)', fee: 150, category: 'Blood Tests' },
+          { name: 'Lipid Profile', fee: 500, category: 'Blood Tests' },
+          { name: 'Liver Function Test', fee: 400, category: 'Blood Tests' },
+          { name: 'Kidney Function Test', fee: 350, category: 'Blood Tests' },
+          { name: 'X-Ray (Chest)', fee: 400, category: 'Imaging Tests' },
+          { name: 'Ultrasound', fee: 800, category: 'Imaging Tests' },
+          { name: 'CT Scan', fee: 2500, category: 'Imaging Tests' },
+          { name: 'MRI', fee: 5000, category: 'Imaging Tests' }
+        ],
+        beds: [
+          { type: 'General Ward', fee: 500, available: 180, total: 500 },
+          { type: 'ICU', fee: 5000, available: 15, total: 40 },
+          { type: 'CCU', fee: 4500, available: 8, total: 20 },
+          { type: 'Private Cabin', fee: 2000, available: 20, total: 50 },
+          { type: 'Semi-Private', fee: 1200, available: 50, total: 100 },
+          { type: 'Pediatric Ward', fee: 400, available: 25, total: 80 }
+        ],
+        reviews: [
+          {
+            user: 'Md. Rahim Khan',
+            rating: 5,
+            comment: 'Excellent cardiac care. Dr. Ahmed and his team were very professional and caring. The ICU facilities are top-notch.',
+            date: '2 days ago',
+            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop',
+            tags: ['Cardiology', 'Emergency', 'ICU']
+          },
+          {
+            user: 'Fatema Begum',
+            rating: 4.5,
+            comment: 'Great maternity care. Dr. Fatima was very supportive throughout my pregnancy. Clean wards and caring nurses.',
+            date: '1 week ago',
+            avatar: 'https://images.unsplash.com/photo-1494790108777-766fd2f7f2a2?w=50&h=50&fit=crop',
+            tags: ['Gynaecology', 'Maternity']
+          }
+        ]
+      },
+      // More hospitals will be added here
+    };
+
+    // Current hospital ID
+    let currentHospital = 'rmch';
+    let favoriteHospitals = JSON.parse(localStorage.getItem('favoriteHospitals')) || [];
+
+    // ===== LOAD HOSPITAL DATA =====
+    function loadHospital(hospitalId) {
+      const hospital = hospitalDatabase[hospitalId];
+      if (!hospital) return;
+
+      // Update header
+      document.getElementById('hospitalName').textContent = hospital.name;
+      document.getElementById('hospitalType').innerHTML = `<i class="fas fa-building"></i> ${hospital.type}`;
+      document.getElementById('hospitalAddress').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${hospital.address}`;
+      document.getElementById('hospitalPhone').innerHTML = `<i class="fas fa-phone"></i> ${hospital.phone}`;
+      document.getElementById('hospitalEst').innerHTML = `<i class="fas fa-calendar"></i> Established ${hospital.established}`;
+      document.getElementById('hospitalLogo').src = hospital.logo;
+      document.getElementById('hospitalRating').textContent = hospital.rating;
+      document.getElementById('reviewCount').textContent = `(${hospital.reviewCount.toLocaleString()} reviews)`;
+      document.getElementById('hospitalDescription').innerHTML = hospital.description;
+      
+      // Update admin panel title
+      document.getElementById('adminHospitalName').textContent = hospital.name;
+      
+      // Update doctor hospital name
+      document.getElementById('doctorHospitalName').textContent = hospital.name;
+      document.getElementById('reviewHospitalName').textContent = hospital.name;
+
+      // Load specialties
+      loadSpecialties(hospital.specialties);
+      
+      // Load timings
+      loadTimings(hospital.timings);
+      
+      // Load emergency info
+      loadEmergencyInfo(hospital.emergency);
+      
+      // Load stats
+      loadStats(hospital.stats);
+      
+      // Load contacts
+      loadContacts(hospital.contacts);
+      
+      // Load doctors
+      loadDoctors(hospital.doctors);
+      
+      // Load facilities
+      loadFacilities(hospital.facilities);
+      
+      // Load tests
+      loadTests(hospital.tests);
+      
+      // Load beds
+      loadBeds(hospital.beds);
+      
+      // Load reviews
+      loadReviews(hospital.reviews, hospital.rating);
+      
+      // Update rate cards
+      updateRateCards(hospital);
+      
+      // Update admin panel inputs
+      updateAdminInputs(hospital);
+      
+      // Update favorite button
+      updateFavoriteButton(hospitalId);
+      
+      // Update doctor count
+      document.getElementById('doctorCount').textContent = `(${hospital.doctors.length})`;
+      document.getElementById('doctorTotalCount').textContent = `(${hospital.doctors.length})`;
+    }
+
+    function loadSpecialties(specialties) {
+      const container = document.getElementById('specialtyTags');
+      container.innerHTML = specialties.map(s => `<span class="tag">${s}</span>`).join('');
+    }
+
+    function loadTimings(timings) {
+      const container = document.getElementById('timingGrid');
+      container.innerHTML = timings.map(t => `
+        <div class="timing-item">
+          <span class="day">${t.day}</span>
+          <span class="time">${t.time}</span>
+        </div>
+      `).join('');
+    }
+
+    function loadEmergencyInfo(emergency) {
+      const container = document.getElementById('emergencyInfo');
+      container.innerHTML = `
+        <div class="emergency-item">
+          <i class="fas fa-ambulance emergency-icon"></i>
+          <div>
+            <h4>Emergency Hotline</h4>
+            <p class="emergency-number">${emergency.hotline}</p>
+            <span style="font-size: 12px; color: var(--gray-500);">24/7 Available</span>
+          </div>
+        </div>
+        <div class="emergency-item">
+          <i class="fas fa-heartbeat emergency-icon" style="background: linear-gradient(135deg, var(--primary), var(--accent));"></i>
+          <div>
+            <h4>ICU Beds</h4>
+            <p style="font-size: 28px; font-weight: 700; color: var(--primary);">${emergency.icuBeds}</p>
+            <span style="font-size: 12px; color: var(--gray-500);">${emergency.icuOccupied} Occupied</span>
+          </div>
+        </div>
+        <div class="emergency-item">
+          <i class="fas fa-user-md emergency-icon" style="background: linear-gradient(135deg, var(--secondary), #34d399);"></i>
+          <div>
+            <h4>Emergency Doctors</h4>
+            <p style="font-size: 28px; font-weight: 700; color: var(--secondary);">${emergency.emergencyDoctors}</p>
+            <span style="font-size: 12px; color: var(--gray-500);">On Duty</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function loadStats(stats) {
+      const container = document.getElementById('statsGrid');
+      container.innerHTML = stats.map(s => `
+        <div class="stat-item">
+          <i class="fas ${s.icon}"></i>
+          <div>
+            <h3>${s.number}</h3>
+            <p>${s.label}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function loadContacts(contacts) {
+      const container = document.getElementById('contactList');
+      container.innerHTML = contacts.map(c => `
+        <div class="contact-item">
+          <i class="fas ${c.icon}"></i>
+          <div>
+            <span>${c.label}</span>
+            <p>${c.value}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function loadDoctors(doctors) {
+      const grid = document.getElementById('doctorsGrid');
+      grid.innerHTML = doctors.map(doc => `
+        <div class="doctor-card">
+          <div class="doctor-image">
+            <img src="${doc.image}" alt="${doc.name}">
+          </div>
+          <div class="doctor-info">
+            <h3 class="doctor-name">${doc.name}</h3>
+            <span class="doctor-specialty">${doc.specialty}</span>
+            <div class="doctor-meta">
+              <span class="experience"><i class="fas fa-award" style="color: var(--warning);"></i> ${doc.experience}</span>
+              <span class="qualification"><i class="fas fa-graduation-cap" style="color: var(--primary);"></i> ${doc.qualification}</span>
+            </div>
+            <div class="doctor-rating">
+              ${generateStars(doc.rating)} (${doc.reviews} reviews)
+            </div>
+            <div class="doctor-availability">
+              <span class="availability-badge available"><i class="fas fa-circle"></i> Available Today</span>
+              <span class="fees">৳ ${doc.fee}</span>
+            </div>
+            <div class="doctor-actions">
+              <button class="btn btn-sm btn-outline" onclick="showDoctorProfile(${doc.id})"><i class="fas fa-user"></i> Profile</button>
+              <button class="btn btn-sm btn-primary" onclick="bookDoctor('${doc.name}')"><i class="fas fa-calendar-plus"></i> Book</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function loadFacilities(facilities) {
+      const grid = document.getElementById('facilitiesGrid');
+      grid.innerHTML = facilities.map(f => `
+        <div class="facility-card">
+          <i class="fas ${f.icon} facility-icon"></i>
+          <h3>${f.name}</h3>
+          <p>${f.description}</p>
+        </div>
+      `).join('');
+    }
+
+    function loadTests(tests) {
+      // Group tests by category
+      const grouped = tests.reduce((acc, test) => {
+        if (!acc[test.category]) acc[test.category] = [];
+        acc[test.category].push(test);
+        return acc;
+      }, {});
+
+      const container = document.getElementById('testCategories');
+      container.innerHTML = Object.keys(grouped).map(category => `
+        <div class="test-category">
+          <h4>${category}</h4>
+          <ul>
+            ${grouped[category].map(test => `
+              <li>${test.name} <span>৳ ${test.fee}</span></li>
+            `).join('')}
+          </ul>
+        </div>
+      `).join('');
+    }
+
+    function loadBeds(beds) {
+      const statsContainer = document.getElementById('wardStats');
+      const totalBeds = beds.reduce((sum, bed) => sum + bed.total, 0);
+      const availableBeds = beds.reduce((sum, bed) => sum + bed.available, 0);
+      const occupiedBeds = totalBeds - availableBeds;
+      
+      statsContainer.innerHTML = `
+        <div class="ward-stat">
+          <h3>Total Beds</h3>
+          <p class="stat-number">${totalBeds}</p>
+        </div>
+        <div class="ward-stat">
+          <h3>Available Beds</h3>
+          <p class="stat-number available">${availableBeds}</p>
+        </div>
+        <div class="ward-stat">
+          <h3>Occupied Beds</h3>
+          <p class="stat-number occupied">${occupiedBeds}</p>
+        </div>
+        <div class="ward-stat">
+          <h3>ICU Beds</h3>
+          <p class="stat-number">${beds.find(b => b.type === 'ICU').available}/${beds.find(b => b.type === 'ICU').total}</p>
+        </div>
+      `;
+
+      const typesContainer = document.getElementById('wardTypes');
+      typesContainer.innerHTML = beds.map(bed => `
+        <div class="ward-type">
+          <h4>${bed.type}</h4>
+          <p>${bed.total} Beds | ${bed.available} Available | ${bed.total - bed.available} Occupied</p>
+          <div class="bed-status">
+            <div class="bed-available" style="width: ${(bed.available / bed.total) * 100}%"></div>
+            <div class="bed-occupied" style="width: ${((bed.total - bed.available) / bed.total) * 100}%"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function loadReviews(reviews, rating) {
+      const listContainer = document.getElementById('reviewsList');
+      listContainer.innerHTML = reviews.map(review => `
+        <div class="review-card">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <img src="${review.avatar}" alt="${review.user}">
+              <div>
+                <h4>${review.user}</h4>
+                <span class="review-date">${review.date}</span>
+              </div>
+            </div>
+            <div class="review-rating">
+              ${generateStars(review.rating)}
+            </div>
+          </div>
+          <div class="review-content">
+            <p>${review.comment}</p>
+          </div>
+          <div class="review-tags">
+            ${review.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      // Update rating breakdown
+      const breakdownContainer = document.getElementById('ratingBreakdown');
+      const counts = [0, 0, 0, 0, 0];
+      reviews.forEach(r => {
+        if (r.rating >= 4.5) counts[4]++;
+        else if (r.rating >= 3.5) counts[3]++;
+        else if (r.rating >= 2.5) counts[2]++;
+        else if (r.rating >= 1.5) counts[1]++;
+        else counts[0]++;
+      });
+
+      const percentages = counts.map(c => (c / reviews.length) * 100);
+
+      breakdownContainer.innerHTML = `
+        <div class="rating-bar">
+          <span>5 Star</span>
+          <div class="bar"><div class="fill" style="width: ${percentages[4]}%"></div></div>
+          <span>${counts[4]}</span>
+        </div>
+        <div class="rating-bar">
+          <span>4 Star</span>
+          <div class="bar"><div class="fill" style="width: ${percentages[3]}%"></div></div>
+          <span>${counts[3]}</span>
+        </div>
+        <div class="rating-bar">
+          <span>3 Star</span>
+          <div class="bar"><div class="fill" style="width: ${percentages[2]}%"></div></div>
+          <span>${counts[2]}</span>
+        </div>
+        <div class="rating-bar">
+          <span>2 Star</span>
+          <div class="bar"><div class="fill" style="width: ${percentages[1]}%"></div></div>
+          <span>${counts[1]}</span>
+        </div>
+        <div class="rating-bar">
+          <span>1 Star</span>
+          <div class="bar"><div class="fill" style="width: ${percentages[0]}%"></div></div>
+          <span>${counts[0]}</span>
+        </div>
+      `;
+    }
+
+    function updateRateCards(hospital) {
+      const avgDoctorFee = Math.round(hospital.doctors.reduce((sum, d) => sum + d.fee, 0) / hospital.doctors.length);
+      const avgTestFee = Math.round(hospital.tests.reduce((sum, t) => sum + t.fee, 0) / hospital.tests.length);
+      const bedRate = hospital.beds.find(b => b.type.includes('General'))?.fee || hospital.beds[0].fee;
+      
+      document.getElementById('avgDoctorRate').textContent = '৳ ' + avgDoctorFee;
+      document.getElementById('avgTestRate').textContent = '৳ ' + avgTestFee;
+      document.getElementById('bedRate').textContent = '৳ ' + bedRate;
+      document.getElementById('doctorRateUpdated').textContent = 'Updated just now';
+      document.getElementById('testRateUpdated').textContent = 'Updated just now';
+    }
+
+    function generateStars(rating) {
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        if (i <= Math.floor(rating)) {
+          stars += '<i class="fas fa-star"></i>';
+        } else if (i - rating < 0.5) {
+          stars += '<i class="fas fa-star-half-alt"></i>';
+        } else {
+          stars += '<i class="far fa-star"></i>';
+        }
+      }
+      return stars;
+    }
+
+    // ===== ADMIN FUNCTIONS =====
+    function updateAdminInputs(hospital) {
+      const doctorContainer = document.getElementById('doctorRatesContainer');
+      doctorContainer.innerHTML = hospital.doctors.map((doc, index) => `
+        <div class="admin-input-group">
+          <label>${doc.name} (${doc.specialty})</label>
+          <input type="number" class="doctor-rate-input" data-index="${index}" value="${doc.fee}" min="0" step="50">
+        </div>
+      `).join('');
+
+      const testContainer = document.getElementById('testRatesContainer');
+      testContainer.innerHTML = hospital.tests.map((test, index) => `
+        <div class="admin-input-group">
+          <label>${test.name}</label>
+          <input type="number" class="test-rate-input" data-index="${index}" value="${test.fee}" min="0" step="10">
+        </div>
+      `).join('');
+
+      const bedContainer = document.getElementById('bedRatesContainer');
+      bedContainer.innerHTML = hospital.beds.map((bed, index) => `
+        <div class="admin-input-group">
+          <label>${bed.type}</label>
+          <input type="number" class="bed-rate-input" data-index="${index}" value="${bed.fee}" min="0" step="100">
+        </div>
+      `).join('');
+    }
+
+    // ===== EVENT LISTENERS =====
+    document.getElementById('saveRates').addEventListener('click', function() {
+      const hospital = hospitalDatabase[currentHospital];
+      
+      // Update doctor fees
+      document.querySelectorAll('.doctor-rate-input').forEach(input => {
+        const index = input.dataset.index;
+        hospital.doctors[index].fee = parseInt(input.value) || hospital.doctors[index].fee;
+      });
+      
+      // Update test fees
+      document.querySelectorAll('.test-rate-input').forEach(input => {
+        const index = input.dataset.index;
+        hospital.tests[index].fee = parseInt(input.value) || hospital.tests[index].fee;
+      });
+      
+      // Update bed fees
+      document.querySelectorAll('.bed-rate-input').forEach(input => {
+        const index = input.dataset.index;
+        hospital.beds[index].fee = parseInt(input.value) || hospital.beds[index].fee;
+      });
+      
+      // Reload data
+      loadHospital(currentHospital);
+      
+      // Show success modal
+      document.getElementById('successMessage').textContent = `All rates updated for ${hospital.name}`;
+      document.getElementById('successModal').style.display = 'flex';
+    });
+
+    document.getElementById('hospitalSelect').addEventListener('change', function() {
+      currentHospital = this.value;
+      loadHospital(currentHospital);
+    });
+
+    // Admin panel toggle
+    document.getElementById('adminToggle').addEventListener('click', function() {
+      document.getElementById('adminPanel').classList.add('active');
+    });
+
+    document.getElementById('closeAdmin').addEventListener('click', function() {
+      document.getElementById('adminPanel').classList.remove('active');
+    });
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        
+        this.classList.add('active');
+        const tabId = this.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+        
+        // Smooth scroll to tabs
+        setTimeout(() => {
+          window.scrollTo({
+            top: document.querySelector('.hospital-tabs').offsetTop - 100,
+            behavior: 'smooth'
+          });
+        }, 100);
+      });
+    });
+
+    // Modal functions
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Doctor profile modal
+    function showDoctorProfile(doctorId) {
+      const hospital = hospitalDatabase[currentHospital];
+      const doctor = hospital.doctors.find(d => d.id === doctorId);
+      
+      if (!doctor) return;
+      
+      const modalBody = document.getElementById('doctorModalBody');
+      modalBody.innerHTML = `
+        <div class="doctor-modal-content">
+          <div class="doctor-modal-header">
+            <img src="${doctor.image}" alt="${doctor.name}">
+            <div>
+              <h2 style="font-size: 28px; font-weight: 700; margin-bottom: 8px;">${doctor.name}</h2>
+              <p style="color: var(--primary); font-weight: 600; font-size: 16px; margin-bottom: 12px;">${doctor.specialty}</p>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                ${generateStars(doctor.rating)}
+                <span style="font-weight: 600;">${doctor.rating}</span>
+                <span style="color: var(--gray-500);">(${doctor.reviews} reviews)</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="detail-grid">
+            <div class="detail-item">
+              <i class="fas fa-award"></i>
+              <div>
+                <span style="font-size: 12px; color: var(--gray-500);">Experience</span>
+                <p style="font-weight: 600; font-size: 16px;">${doctor.experience}</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <i class="fas fa-graduation-cap"></i>
+              <div>
+                <span style="font-size: 12px; color: var(--gray-500);">Qualification</span>
+                <p style="font-weight: 600; font-size: 14px;">${doctor.qualification}</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <i class="fas fa-clock"></i>
+              <div>
+                <span style="font-size: 12px; color: var(--gray-500);">Availability</span>
+                <p style="font-weight: 600; font-size: 14px;">${doctor.schedule}</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <i class="fas fa-money-bill-wave"></i>
+              <div>
+                <span style="font-size: 12px; color: var(--gray-500);">Consultation Fee</span>
+                <p style="font-weight: 600; font-size: 18px; color: var(--primary);">৳ ${doctor.fee}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">About Doctor</h3>
+            <p style="color: var(--gray-600); line-height: 1.6;">${doctor.about}</p>
+          </div>
+          
+          <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Education</h3>
+            <ul style="list-style: none;">
+              ${doctor.education.map(edu => `
+                <li style="margin-bottom: 8px;">
+                  <i class="fas fa-check-circle" style="color: var(--success); margin-right: 10px;"></i>${edu}
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+          
+          <div class="modal-actions">
+            <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('doctorModal')">View Schedule</button>
+            <button class="btn btn-primary" style="flex: 1;" onclick="bookDoctor('${doctor.name}')">Book Appointment</button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('doctorModal').style.display = 'flex';
+    }
+
+    // Action functions
+    function bookAppointment() {
+      alert('Redirecting to appointment booking page...');
+    }
+
+    function bookDoctor(doctorName) {
+      alert(`Booking appointment with Dr. ${doctorName}`);
+      closeModal('doctorModal');
+    }
+
+    function getDirections() {
+      window.open(`https://www.google.com/maps/search/${encodeURIComponent(hospitalDatabase[currentHospital].address)}`, '_blank');
+    }
+
+    function shareHospital() {
+      if (navigator.share) {
+        navigator.share({
+          title: hospitalDatabase[currentHospital].name,
+          text: `Check out ${hospitalDatabase[currentHospital].name} on MedFind`,
+          url: window.location.href,
+        });
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    }
+
+    function toggleFavorite() {
+      const btn = document.getElementById('favoriteBtn').querySelector('i');
+      if (favoriteHospitals.includes(currentHospital)) {
+        favoriteHospitals = favoriteHospitals.filter(h => h !== currentHospital);
+        btn.className = 'far fa-heart';
+      } else {
+        favoriteHospitals.push(currentHospital);
+        btn.className = 'fas fa-heart';
+        btn.style.color = 'var(--danger)';
+      }
+      localStorage.setItem('favoriteHospitals', JSON.stringify(favoriteHospitals));
+    }
+
+    function updateFavoriteButton(hospitalId) {
+      const btn = document.getElementById('favoriteBtn').querySelector('i');
+      if (favoriteHospitals.includes(hospitalId)) {
+        btn.className = 'fas fa-heart';
+        btn.style.color = 'var(--danger)';
+      } else {
+        btn.className = 'far fa-heart';
+        btn.style.color = '';
+      }
+    }
+
+    function performSearch() {
+      const query = document.getElementById('searchInput').value;
+      if (query) {
+        alert(`Searching for: ${query}`);
+      }
+    }
+
+    function filterDoctors() {
+      const specialty = document.getElementById('specialtyFilter').value;
+      const availability = document.getElementById('availabilityFilter').value;
+      const search = document.getElementById('doctorSearch').value.toLowerCase();
+      
+      const hospital = hospitalDatabase[currentHospital];
+      const filtered = hospital.doctors.filter(doc => {
+        const matchesSpecialty = !specialty || doc.specialty === specialty;
+        const matchesSearch = !search || doc.name.toLowerCase().includes(search);
+        return matchesSpecialty && matchesSearch;
+      });
+      
+      const grid = document.getElementById('doctorsGrid');
+      grid.innerHTML = filtered.map(doc => `
+        <div class="doctor-card">
+          <div class="doctor-image">
+            <img src="${doc.image}" alt="${doc.name}">
+          </div>
+          <div class="doctor-info">
+            <h3 class="doctor-name">${doc.name}</h3>
+            <span class="doctor-specialty">${doc.specialty}</span>
+            <div class="doctor-meta">
+              <span class="experience"><i class="fas fa-award"></i> ${doc.experience}</span>
+              <span class="qualification"><i class="fas fa-graduation-cap"></i> ${doc.qualification}</span>
+            </div>
+            <div class="doctor-rating">
+              ${generateStars(doc.rating)} (${doc.reviews} reviews)
+            </div>
+            <div class="doctor-availability">
+              <span class="availability-badge available"><i class="fas fa-circle"></i> Available Today</span>
+              <span class="fees">৳ ${doc.fee}</span>
+            </div>
+            <div class="doctor-actions">
+              <button class="btn btn-sm btn-outline" onclick="showDoctorProfile(${doc.id})">Profile</button>
+              <button class="btn btn-sm btn-primary" onclick="bookDoctor('${doc.name}')">Book</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function loadMoreDoctors() {
+      alert('Loading more doctors...');
+    }
+
+    function bookLabTest() {
+      alert('Redirecting to lab test booking page...');
+    }
+
+    function searchMedicine() {
+      const query = document.getElementById('medicineSearch').value;
+      if (query) {
+        alert(`Searching for medicine: ${query}`);
+      }
+    }
+
+    function bookViaPhone() {
+      alert(`Call ${hospitalDatabase[currentHospital].phone} to book appointment`);
+    }
+
+    function bookViaApp() {
+      alert('Opening mobile app...');
+    }
+
+    function bookViaWeb() {
+      window.location.href = '../patients/appointment-booking.html';
+    }
+
+    function bookViaWhatsApp() {
+      window.open(`https://wa.me/88${hospitalDatabase[currentHospital].phone.replace(/[^0-9]/g, '')}`, '_blank');
+    }
+
+    function submitReview() {
+      const rating = document.querySelectorAll('#starRating .fas').length;
+      const text = document.getElementById('reviewText').value;
+      
+      if (rating === 0) {
+        alert('Please select a rating');
+        return;
+      }
+      
+      if (!text) {
+        alert('Please write a review');
+        return;
+      }
+      
+      alert('Thank you for your review!');
+      document.getElementById('reviewText').value = '';
+      document.querySelectorAll('#starRating i').forEach(star => {
+        star.className = 'far fa-star';
+      });
+    }
+
+    // Star rating interaction
+    document.querySelectorAll('#starRating i').forEach((star, index) => {
+      star.addEventListener('click', function() {
+        const stars = this.parentElement.querySelectorAll('i');
+        stars.forEach((s, i) => {
+          if (i <= index) {
+            s.className = 'fas fa-star';
+          } else {
+            s.className = 'far fa-star';
+          }
+        });
+      });
+    });
+
+    // Search bar focus effect
+    document.querySelector('.search-bar input').addEventListener('focus', function() {
+      this.parentElement.style.borderColor = 'var(--primary)';
+      this.parentElement.style.boxShadow = '0 0 0 4px var(--primary-light)';
+    });
+
+    document.querySelector('.search-bar input').addEventListener('blur', function() {
+      this.parentElement.style.borderColor = 'var(--gray-200)';
+      this.parentElement.style.boxShadow = 'none';
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+      if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+      }
+    });
+
+    // Load initial hospital
+    loadHospital('rmch');
+  </script>
+</body>
+</html>
